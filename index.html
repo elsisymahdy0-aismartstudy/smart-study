@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Study AI</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+max-width:800px;
+margin:auto;
+padding:20px;
+background:#f5f5f5;
+}
+
+textarea{
+width:100%;
+height:200px;
+padding:10px;
+}
+
+button{
+padding:10px 15px;
+margin:5px;
+cursor:pointer;
+}
+
+.result{
+background:white;
+padding:15px;
+margin-top:15px;
+border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📚 Smart Study AI</h1>
+
+<p>الصق النص هنا:</p>
+
+<textarea id="text"></textarea>
+
+<br>
+
+<button onclick="summarize()">تلخيص</button>
+<button onclick="questions()">إنشاء أسئلة</button>
+
+<div id="output"></div>
+
+<script>
+
+function summarize(){
+
+let text=document.getElementById("text").value;
+
+if(text.length<20){
+alert("اكتب نصاً أطول");
+return;
+}
+
+let summary=text.substring(0,300);
+
+document.getElementById("output").innerHTML=
+`
+<div class="result">
+<h2>الملخص</h2>
+<p>${summary}...</p>
+</div>
+`;
+}
+
+function questions(){
+
+let text=document.getElementById("text").value;
+
+let words=text.split(" ").filter(w=>w.length>5);
+
+let html="<div class='result'><h2>أسئلة مراجعة</h2><ol>";
+
+for(let i=0;i<Math.min(5,words.length);i++){
+html += `<li>ما المقصود بـ ${words[i]} ؟</li>`;
+}
+
+html+="</ol></div>";
+
+document.getElementById("output").innerHTML=html;
+}
+
+</script>
+
+</body>
+</html>
