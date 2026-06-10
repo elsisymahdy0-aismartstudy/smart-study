@@ -56,6 +56,43 @@ padding:15px;
 margin-top:15px;
 border-radius:10px;
 }
+.buttons-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.btn {
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;  
+    cursor: pointer;
+    background-color: #A0522D; /* اللون الجملي الغامق */
+    color: white;              
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.03);
+    background-color: #8B4513; 
+}
+
+.image-container {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.study-image {
+    max-width: 85%;       
+    height: auto;
+    border-radius: 15px;  
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+}
+    
 </style>
 </head>
 
@@ -66,10 +103,14 @@ border-radius:10px;
 
 <textarea id="text"></textarea>
 
-<br>
+<div class="buttons-container">
+    <button class="btn" onclick="questions()">إنشاء أسئلة</button>
+    <button class="btn" onclick="summarize()">تلخيص</button>
+</div>
 
-<button onclick="summarize()">تلخيص</button>
-<button onclick="questions()">إنشاء أسئلة</button>
+<div class="image-container">
+    <img src="3a934d060250a07eec08db8b3ee1ba9a.jpg" alt="متنساش إنك قدها وقدود" class="study-image">
+</div>
 
 <div id="output"></div>
 
