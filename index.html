@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+StudyOCTYPE html>
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
@@ -115,11 +115,22 @@ border-radius:10px;
 </head>
 
  
-<h1>📚 Smart Study AI</h1>
-
-<p>الصق النص هنا:</p>
+<h1>📚 Smart Study Ai
 
 <textarea id="text"></textarea>
+<div style="text-align: center; margin-bottom: 15px;">
+  <button id="open-cam-btn" type="button" style="background-color: #A0522D; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    📷 افتح الكاميرا لتصوير الكتاب
+  </button>
+</div>
+
+<div id="camera-container" style="display: none; text-align: center; margin-bottom: 20px; background: #000; padding: 10px; border-radius: 15px;">
+  <video id="video" width="100%" height="auto" autoplay playsinline style="border-radius: 10px; max-height: 300px;"></video>
+  <button id="capture-btn" type="button" style="background-color: #4CAF50; color: white; border: none; padding: 12px 25px; border-radius: 25px; margin-top: 10px; font-weight: bold; cursor: pointer; font-size: 16px;">
+    📸 التقط الصورة واقرأ النص
+  </button>
+  <canvas id="canvas" style="display:none;"></canvas>
+</div>
 
 <div class="buttons-container">
     <button class="btn" onclick="questions()">إنشاء أسئلة</button>
@@ -169,8 +180,104 @@ html+="</ol></div>";
 
 document.getElementById("output").innerHTML=html;
 }
+ 
+  <script> 
+<script src="https://unpkg.com/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
 
+<script>
+// ربط عناصر واجهة موقعك بالكود التشغيلي
+const openCamBtn = document.getElementById('open-cam-btn');
+const cameraContainer = document.getElementById('camera-container');
+const video = document.getElementById('video');
+const captureBtn = document.getElementById('capture-btn');
+const canvas = document.getElementById('canvas');
+const textBox = document.getElementById('text');
+
+// 1. تشغيل كاميرا الهاتف الخلفية عند الضغط على زر الكاميرا
+if (openCamBtn) {
+  openCamBtn.addEventListener('click', async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = stream;
+      cameraContainer.style.display = 'block';
+      textBox.placeholder = "جاري تشغيل الكاميرا...";
+    } catch (err) {
+      alert("يرجى السماح للموقع بالوصول إلى الكاميرا من إعدادات المتصفح.");
+    }
+  });
+}
+
+// 2. التقاط الصورة واستخراج الكلام العربي منها تلقائياً
+if (captureBtn) {
+  captureBtn.addEventListener('click', () => {
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+
+    // إيقاف الكاميرا فوراً للحفاظ على موارد الهاتف
+    const stream = video.srcObject;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    cameraContainer.style.display = 'none';
+
+    textBox.value = "جاري قراءة النص العربي من الصورة، انتظر ثوانٍ معدودة... ⏳";
+
+    const dataUrl = canvas.toDataURL('image/jpeg');
+    
+    // تشغيل محرك القراءة باللغة العربية
+    Tesseract.recognize(
+      dataUrl,
+      'ara', 
+      { logger: m => console.log(m) }
+    ).then(({ data: { text } }) => {
+      if(text.trim() === "") {
+          textBox.value = "";
+          textBox.placeholder = "لم نتمكن من التعرف على كلمات واضحة. يرجى إعادة التصوير بإضاءة أفضل وكتابة واضحة.";
+      } else {
+          textBox.value = text; // وضع النص المستخرج داخل المربع الأبيض المقاس المريح
+      }
+    }).catch(err => {
+      textBox.value = "عذراً، حدث خطأ أثناء المعالجة البرمجية للصورة.";
+    });
+  });
+}
+
+// 3. وظيفة زر التلخيص الخاص بك
+function summarize() {
+  let text = document.getElementById("text").value;
+  if(text.length < 20){
+    alert("اكتب أو صوّر نصاً أطول للتلخيص!");
+    return;
+  }
+  let summary = text.substring(0, 300);
+  document.getElementById("output").innerHTML = `
+    <div class="result" style="background:#fff; padding:15px; border-radius:10px; margin-top:15px; border:1px solid #A0522D;">
+      <h2 style="color:#A0522D;">الملخص الذكي</h2>
+      <p>${summary}...</p>
+    </div>
+  `;
+}
+
+// 4. وظيفة زر إنشاء الأسئلة الخاص بك
+function questions() {
+  let text = document.getElementById("text").value;
+  if(text.length < 20){
+    alert("اكتب أو صوّر نصاً أطول لتوليد الأسئلة والمراجعة!");
+    return;
+  }
+  
+  let words = text.split(" ").filter(w => w.length > 3);
+  let html = "<div class='result' style='background:#fff; padding:15px; border-radius:10px; margin-top:15px; border:1px solid #A0522D;'><h2 style='color:#A0522D;'>أسئلة المراجعة الذكية</h2><ol>";
+  
+  for(let i=0; i<Math.min(5, words.length); i++){
+    html += `<li style='margin-bottom:8px;'>ما المقصود بـ "${words[i]}" بناءً على ما جاء في الصفحة؟</li>`;
+  }
+  
+  html += "</ol></div>";
+  document.getElementById("output").innerHTML = html;
+}
 </script>
 
-</body>
-</html>
+    
