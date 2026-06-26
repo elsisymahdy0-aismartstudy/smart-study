@@ -1,315 +1,114 @@
-StudyOCTYPE html>
-<html lang="ar">
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Study AI</title>
-
-<style>
-body{
-font-family:Arial,sans-serif;
-max-width:800px;
-margin:auto;
-padding:20px;
-background-color: #FCE6CE;
-} 
-textarea {
-  width: 100%;
-  height: 250px;        /* هذا الرقم هو الذي يكبر المربع الأبيض ويجعله واسعاً ومريحاً للكتابة */
-  padding: 15px;         /* مسافة فارغة داخل المربع لكي لا يلتصق الكلام بالحواف */
-  font-size: 16px;       /* حجم خط الكتابة داخل المربع */
-  border-radius: 15px;   /* يجعل زوايا المربع الأبيض دائرية وناعمة وليست حادة */
-  border: 2px solid #A0522D; /* لون إطار المربع (البني المتناسق مع موقعك) */
-  box-sizing: border-box;
-  background-color: #ffffff; /* التأكيد على أن لونه أبيض */
-  resize: none;          /* يمنع المستخدم من تخريب شكل المربع بالخطأ */
-}
-
-    width: 100%;
-    max-width: 100%;
-    height: 180px; /* زودنا الارتفاع شوية عشان يكون أوسع */
-    padding: 15px;
-    font-size: 16px;
-    border-radius: 15px; /* حواف دائرية ناعمة تليق مع الأزرار */
-    border: 2px solid #A0522D; /* إطار جملي خفيف يحدد المربع */
-    box-sizing: border-box;
-    background-color: #ffffff;
-    resize: vertical; /* يمنع المربع إنه يبوظ الشاشة بالعرض */
-}
-
-}
-.btn {
-    padding: 12px 25px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    background-color: #A0522D; /* اللون الجملي الغامق */
-    color: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-}
-.image-container {
-    text-align: center;
-    margin: 25px 0;
-}
-.study-image {
-    max-width: 85%;
-    height: auto;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
- 
-}
-
-button{
-padding:10px 15px;
-margin:5px;
-cursor:pointer;
-}
-
-.result{
-background:white;
-padding:15px;
-margin-top:15px;
-border-radius:10px;
-}
-.buttons-container {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin: 20px 0;
-}
-
-.btn {
-    padding: 12px 25px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 25px;  
-    cursor: pointer;
-    background-color: #A0522D; /* اللون الجملي الغامق */
-    color: white;              
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-    transition: transform 0.2s;
-}
-
-.btn:hover {
-    transform: scale(1.03);
-    background-color: #8B4513; 
-}
-
-.image-container {
-    text-align: center;
-    margin: 25px 0;
-}
-
-.study-image {
-    max-width: 85%;       
-    height: auto;
-    border-radius: 15px;  
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
-}
-    
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Study AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #FCE6CE;
+            text-align: center;
+        }
+        h1 {
+            color: #A0522D;
+            margin-bottom: 10px;
+        }
+        .icon {
+            font-size: 40px;
+        }
+        textarea {
+            width: 100%;
+            height: 250px;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 15px;
+            border: 2px solid #A0522D;
+            box-sizing: border-box;
+            resize: vertical;
+            margin: 15px 0;
+            background: white;
+        }
+        .btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: 0.3s;
+        }
+        .btn-camera {
+            background-color: #A0522D;
+            color: white;
+        }
+        .btn-camera:hover {
+            background-color: #8B4513;
+        }
+        .btn-action {
+            background-color: #CD853F;
+            color: white;
+        }
+        .btn-action:hover {
+            background-color: #A0522D;
+        }
+        #preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 15px;
+            margin: 15px 0;
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+  <script src="config.js"></script>
 </head>
+<body>
 
- 
-<h1>📚 Smart Study Ai
+    <div class="icon">📚</div>
+    <h1>Smart Study AI</h1>
 
-<textarea id="text"></textarea>
-<div style="text-align: center; margin-bottom: 15px;">
-  <button id="open-cam-btn" type="button" style="background-color: #A0522D; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    📷 افتح الكاميرا لتصوير الكتاب
-  </button>
-</div>
+    <textarea id="result" placeholder="النص المقروء سيظهر هنا...">جاري قراءة النص العربي من الصورة، انتظر ثوانٍ معدودة... ⏳</textarea>
 
-<div id="camera-container" style="display: none; text-align: center; margin-bottom: 20px; background: #000; padding: 10px; border-radius: 15px;">
-  <video id="video" width="100%" height="auto" autoplay playsinline style="border-radius: 10px; max-height: 300px;"></video>
-  <button id="capture-btn" type="button" style="background-color: #4CAF50; color: white; border: none; padding: 12px 25px; border-radius: 25px; margin-top: 10px; font-weight: bold; cursor: pointer; font-size: 16px;">
-    📸 التقط الصورة واقرأ النص
-  </button>
-  <canvas id="canvas" style="display:none;"></canvas>
-</div>
+    <div>
+        <button class="btn btn-camera" onclick="openCamera()">📷 افتح الكاميرا لتصوير الكتاب</button>
+    </div>
 
-<div class="buttons-container">
-    <button class="btn" onclick="questions()">إنشاء أسئلة</button>
-    <button class="btn" onclick="summarize()">تلخيص</button>
-</div>
+    <div>
+        <button class="btn btn-action" onclick="createQuestions()">إنشاء أسئلة</button>
+        <button class="btn btn-action" onclick="summarize()">تلخيص</button>
+    </div>
 
-<div class="image-container">
-    <img src="https://pin.it/2Lo9aBXZG" alt=" class="study-image">
+    <img id="preview" alt="معاينة الصورة">
 
-<div id="output"></div>
+    <input type="file" id="fileInput" accept="image/*" capture="environment" class="hidden" onchange="handleImage(event)">
 
-<script>
+const GROQ_API_KEY = "YOUR_API_KEY_HERE";
 
-function summarize(){
 
-let text=document.getElementById("text").value;
+        function openCamera() {
+            document.getElementById('fileInput').click();
+        }
 
-if(text.length<20){
-alert("اكتب نصاً أطول");
-return;
-}
+        async function handleImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-let summary=text.substring(0,300);
+            const preview = document.getElementById('preview');
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
 
-document.getElementById("output").innerHTML=
-`
-<div class="result">
-<h2>الملخص</h2>
-<p>${summary}...</p>
-</div>
-`;
-}
+            const resultArea = document.getElementById('result');
+            resultArea.value = '⏳ جاري قراءة النص من الصورة، انتظر قليلاً...';
 
-function questions(){
-
-let text=document.getElementById("text").value;
-
-let words=text.split(" ").filter(w=>w.length>5);
-
-let html="<div class='result'><h2>أسئلة مراجعة</h2><ol>";
-
-for(let i=0;i<Math.min(5,words.length);i++){
-html += `<li>ما المقصود بـ ${words[i]} ؟</li>`;
-}
-
-html+="</ol></div>";
-
-document.getElementById("output").innerHTML=html;
-}
- 
-  <script> 
-<script src="https://unpkg.com/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
-
-<script>
-// ربط عناصر واجهة موقعك بالكود التشغيلي
-const openCamBtn = document.getElementById('open-cam-btn');
-const cameraContainer = document.getElementById('camera-container');
-const video = document.getElementById('video');
-const captureBtn = document.getElementById('capture-btn');
-const canvas = document.getElementById('canvas');
-const textBox = document.getElementById('text');
-
-// 1. تشغيل كاميرا الهاتف الخلفية عند الضغط على زر الكاميرا
-if (openCamBtn) {
-  openCamBtn.addEventListener('click', async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      video.srcObject = stream;
-      cameraContainer.style.display = 'block';
-      textBox.placeholder = "جاري تشغيل الكاميرا...";
-    } catch (err) {
-      alert("يرجى السماح للموقع بالوصول إلى الكاميرا من إعدادات المتصفح.");
-    }
-  });
-}
-
-// 2. التقاط الصورة واستخراج الكلام العربي منها تلقائياً
-if (captureBtn) {
-  captureBtn.addEventListener('click', () => {
-    const context = canvas.getContext('2d');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-
-    // إيقاف الكاميرا فوراً للحفاظ على موارد الهاتف
-    const stream = video.srcObject;
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-    }
-    cameraContainer.style.display = 'none';
-
-    textBox.value = "جاري قراءة النص العربي من الصورة، انتظر ثوانٍ معدودة... ⏳";
-
-    const dataUrl = canvas.toDataURL('image/jpeg');
-    
-    // تشغيل محرك القراءة باللغة العربية
-    Tesseract.recognize(
-      dataUrl,
-      'ara', 
-      { logger: m => console.log(m) }
-    ).then(({ data: { text } }) => {
-      if(text.trim() === "") {
-          textBox.value = "";
-          textBox.placeholder = "لم نتمكن من التعرف على كلمات واضحة. يرجى إعادة التصوير بإضاءة أفضل وكتابة واضحة.";
-      } else {
-          textBox.value = text; // وضع النص المستخرج داخل المربع الأبيض المقاس المريح
-      }
-    }).catch(err => {
-      textBox.value = "عذراً، حدث خطأ أثناء المعالجة البرمجية للصورة.";
-    });
-  });
-}
-
-// // 3. وظيفة زر التلخيص الخاص بك
-async function summarize() {
-    let text = document.getElementById("text").value;
-    if (text.length < 20) {
-        alert("اكتب أو صوّر نصاً أطول للتلخيص!");
-        return;
-    }
-    
-    document.getElementById("output").innerHTML = "جاري التلخيص بذكاء...";
-    
-    try {
-        const response = await fetch("https://رابط-السيرفر-الخاص-بك.com/summarize", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ text: text })
-        });
-        
-        const data = await response.json();
-
-        document.getElementById("output").innerHTML = `
-            <div class="result">
-                <h2>الملخص الذكي</h2>
-                <p>${data.summary}</p>
-            </div>
-        `;
-    } catch (error) {
-        document.getElementById("output").innerHTML = "حدث خطأ في الاتصال بالذكاء الاصطناعي.";
-        console.error(error);
-    }
-}
-
-// // 4. وظيفة زر إنشاء الأسئلة الخاص بك
-async function questions() {
-    let text = document.getElementById("text").value;
-    if (text.length < 20) {
-        alert("اكتب أو صوّر نصاً أطول لتوليد الأسئلة!");
-        return;
-    }
-
-    document.getElementById("output").innerHTML = "جاري توليد الأسئلة...";
-
-    try {
-        const response = await fetch("https://رابط-السيرفر-الخاص-بك.com/questions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ text: text })
-        });
-        
-        const data = await response.json();
-
-        document.getElementById("output").innerHTML = `
-            <div class="result">
-                <h2>أسئلة المراجعة الذكية</h2>
-                <p style="white-space: pre-line;">${data.questions}</p>
-            </div>
-        `;
-    } catch (error) {
-        document.getElementById("output").innerHTML = "حدث خطأ في توليد الأسئلة.";
-        console.error(error);
-    }
-}
-
-</script>
-
-    
+            try {
+                const base64 = await fileToBase64(file);
+                const text = await readTextFromImage(base64);
+                resultArea.value = text;
+            } catch (error) {
