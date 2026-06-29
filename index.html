@@ -32,6 +32,11 @@
             margin: 15px 0;
             background: white;
         }
+        /* لما يكون readOnly يبقى لونه رمادي شوية */
+        textarea:read-only {
+            background-color: #f5f5f5;
+            color: #666;
+        }
         .btn {
             padding: 15px 30px;
             font-size: 18px;
@@ -62,11 +67,6 @@
             margin: 15px 0;
             display: none;
         }
-        #status {
-            color: #A0522D;
-            font-weight: bold;
-            margin: 10px 0;
-        }
         .hidden {
             display: none;
         }
@@ -77,7 +77,8 @@
     <div class="icon">📚</div>
     <h1>Smart Study AI</h1>
 
-    <textarea id="result" placeholder="النص المقروء سيظهر هنا...">جاري قراءة النص العربي من الصورة، انتظر ثوانٍ معدودة... ⏳</textarea>
+    <!-- المربع فاضي في البداية -->
+    <textarea id="result" placeholder="النص المقروء سيظهر هنا..."></textarea>
 
     <div>
         <button class="btn btn-camera" onclick="openCamera()">📷 افتح الكاميرا لتصوير الكتاب</button>
@@ -93,22 +94,12 @@
     <input type="file" id="fileInput" accept="image/*" capture="environment" class="hidden" onchange="handleImage(event)">
 
     <script>
-        // ============================================
-        // رابط Cloudflare Worker بتاعك
-        // ============================================
         const WORKER_URL = "https://smart-study-ai.YOUR_SUBDOMAIN.workers.dev";
-        // غيّر YOUR_SUBDOMAIN بالـ subdomain بتاعك
 
-        // ============================================
-        // فتح الكاميرا
-        // ============================================
         function openCamera() {
             document.getElementById('fileInput').click();
         }
 
-        // ============================================
-        // معالجة الصورة
-        // ============================================
         async function handleImage(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -118,22 +109,24 @@
             preview.style.display = 'block';
 
             const resultArea = document.getElementById('result');
+            // ⏳ النص يظهر بس لما تلتقط صورة
             resultArea.value = '⏳ جاري قراءة النص من الصورة، انتظر قليلاً...';
+            // 🔒 نمنع الكتابة لحد ما يخلص
+            resultArea.readOnly = true;
 
             try {
                 const base64 = await fileToBase64(file);
                 const text = await callWorker('readImage', { imageBase64: base64 });
                 resultArea.value = text;
-
+                // 🔓 نرجع نسمح بالكتابة
+                resultArea.readOnly = false;
             } catch (error) {
                 resultArea.value = '❌ حدث خطأ: ' + error.message;
+                resultArea.readOnly = false;
                 console.error(error);
             }
         }
 
-        // ============================================
-        // تحويل ملف لـ Base64
-        // ============================================
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -143,77 +136,58 @@
             });
         }
 
-        // ============================================
-        // استدعاء Cloudflare Worker
-        // ============================================
         async function callWorker(action, data) {
             const response = await fetch(WORKER_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    action: action,
-                    ...data
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: action, ...data })
             });
 
-            if (!response.ok) {
-                throw new Error('خطأ في الاتصال بالخادم');
-            }
+            if (!response.ok) throw new Error('خطأ في الاتصال بالخادم');
 
             const result = await response.json();
-
-            if (result.error) {
-                throw new Error(result.error.message || 'خطأ غير معروف');
-            }
-
-            if (result.choices && result.choices[0]) {
-                return result.choices[0].message.content;
-            } else {
-                throw new Error('لم يتم العثور على نتيجة');
-            }
+            if (result.error) throw new Error(result.error.message || 'خطأ غير معروف');
+            if (result.choices && result.choices[0]) return result.choices[0].message.content;
+            throw new Error('لم يتم العثور على نتيجة');
         }
 
-        // ============================================
-        // إنشاء أسئلة
-        // ============================================
         async function createQuestions() {
             const text = document.getElementById('result').value;
             if (!text || text.includes('⏳') || text.includes('❌')) {
                 alert('الرجاء التقاط صورة وقراءة النص أولاً!');
                 return;
             }
-
-            document.getElementById('result').value = '⏳ جاري إنشاء الأسئلة...';
+            const resultArea = document.getElementById('result');
+            resultArea.readOnly = true;
+            resultArea.value = '⏳ جاري إنشاء الأسئلة...';
 
             try {
                 const result = await callWorker('questions', { text: text });
-                document.getElementById('result').value = result;
-
+                resultArea.value = result;
+                resultArea.readOnly = false;
             } catch (error) {
-                document.getElementById('result').value = '❌ خطأ: ' + error.message;
+                resultArea.value = '❌ خطأ: ' + error.message;
+                resultArea.readOnly = false;
             }
         }
 
-        // ============================================
-        // تلخيص
-        // ============================================
         async function summarize() {
             const text = document.getElementById('result').value;
             if (!text || text.includes('⏳') || text.includes('❌')) {
                 alert('الرجاء التقاط صورة وقراءة النص أولاً!');
                 return;
             }
-
-            document.getElementById('result').value = '⏳ جاري التلخيص...';
+            const resultArea = document.getElementById('result');
+            resultArea.readOnly = true;
+            resultArea.value = '⏳ جاري التلخيص...';
 
             try {
                 const result = await callWorker('summarize', { text: text });
-                document.getElementById('result').value = result;
-
+                resultArea.value = result;
+                resultArea.readOnly = false;
             } catch (error) {
-                document.getElementById('result').value = '❌ خطأ: ' + error.message;
+                resultArea.value = '❌ خطأ: ' + error.message;
+                resultArea.readOnly = false;
             }
         }
     </script>
