@@ -32,7 +32,6 @@
             margin: 15px 0;
             background: white;
         }
-        /* لما يكون readOnly يبقى لونه رمادي شوية */
         textarea:read-only {
             background-color: #f5f5f5;
             color: #666;
@@ -70,6 +69,81 @@
         .hidden {
             display: none;
         }
+        /* أنماط الأسئلة التفاعلية */
+        .quiz-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid #A0522D;
+            text-align: right;
+        }
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            color: #A0522D;
+            margin-bottom: 15px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #CD853F;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: right;
+        }
+        .option-btn:hover {
+            background: #FCE6CE;
+        }
+        .option-btn.correct {
+            background: #90EE90;
+            border-color: #228B22;
+        }
+        .option-btn.wrong {
+            background: #FFB6C1;
+            border-color: #DC143C;
+        }
+        .option-btn.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .result-message {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .result-message.correct {
+            color: #228B22;
+            background: #90EE90;
+        }
+        .result-message.wrong {
+            color: #DC143C;
+            background: #FFB6C1;
+        }
+        .next-btn {
+            background: #A0522D;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        .score {
+            font-size: 18px;
+            color: #A0522D;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -77,7 +151,6 @@
     <div class="icon">📚</div>
     <h1>Smart Study AI</h1>
 
-    <!-- المربع فاضي في البداية -->
     <textarea id="result" placeholder="النص المقروء سيظهر هنا..."></textarea>
 
     <div>
@@ -91,11 +164,22 @@
 
     <img id="preview" alt="معاينة الصورة">
 
+    <!-- منطقة الأسئلة التفاعلية -->
+    <div id="quizArea" class="hidden">
+        <div class="score" id="score">النتيجة: 0 / 0</div>
+        <div id="questionContainer"></div>
+    </div>
+
     <input type="file" id="fileInput" accept="image/*" capture="environment" class="hidden" onchange="handleImage(event)">
 
     <script>
         const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
 
+        // متغيرات الأسئلة
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
 
         function openCamera() {
             document.getElementById('fileInput').click();
@@ -110,16 +194,16 @@
             preview.style.display = 'block';
 
             const resultArea = document.getElementById('result');
-            // ⏳ النص يظهر بس لما تلتقط صورة
             resultArea.value = '⏳ جاري قراءة النص من الصورة، انتظر قليلاً...';
-            // 🔒 نمنع الكتابة لحد ما يخلص
             resultArea.readOnly = true;
+
+            // إخفاء منطقة الأسئلة
+            document.getElementById('quizArea').classList.add('hidden');
 
             try {
                 const base64 = await fileToBase64(file);
                 const text = await callWorker('readImage', { imageBase64: base64 });
                 resultArea.value = text;
-                // 🔓 نرجع نسمح بالكتابة
                 resultArea.readOnly = false;
             } catch (error) {
                 resultArea.value = '❌ حدث خطأ: ' + error.message;
@@ -152,26 +236,228 @@
             throw new Error('لم يتم العثور على نتيجة');
         }
 
+        // ============================================
+        // إنشاء أسئلة تفاعلية
+        // ============================================
         async function createQuestions() {
             const text = document.getElementById('result').value;
             if (!text || text.includes('⏳') || text.includes('❌')) {
                 alert('الرجاء التقاط صورة وقراءة النص أولاً!');
                 return;
             }
+
             const resultArea = document.getElementById('result');
             resultArea.readOnly = true;
             resultArea.value = '⏳ جاري إنشاء الأسئلة...';
 
             try {
                 const result = await callWorker('questions', { text: text });
-                resultArea.value = result;
-                resultArea.readOnly = false;
+                
+                // تحليل الأسئلة من الرد
+                questions = parseQuestions(result);
+                currentQuestionIndex = 0;
+                score = 0;
+                
+                // إخفاء textarea وإظهار منطقة الأسئلة
+                resultArea.classList.add('hidden');
+                document.getElementById('quizArea').classList.remove('hidden');
+                
+                // عرض السؤال الأول
+                showQuestion();
+                
             } catch (error) {
                 resultArea.value = '❌ خطأ: ' + error.message;
                 resultArea.readOnly = false;
             }
         }
 
+        // ============================================
+        // تحليل الأسئلة من نص الـ AI
+        // ============================================
+        function parseQuestions(text) {
+            const questions = [];
+            // تقسيم النص لأسئلة منفصلة
+            const questionBlocks = text.split(/(?:سؤال\s*\d+[:.]|^\d+[:.])/m).filter(q => q.trim());
+            
+            for (let block of questionBlocks) {
+                const lines = block.trim().split('\n').filter(l => l.trim());
+                if (lines.length < 3) continue;
+                
+                const questionText = lines[0].replace(/^[•\-]\s*/, '').trim();
+                const options = [];
+                let correctAnswer = '';
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    // البحث عن الاختيارات (أ، ب، ج، د) أو (A، B، C، D)
+                    const optionMatch = line.match(/^([أبجدABCD])[.)]\s*(.+)/);
+                    if (optionMatch) {
+                        const letter = optionMatch[1];
+                        let optionText = optionMatch[2];
+                        
+                        // التحقق من الإجابة الصحيحة (لو فيه علامة ✓ أو "صحيحة")
+                        if (optionText.includes('✓') || optionText.includes('✅') || 
+                            optionText.toLowerCase().includes('صحيحة') ||
+                            optionText.toLowerCase().includes('correct')) {
+                            correctAnswer = letter;
+                            optionText = optionText.replace(/[✓✅]|صحيحة|correct/gi, '').trim();
+                        }
+                        
+                        options.push({ letter: letter, text: optionText });
+                    }
+                }
+                
+                // لو مفيش إجابة صحيحة محددة، نحاول نلاقيها
+                if (!correctAnswer && options.length > 0) {
+                    // نبحث في السطر الأخير عن الإجابة
+                    const lastLine = lines[lines.length - 1];
+                    const answerMatch = lastLine.match(/الإجابة\s*[:.]\s*([أبجدABCD])/);
+                    if (answerMatch) correctAnswer = answerMatch[1];
+                }
+                
+                if (questionText && options.length >= 2) {
+                    questions.push({
+                        question: questionText,
+                        options: options,
+                        correct: correctAnswer || 'أ'
+                    });
+                }
+            }
+            
+            // لو التحليل فشل، نرجع السؤال كامل كـ placeholder
+            if (questions.length === 0) {
+                questions.push({
+                    question: 'تعذر تحليل الأسئلة. جرب مرة أخرى.',
+                    options: [
+                        { letter: 'أ', text: 'إعادة المحاولة' }
+                    ],
+                    correct: 'أ'
+                });
+            }
+            
+            return questions;
+        }
+
+        // ============================================
+        // عرض السؤال الحالي
+        // ============================================
+        function showQuestion() {
+            const container = document.getElementById('questionContainer');
+            const scoreEl = document.getElementById('score');
+            
+            scoreEl.textContent = `النتيجة: ${score} / ${currentQuestionIndex}`;
+            
+            if (currentQuestionIndex >= questions.length) {
+                container.innerHTML = `
+                    <div class="quiz-container">
+                        <div class="question">🎉 انتهى الاختبار!</div>
+                        <div class="result-message correct">
+                            النتيجة النهائية: ${score} من ${questions.length}
+                        </div>
+                        <button class="next-btn" onclick="restartQuiz()">ابدأ من جديد</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const q = questions[currentQuestionIndex];
+            answered = false;
+            
+            let optionsHtml = '';
+            for (let opt of q.options) {
+                optionsHtml += `
+                    <button class="option-btn" onclick="checkAnswer('${opt.letter}', this)">
+                        ${opt.letter}) ${opt.text}
+                    </button>
+                `;
+            }
+            
+            container.innerHTML = `
+                <div class="quiz-container">
+                    <div class="question">
+                        سؤال ${currentQuestionIndex + 1} من ${questions.length}:
+                        <br><br>
+                        ${q.question}
+                    </div>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="resultMessage"></div>
+                    <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // التحقق من الإجابة
+        // ============================================
+        function checkAnswer(selectedLetter, btnElement) {
+            if (answered) return;
+            answered = true;
+            
+            const q = questions[currentQuestionIndex];
+            const allButtons = document.querySelectorAll('.option-btn');
+            const resultDiv = document.getElementById('resultMessage');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // تعطيل كل الأزرار
+            allButtons.forEach(btn => btn.classList.add('disabled'));
+            
+            // تلوين الإجابة المختارة
+            if (selectedLetter === q.correct) {
+                btnElement.classList.add('correct');
+                resultDiv.innerHTML = `
+                    <div class="result-message correct">
+                        ✅ صح! إجابة صحيحة!
+                    </div>
+                `;
+                score++;
+            } else {
+                btnElement.classList.add('wrong');
+                // تلوين الإجابة الصحيحة
+                allButtons.forEach(btn => {
+                    if (btn.textContent.trim().startsWith(q.correct)) {
+                        btn.classList.add('correct');
+                    }
+                });
+                resultDiv.innerHTML = `
+                    <div class="result-message wrong">
+                        ❌ غلط! الإجابة الصحيحة هي: ${q.correct}
+                    </div>
+                `;
+            }
+            
+            // تحديث النتيجة
+            document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex + 1}`;
+            
+            // إظهار زر التالي
+            nextBtn.classList.remove('hidden');
+        }
+
+        // ============================================
+        // السؤال التالي
+        // ============================================
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        // ============================================
+        // إعادة الاختبار
+        // ============================================
+        function restartQuiz() {
+            document.getElementById('quizArea').classList.add('hidden');
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('result').value = '';
+            document.getElementById('result').readOnly = false;
+            questions = [];
+            currentQuestionIndex = 0;
+            score = 0;
+        }
+
+        // ============================================
+        // تلخيص النص
+        // ============================================
         async function summarize() {
             const text = document.getElementById('result').value;
             if (!text || text.includes('⏳') || text.includes('❌')) {
