@@ -142,6 +142,14 @@
         #previewImagesContainer img:hover {
             transform: scale(1.1);
         }
+        .question-type-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -210,7 +218,6 @@ function showSection(sectionId) {
 }
 
 function startStandardQuiz() {
-    // أسئلة افتراضية في حال عدم رفع صور
     questions = [
         {
             question: "ما هي عاصمة جمهورية مصر العربية؟",
@@ -229,8 +236,7 @@ function startStandardQuiz() {
     score = 0;
     showSection('quiz');
     showQuestion();
-}
-function showQuestion() {
+}function showQuestion() {
     if (questions.length === 0) return;
     
     const container = document.getElementById('quizContainer');
@@ -258,24 +264,23 @@ function showQuestion() {
 
     container.innerHTML = `
         <div class="question-box">
-            <span style="background: var(--primary); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; position: absolute; top: 10px; left: 10px;">${typeBadge}</span>
-            <div class="question-text" style="margin-top: 20px;">
+            <span class="question-type-badge">${typeBadge}</span>
+            <div class="question-text" style="margin-top: 15px;">
                 سؤال ${currentQuestionIndex + 1} من ${questions.length}: <br><br> ${q.question}
             </div>
             ${contentHtml}
             <div id="resultMessage" style="margin-top: 15px; min-height: 25px;"></div>
-            <div style="margin-top: 20px; overflow: hidden;">
-                <button class="next-btn hidden" id="nextQuestionBtn">السؤال التالي ←</button>
-            </div>
+            <button class="next-btn hidden" id="nextQuestionBtn" style="margin-top: 15px;">السؤال التالي ←</button>
             
-            <div class="media-controls" style="margin-top: 25px; display: flex; gap: 10px; justify-content: center; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
-                <button type="button" onclick="document.getElementById('cameraInputReal').click();" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">
-                    📸 لقطة كاميرا أخرى
+            <div class="media-controls" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
+                <button type="button" onclick="document.getElementById('cameraInputReal').click();" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    📸 لقطة كاميرا فورية
                 </button>
-                <button type="button" onclick="document.getElementById('galleryInputReal').click();" style="padding: 10px 15px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">
-                    🖼️ إضافة من المعرض
+                <button type="button" onclick="document.getElementById('galleryInputReal').click();" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    🖼️ اختيار من المعرض
                 </button>
             </div>
+
             <div id="previewImagesContainer" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; justify-content: center;"></div>
         </div>
     `;
@@ -283,12 +288,11 @@ function showQuestion() {
     setupQuestionEvents();
 }
 
+// دالة التحقق من الإجابة وإظهار النتيجة بدقة كـ نص
 function checkAnswer(userAnswer, correctAnswer) {
     const resultDiv = document.getElementById('resultMessage');
     const nextBtn = document.getElementById('nextQuestionBtn');
-    if (!resultDiv) return;
 
-    // استخراج النص الفعلي من الزر لمنع ظهور [object HTMLButtonElement]
     let userText = userAnswer;
     if (userAnswer instanceof HTMLElement) {
         userText = userAnswer.innerText || userAnswer.textContent;
@@ -297,13 +301,12 @@ function checkAnswer(userAnswer, correctAnswer) {
     userText = userText.trim();
     const cleanCorrectAnswer = correctAnswer.trim();
 
-    // تعطيل باقي أزرار الإجابات لمنع التلاعب بالدرجات
     const buttons = document.querySelectorAll('.answers-list .answer-btn');
     buttons.forEach(btn => btn.disabled = true);
 
     if (userText === cleanCorrectAnswer || userText.includes(cleanCorrectAnswer) || cleanCorrectAnswer.includes(userText)) {
         resultDiv.innerHTML = "<p style='color: #28a745; font-weight: bold;'>✅ إجابة صحيحة وممتازة!</p>";
-        score += 10;
+        score += 10; 
         const scoreDiv = document.getElementById('scoreDisplay');
         if(scoreDiv) scoreDiv.innerText = `النقاط: ${score}`;
     } else {
@@ -313,6 +316,7 @@ function checkAnswer(userAnswer, correctAnswer) {
     if (nextBtn) nextBtn.classList.remove('hidden');
 }
 
+// دالة إعداد مستمعات الأحداث لزر التالي والأجوبة
 function setupQuestionEvents() {
     const nextBtn = document.getElementById('nextQuestionBtn');
     if (nextBtn) {
@@ -327,18 +331,24 @@ function setupQuestionEvents() {
     }
 }
 
+// دالة إنهاء الاختبار وعرض النتيجة
 function endQuiz() {
+    clearInterval(timerInterval);
     const container = document.getElementById('quizContainer');
-    container.innerHTML = `
-        <div class="question-box" style="text-align: center; padding: 4px 20px;">
-            <h2 style="color: var(--success); margin-bottom: 15px;">🎉 مبروك! انتهى الاختبار</h2>
-            <p style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">مجموع نقاطك النهائي هو: ${score}</p>
-            <button class="btn" onclick="resetQuiz()">🏠 العودة للقائمة الرئيسية</button>
-        </div>
-    `;
+    if (container) {
+        container.innerHTML = `
+            <div class="question-box" style="text-align: center; padding: 30px 20px;">
+                <h2 style="color: var(--success); margin-bottom: 15px;">🎉 انتهى الاختبار بنجاح!</h2>
+                <p style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">درجتك الإجمالية هي: ${score}</p>
+                <button class="btn" onclick="resetQuiz()">🏠 العودة للقائمة الرئيسية</button>
+            </div>
+        `;
+    }
 }
 
+// دالة إعادة تعيين الاختبار بالكامل
 function resetQuiz() {
+    clearInterval(timerInterval);
     questions = [];
     currentQuestionIndex = 0;
     score = 0;
@@ -347,17 +357,17 @@ function resetQuiz() {
     showSection('home');
 }
 
-// دالة إرسال الملفات والصور فوراً للـ Cloudflare Worker للتحليل بالذكاء الاصطناعي الرؤيوي
+// الدالة المسؤولة عن إرسال الصور المرفوعة مباشرة إلى الـ Cloudflare Worker الخاص بك
 async function sendImagesToSmartWorker(files) {
     showSection('quiz');
     const container = document.getElementById('quizContainer');
-    container.innerHTML = `
-        <div class="question-box" style="text-align: center; padding: 40px 20px;">
-            <div style="border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px auto;"></div>
-            <p style="color: var(--primary); font-weight: bold; font-size: 16px;">⏳ جاري إرسال الصور للـ Worker الذكي وتوليد الأسئلة فوراً...</p>
-            <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
-        </div>
-    `;
+    if (container) {
+        container.innerHTML = `
+            <div class="question-box" style="text-align: center; padding: 40px 20px;">
+                <p style='color: #007bff; font-weight: bold; width: 100%; text-align: center;'>⏳ جاري تحليل الصور وتوليد الأسئلة بالذكاء الاصطناعي...</p>
+            </div>
+        `;
+    }
 
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
@@ -365,15 +375,16 @@ async function sendImagesToSmartWorker(files) {
     }
 
     try {
-        // يتم استخدام رابط السيرفر المباشر تلقائياً
-        const workerUrl = "/api/quiz"; 
+        const workerUrl = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
+            ? "https://your-worker-subdomain.workers.dev/" 
+            : "/api/quiz"; 
 
         const response = await fetch(workerUrl, {
             method: "POST",
             body: formData
         });
 
-        if (!response.ok) throw new Error("استجابة السيرفر غير مستقرة.");
+        if (!response.ok) throw new Error("فشل السيرفر في معالجة الصور.");
 
         const data = await response.json();
         if (data && data.questions && data.questions.length > 0) {
@@ -381,50 +392,40 @@ async function sendImagesToSmartWorker(files) {
             currentQuestionIndex = 0;
             showQuestion();
         } else {
-            container.innerHTML = `
-                <div class="question-box" style="text-align: center;">
-                    <p style="color: var(--danger); font-weight: bold;">⚠️ لم يستطع الذكاء الاصطناعي تكوين أسئلة، تأكد من وضوح الصورة وجرب مرة أخرى.</p>
-                    <button class="btn" style="margin-top:15px;" onclick="resetQuiz()">رجوع</button>
-                </div>
-            `;
+            alert("لم يقم الذكاء الاصطناعي بصياغة أسئلة واضحة، حاول مرة أخرى بصورة أوضح.");
+            resetQuiz();
         }
     } catch (error) {
-        container.innerHTML = `
-            <div class="question-box" style="text-align: center;">
-                <p style="color: var(--danger); font-weight: bold;">❌ خطأ في الاتصال بالـ Worker: ${error.message}</p>
-                <button class="btn" style="margin-top:15px;" onclick="resetQuiz()">رجوع للرئيسية</button>
-            </div>
-        `;
+        alert("حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: " + error.message);
+        resetQuiz();
     }
 }
 
-// دالة الالتقاط المباشر والتحويل وعرض معاينة مصغرة للملفات
+// دالة معالجة الصور وعرض المعاينة المباشرة
 function handleDirectFileSelection(event) {
     const files = event.target.files;
     const mainPreview = document.getElementById('mainPreviewContainer');
     const quizPreview = document.getElementById('previewImagesContainer');
     
-    // تنظيف الحاويات السابقة
-    if (mainPreview) mainPreview.innerHTML = '';
-    
+    if (mainPreview) mainPreview.innerHTML = ''; 
+
     if (files.length > 0) {
         for (let i = 0; i < files.length; i++) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = document.createElement('img');
                 img.src = e.target.result;
-                img.style.width = '70px';
-                img.style.height = '70px';
+                img.style.width = '65px';
+                img.style.height = '65px';
                 img.style.objectFit = 'cover';
-                img.style.borderRadius = '8px';
-                img.style.border = '2px solid var(--primary)';
+                img.style.borderRadius = '6px';
+                img.style.border = '2px solid #007bff';
                 
                 if (mainPreview) mainPreview.appendChild(img.cloneNode(true));
                 if (quizPreview) quizPreview.appendChild(img.cloneNode(true));
             }
             reader.readAsDataURL(files[i]);
         }
-        // إرسال الصور للـ Worker مباشرة بدون تأخير
         sendImagesToSmartWorker(files);
     }
 }
@@ -434,4 +435,5 @@ function handleDirectFileSelection(event) {
 <input type="file" id="galleryInputReal" accept="image/*" multiple style="display: none;" onchange="handleDirectFileSelection(event)">
 
 </body>
-</html> 
+</html>
+
