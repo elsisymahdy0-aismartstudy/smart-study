@@ -1483,10 +1483,20 @@ ${combinedText}
                         ${q.question}
                     </div>
                     ${contentHtml}
-                    <div id="resultMessage"></div>
-                    <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
-                    // تكملة السطر 1487 والـ Template Literal
-            <button class="next-btn hidden" id="nextQuestionBtn">التالي</button>
+ <div id="resultMessage"></div>
+<button class="next-btn hidden" id="nextQuestionBtn">السؤال التالي ←</button>
+
+<div class="media-controls" style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+    <button type="button" id="cameraBtnTrigger" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">
+        📸 لقطة كاميرا فورية
+    </button>
+    <button type="button" id="galleryBtnTrigger" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">
+        🖼️ اختيار من المعرض
+    </button>
+</div>
+
+<div id="previewImagesContainer" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; justify-content: center;"></div>
+
         </div>
     `; 
 
