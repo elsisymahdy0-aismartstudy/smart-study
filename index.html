@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+
+# Read the code from the user's message - I'll reconstruct it
+# The issue is with the string escaping. Let me write the file directly.
+
+fixed_code = '''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -771,12 +775,12 @@
                     <div class="capture-text">التقاط صورة للكتاب</div>
                     <div class="capture-sub">اختر طريقة إضافة الصورة</div>
                     <div class="capture-buttons">
-                        <button class="capture-btn" onclick="openCamera()">
+                        <label for="cameraInput" class="capture-btn">
                             📷 كاميرا
-                        </button>
-                        <button class="capture-btn gallery" onclick="openGallery()">
+                        </label>
+                        <label for="galleryInput" class="capture-btn gallery">
                             🖼️ المعرض
-                        </button>
+                        </label>
                     </div>
                     <div class="photo-counter" id="photoCounter"></div>
                 </div>
@@ -799,9 +803,9 @@
                 </div>
             </div>
 
-            <!-- Hidden file inputs -->
-            <input type="file" id="cameraInput" class="hidden" accept="image/*" capture="environment" onchange="handleImage(event)">
-            <input type="file" id="galleryInput" class="hidden" accept="image/*" onchange="handleImage(event)">
+            <!-- Hidden file inputs - visually hidden but accessible for labels -->
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleImage(event)" style="position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none;">
+            <input type="file" id="galleryInput" accept="image/*" onchange="handleImage(event)" style="position:absolute;opacity:0;width:0;height:0;overflow:hidden;pointer-events:none;">
 
             <!-- Stats -->
             <div class="stats-grid">
@@ -1060,22 +1064,17 @@
         }
 
         // ===== Camera & Gallery =====
-        function openCamera() {
-            document.getElementById('cameraInput').click();
-        }
-
-        function openGallery() {
-            document.getElementById('galleryInput').click();
-        }
-
         function showAddPhotoOptions() {
             if (photos.length >= MAX_PHOTOS) {
                 alert(`⚠️ الحد الأقصى هو ${MAX_PHOTOS} صور!`);
                 return;
             }
             const choice = confirm('📷 اضغط "موافق" للكاميرا\n🖼️ اضغط "إلغاء" للمعرض');
-            if (choice) openCamera();
-            else openGallery();
+            if (choice) {
+                document.getElementById('cameraInput').click();
+            } else {
+                document.getElementById('galleryInput').click();
+            }
         }
 
         async function handleImage(event) {
@@ -1484,133 +1483,136 @@ ${combinedText}
                         <input type="text" class="fill-input" id="directAnswer" placeholder="اكتب إجابتك هنا...">
                         <button class="next-btn" onclick="checkDirectAnswer()">تحقق</button>
                     `;
-                    break;
+                                            break;
             }
             
             container.innerHTML = `
                 <div class="question-box">
                     <span class="question-type-badge">${typeBadge}</span>
                     <div class="question-text">
-                سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
-                ${q.question}
-            </div>
-            ${contentHtml}
-            <div id="resultMessage"></div>
-            <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
-        </div>
-    `;
-}
+                        سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
+                        ${q.question}
+                    </div>
+                    ${contentHtml}
+                    <div id="resultMessage"></div>
+                    <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
+                </div>
+            `;
+        }
 
-function checkAnswer(selected, btn) {
-    if (answered) return;
-    answered = true;
-    
-    const q = questions[currentQuestionIndex];
-    const resultDiv = document.getElementById('resultMessage');
-    
-    // Disable all buttons
-    document.querySelectorAll('.option-btn, .tf-btn').forEach(b => b.classList.add('disabled'));
-    
-    stats.totalQuestions++;
-    
-    if (selected === q.correct) {
-        if (btn) btn.classList.add('correct');
-        resultDiv.innerHTML = '<div class="result-message correct">✅ صح! إجابة صحيحة!</div>';
-        score++;
-        stats.correctAnswers++;
-        addActivity('correct', `إجابة صحيحة في سؤال ${currentQuestionIndex + 1} (${getTypeName(q.type)})`);
-    } else {
-        if (btn) btn.classList.add('wrong');
-        // Show correct
-        document.querySelectorAll('.option-btn, .tf-btn').forEach(b => {
-            if (b.textContent.includes(q.correct) || b.textContent.trim() === q.correct) {
-                b.classList.add('correct');
+        function checkAnswer(selected, btn) {
+            if (answered) return;
+            answered = true;
+            
+            const q = questions[currentQuestionIndex];
+            const resultDiv = document.getElementById('resultMessage');
+            
+            // Disable all buttons
+            document.querySelectorAll('.option-btn, .tf-btn').forEach(b => b.classList.add('disabled'));
+            
+            stats.totalQuestions++;
+            
+            if (selected === q.correct) {
+                if (btn) btn.classList.add('correct');
+                resultDiv.innerHTML = '<div class="result-message correct">✅ صح! إجابة صحيحة!</div>';
+                score++;
+                stats.correctAnswers++;
+                addActivity('correct', `إجابة صحيحة في سؤال ${currentQuestionIndex + 1} (${getTypeName(q.type)})`);
+            } else {
+                if (btn) btn.classList.add('wrong');
+                // Show correct
+                document.querySelectorAll('.option-btn, .tf-btn').forEach(b => {
+                    if (b.textContent.includes(q.correct) || b.textContent.trim() === q.correct) {
+                        b.classList.add('correct');
+                    }
+                });
+                resultDiv.innerHTML = `<div class="result-message wrong">❌ غلط! الإجابة الصحيحة هي: ${q.correct}</div>`;
+                addActivity('wrong', `إجابة خاطئة في سؤال ${currentQuestionIndex + 1}`);
             }
-        });
-        resultDiv.innerHTML = `<div class="result-message wrong">❌ غلط! الإجابة الصحيحة هي: ${q.correct}</div>`;
-        addActivity('wrong', `إجابة خاطئة في سؤال ${currentQuestionIndex + 1}`);
-    }
-    
-    updateStats();
-    document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex + 1}`;
-    document.getElementById('nextBtn').classList.remove('hidden');
-}
+            
+            updateStats();
+            document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex + 1}`;
+            document.getElementById('nextBtn').classList.remove('hidden');
+        }
 
-function checkFillAnswer() {
-    if (answered) return;
-    const input = document.getElementById('fillAnswer');
-    const userAnswer = input.value.trim();
-    if (!userAnswer) {
-        alert('الرجاء كتابة إجابة!');
-        return;
-    }
-    checkAnswer(userAnswer, null);
-}
+        function checkFillAnswer() {
+            if (answered) return;
+            const input = document.getElementById('fillAnswer');
+            const userAnswer = input.value.trim();
+            if (!userAnswer) {
+                alert('الرجاء كتابة إجابة!');
+                return;
+            }
+            checkAnswer(userAnswer, null);
+        }
 
-function checkDirectAnswer() {
-    if (answered) return;
-    const input = document.getElementById('directAnswer');
-    const userAnswer = input.value.trim();
-    if (!userAnswer) {
-        alert('الرجاء كتابة إجابة!');
-        return;
-    }
-    checkAnswer(userAnswer, null);
-}
+        function checkDirectAnswer() {
+            if (answered) return;
+            const input = document.getElementById('directAnswer');
+            const userAnswer = input.value.trim();
+            if (!userAnswer) {
+                alert('الرجاء كتابة إجابة!');
+                return;
+            }
+            checkAnswer(userAnswer, null);
+        }
 
-function getTypeName(type) {
-    const names = { mcq: 'اختياري', tf: 'صح/خطأ', fill: 'تكميلي', direct: 'مباشر' };
-    return names[type] || type;
-}
+        function getTypeName(type) {
+            const names = { mcq: 'اختياري', tf: 'صح/خطأ', fill: 'تكميلي', direct: 'مباشر' };
+            return names[type] || type;
+        }
 
-function updateStats() {
-    stats.level = Math.floor(stats.correctAnswers / 10) + 1;
-    saveStats();
-    updateStatsDisplay();
-}
+        function updateStats() {
+            stats.level = Math.floor(stats.correctAnswers / 10) + 1;
+            saveStats();
+            updateStatsDisplay();
+        }
 
-function nextQuestion() {
-    currentQuestionIndex++;
-    showQuestion();
-}
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
 
-function showResults() {
-    clearInterval(timerInterval);
-    
-    document.querySelectorAll('.main-content > div').forEach(div => div.classList.add('hidden'));
-    document.getElementById('results-section').classList.remove('hidden');
-    
-    const percentage = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
-    document.getElementById('final-score').textContent = `${score} / ${questions.length}`;
-    
-    let message = '';
-    if (percentage === 100) message = '🌟 ممتاز! كل الإجابات صحيحة!';
-    else if (percentage >= 80) message = '😄 أداء رائع!';
-    else if (percentage >= 60) message = '😊 جيد!';
-    else if (percentage >= 40) message = '🙂 لازم تذاكر أكتر!';
-    else message = '😐 لازم تركز أكتر!';
-    
-    document.getElementById('final-message').textContent = message;
-    
-    // Details
-    let details = `أنواع الأسئلة:\n`;
-    questions.forEach((q, i) => {
-        const typeName = getTypeName(q.type);
-        const isCorrect = i < score; // Simplified
-    });
-    document.getElementById('final-details').textContent = `نسبة النجاح: ${percentage}%`;
-    
-    addActivity('correct', `انتهى اختبار بنتيجة ${score}/${questions.length}`);
-}
+        function showResults() {
+            clearInterval(timerInterval);
+            
+            document.querySelectorAll('.main-content > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById('results-section').classList.remove('hidden');
+            
+            const percentage = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
+            document.getElementById('final-score').textContent = `${score} / ${questions.length}`;
+            
+            let message = '';
+            if (percentage === 100) message = '🌟 ممتاز! كل الإجابات صحيحة!';
+            else if (percentage >= 80) message = '😄 أداء رائع!';
+            else if (percentage >= 60) message = '😊 جيد!';
+            else if (percentage >= 40) message = '🙂 لازم تذاكر أكتر!';
+            else message = '😐 لازم تركز أكتر!';
+            
+            document.getElementById('final-message').textContent = message;
+            
+            // Details
+            let details = `أنواع الأسئلة:\n`;
+            questions.forEach((q, i) => {
+                const typeName = getTypeName(q.type);
+                const isCorrect = i < score; // Simplified
+            });
+            document.getElementById('final-details').textContent = `نسبة النجاح: ${percentage}%`;
+            
+            addActivity('correct', `انتهى اختبار بنتيجة ${score}/${questions.length}`);
+        }
 
-function restartQuiz() {
-    clearInterval(timerInterval);
-    questions = [];
-    currentQuestionIndex = 0;
-    score = 0;
-    timeLeft = 0;
-    showSection('home');
-}
+        function restartQuiz() {
+            clearInterval(timerInterval);
+            questions = [];
+            currentQuestionIndex = 0;
+            score = 0;
+            timeLeft = 0;
+            showSection('home');
+        }
 
-// Load stats
-loadStats();
+        // Load stats
+        loadStats();
+    </script>
+</body>
+</html>
