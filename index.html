@@ -1431,72 +1431,74 @@ ${combinedText}
             }, 1000);
         }
 
-        function showQuestion() {
-            const container = document.getElementById('questionContainer');
-            const progress = ((currentQuestionIndex) / questions.length) * 100;
+       function showQuestion() {
+    const container = document.getElementById('questionContainer');
+    const progress = ((currentQuestionIndex) / questions.length) * 100;
+    
+    document.getElementById('progressBar').style.width = progress + '%';
+    document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex}`;
+    
+    if (currentQuestionIndex >= questions.length) {
+        showResults();
+        return;
+    }
+    
+    const q = questions[currentQuestionIndex];
+    answered = false;
+    
+    let typeBadge = '';
+    let contentHtml = '';
+    
+    switch(q.type) {
+        case 'mcq':
+            typeBadge = 'اختيار من متعدد';
+            let optionsHtml = q.options.map(opt => `
+                <button class="option-btn" onclick="checkAnswer('${opt.letter}', this)">
+                    ${opt.letter}) ${opt.text}
+                </button>
+            `).join('');
+            contentHtml = `<div class="options-grid">${optionsHtml}</div>`;
+            break;
             
-            document.getElementById('progressBar').style.width = progress + '%';
-            document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex}`;
+        case 'tf':
+            typeBadge = 'صح أو خطأ';
+            contentHtml = `
+                <div class="tf-buttons">
+                    <button class="tf-btn" onclick="checkAnswer('صح', this)">✅ صح</button>
+                    <button class="tf-btn" onclick="checkAnswer('خطأ', this)">❌ خطأ</button>
+                </div>
+            `;
+            break;
             
-            if (currentQuestionIndex >= questions.length) {
-                showResults();
-                return;
-            }
+        case 'fill':
+            typeBadge = 'أكمل الجملة';
+            contentHtml = `
+                <input type="text" class="fill-input" id="fillAnswer" placeholder="اكتب إجابتك هنا...">
+                <button class="next-btn" onclick="checkFillAnswer()">تحقق</button>
+            `;
+            break;
             
-            const q = questions[currentQuestionIndex];
-            answered = false;
-            
-            let typeBadge = '';
-            let contentHtml = '';
-            
-            switch(q.type) {
-                case 'mcq':
-                    typeBadge = 'اختيار من متعدد';
-                    let optionsHtml = q.options.map(opt => `
-                        <button class="option-btn" onclick="checkAnswer('${opt.letter}', this)">
-                            ${opt.letter}) ${opt.text}
-                        </button>
-                    `).join('');
-                    contentHtml = `<div class="options-grid">${optionsHtml}</div>`;
-                    break;
-                    
-                case 'tf':
-                    typeBadge = 'صح أو خطأ';
-                    contentHtml = `
-                        <div class="tf-buttons">
-                            <button class="tf-btn" onclick="checkAnswer('صح', this)">✅ صح</button>
-                            <button class="tf-btn" onclick="checkAnswer('خطأ', this)">❌ خطأ</button>
-                        </div>
-                    `;
-                    break;
-                    
-                case 'fill':
-                    typeBadge = 'أكمل الجملة';
-                    contentHtml = `
-                        <input type="text" class="fill-input" id="fillAnswer" placeholder="اكتب إجابتك هنا...">
-                        <button class="next-btn" onclick="checkFillAnswer()">تحقق</button>
-                    `;
-                    break;
-                    
-                case 'direct':
-                    typeBadge = 'سؤال مباشر';
-                    contentHtml = `
-                        <input type="text" class="fill-input" id="directAnswer" placeholder="اكتب إجابتك هنا...">
-                        <button class="next-btn" onclick="checkDirectAnswer()">تحقق</button>
-                    `;
-                    break;
-            container.innerHTML = `
-    <div class="question-box">
-        <span class="question-type-badge">${typeBadge}</span>
-        <div class="question-text">
-            سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
-            ${q.question}
+        case 'direct':
+            typeBadge = 'سؤال مباشر';
+            contentHtml = `
+                <input type="text" class="fill-input" id="directAnswer" placeholder="اكتب إجابتك هنا...">
+                <button class="next-btn" onclick="checkDirectAnswer()">تحقق</button>
+            `;
+            break;
+    }
+    
+    container.innerHTML = `
+        <div class="question-box">
+            <span class="question-type-badge">${typeBadge}</span>
+            <div class="question-text">
+                سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
+                ${q.question}
+            </div>
+            ${contentHtml}
+            <div id="resultMessage"></div>
+            <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
         </div>
-        ${contentHtml}
-        <div id="resultMessage"></div>
-        <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
-    </div>
-`;
+    `;
 }
 
 function checkAnswer(selected, btn) {
@@ -1602,6 +1604,5 @@ function restartQuiz() {
 }
 
 loadStats();
-
-            
-                
+     
+    
