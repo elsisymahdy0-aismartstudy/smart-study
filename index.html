@@ -1485,21 +1485,18 @@ ${combinedText}
                         <button class="next-btn" onclick="checkDirectAnswer()">تحقق</button>
                     `;
                     break;
-            }
-            
             container.innerHTML = `
-                <div class="question-box">
-                    <span class="question-type-badge">${typeBadge}</span>
-                    <div class="question-text">
-                      <div class="question-text">
-                سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
-                ${q.question}
-            </div>
-            ${contentHtml}
-            <div id="resultMessage"></div>
-            <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
+    <div class="question-box">
+        <span class="question-type-badge">${typeBadge}</span>
+        <div class="question-text">
+            سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
+            ${q.question}
         </div>
-    `;
+        ${contentHtml}
+        <div id="resultMessage"></div>
+        <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
+    </div>
+`;
 }
 
 function checkAnswer(selected, btn) {
@@ -1509,7 +1506,6 @@ function checkAnswer(selected, btn) {
     const q = questions[currentQuestionIndex];
     const resultDiv = document.getElementById('resultMessage');
     
-    // Disable all buttons
     document.querySelectorAll('.option-btn, .tf-btn').forEach(b => b.classList.add('disabled'));
     
     stats.totalQuestions++;
@@ -1522,7 +1518,6 @@ function checkAnswer(selected, btn) {
         addActivity('correct', `إجابة صحيحة في سؤال ${currentQuestionIndex + 1} (${getTypeName(q.type)})`);
     } else {
         if (btn) btn.classList.add('wrong');
-        // Show correct
         document.querySelectorAll('.option-btn, .tf-btn').forEach(b => {
             if (b.textContent.includes(q.correct) || b.textContent.trim() === q.correct) {
                 b.classList.add('correct');
@@ -1592,13 +1587,6 @@ function showResults() {
     else message = '😐 لازم تركز أكتر!';
     
     document.getElementById('final-message').textContent = message;
-    
-    // Details
-    let details = `أنواع الأسئلة:\n`;
-    questions.forEach((q, i) => {
-        const typeName = getTypeName(q.type);
-        const isCorrect = i < score; // Simplified
-    });
     document.getElementById('final-details').textContent = `نسبة النجاح: ${percentage}%`;
     
     addActivity('correct', `انتهى اختبار بنتيجة ${score}/${questions.length}`);
@@ -1613,5 +1601,7 @@ function restartQuiz() {
     showSection('home');
 }
 
-// Load stats
 loadStats();
+
+            
+                
