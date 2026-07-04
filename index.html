@@ -1504,18 +1504,32 @@ ${combinedText}
     setupQuestionEvents();
 }
 
-// دالة للتحقق من الإجابة وإظهار زر "التالي"
-function checkAnswer(userAnswer, correctAnswer) {
+// دالة للتحقق من الإجابة وإظهار زر "التال
+    function checkAnswer(userAnswer, correctAnswer) {
     const resultDiv = document.getElementById('resultMessage');
     const nextBtn = document.getElementById('nextQuestionBtn');
-    
-    if (userAnswer === correctAnswer) {
-        resultDiv.innerHTML = "<p style='color: green;'>إجابة صحيحة! 🎉</p>";
-        score += 10; // زيادة السكور
-    } else {
-        resultDiv.innerHTML = `<p style='color: red;'>إجابة خاطئة. الإجابة الصحيحة هي: ${correctAnswer}</p>`;
+
+    // سحب النص المكتوب داخل الزر المختار لتجنب قراءة العنصر نفسه
+    let userText = userAnswer;
+    if (userAnswer instanceof HTMLElement) {
+        userText = userAnswer.innerText || userAnswer.textContent;
     }
-    
+
+    // تنظيف النصوص من أي مسافات زائدة
+    userText = userText.trim();
+    const cleanCorrectAnswer = correctAnswer.trim();
+
+    // فحص الإجابة والمطابقة الذكية
+    if (userText === cleanCorrectAnswer || userText.includes(cleanCorrectAnswer) || cleanCorrectAnswer.includes(userText)) {
+        resultDiv.innerHTML = "<p style='color: #28a745; font-weight: bold;'>✅ إجابة صحيحة وممتازة!</p>";
+        score += 10; 
+    } else {
+        resultDiv.innerHTML = `<p style='color: #dc3545; font-weight: bold;'>❌ إجابة خاطئة، الإجابة الصحيحة هي: ${cleanCorrectAnswer}</p>`;
+    }
+
+    if (nextBtn) nextBtn.classList.remove('hidden');
+}
+
     // إظهار زر التالي بعد الإجابة
     if (nextBtn) nextBtn.classList.remove('hidden');
 }
