@@ -1485,11 +1485,11 @@ ${combinedText}
         <div id="resultMessage"></div>
         <button class="next-btn hidden" id="nextQuestionBtn">السؤال التالي ←</button>
         
-        <div class="media-controls" style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
-            <button type="button" id="cameraBtnTrigger" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">
+        <div class="media-controls" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+            <button type="button" onclick="document.getElementById('cameraInputReal').click();" style="padding: 12px 20px; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 📸 لقطة كاميرا فورية
             </button>
-            <button type="button" id="galleryBtnTrigger" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">
+            <button type="button" onclick="document.getElementById('galleryInputReal').click();" style="padding: 12px 20px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 🖼️ اختيار من المعرض
             </button>
         </div>
@@ -1500,12 +1500,9 @@ ${combinedText}
 
     // ربط الأحداث بأزرار الإجابات وزر التالي
     setupQuestionEvents();
-    
-    // تفعيل أحداث الكاميرا والمعرض فوراً
-    initMediaUpload();
 }
 
-// دالة التحقق من الإجابة وإظهار النتيجة بدقة كـ نص وليس كعنصر HTML
+// دالة التحقق من الإجابة وإظهار النتيجة بدقة كـ نص
 function checkAnswer(userAnswer, correctAnswer) {
     const resultDiv = document.getElementById('resultMessage');
     const nextBtn = document.getElementById('nextQuestionBtn');
@@ -1547,17 +1544,6 @@ function setupQuestionEvents() {
 function endQuiz() {
     clearInterval(timerInterval);
     alert(`🎉 انتهى الاختبار! درجتك هي: ${score}`);
-    saveStatsToServer(score);
-}
-
-// دالة إرسال الإحصائيات إلى الخادم المباشر
-function saveStatsToServer(score) {
-    console.log(`Saving score to server: ${score}`);
-}
-
-// دالة تحميل الإحصائيات من السيرفر عند تحميل الصفحة
-function loadStats() {
-    console.log("Stats loaded successfully");
 }
 
 // دالة إعادة تعيين الاختبار بالكامل
@@ -1566,83 +1552,75 @@ function resetQuiz() {
     questions = [];
     currentQuestionIndex = 0;
     score = 0;
-    timeLeft = 0;
     showSection('home');
 }
 
-// دالة تهيئة مشغلات الكاميرا والمعرض
-function initMediaUpload() {
-    let galleryInput = document.getElementById('galleryInput');
-    let cameraInput = document.getElementById('cameraInput');
-
-    if (!galleryInput) {
-        galleryInput = document.createElement('input');
-        galleryInput.type = 'file';
-        galleryInput.id = 'galleryInput';
-        galleryInput.accept = 'image/*';
-        galleryInput.multiple = true; 
-        galleryInput.style.display = 'none';
-        document.body.appendChild(galleryInput);
+// الدالة المسؤولة عن إرسال الصور المرفوعة مباشرة إلى الـ Cloudflare Worker الخاص بك
+async function sendImagesToSmartWorker(files) {
+    const previewContainer = document.getElementById('previewImagesContainer');
+    if (previewContainer) {
+        previewContainer.innerHTML = "<p style='color: #007bff; font-weight: bold; width: 100%; text-align: center;'>⏳ جاري تحليل الصور وتوليد الأسئلة بالذكاء الاصطناعي...</p>";
     }
 
-    if (!cameraInput) {
-        cameraInput = document.createElement('input');
-        cameraInput.type = 'file';
-        cameraInput.id = 'cameraInput';
-        cameraInput.accept = 'image/*';
-        cameraInput.capture = 'environment'; 
-        cameraInput.style.display = 'none';
-        document.body.appendChild(cameraInput);
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        formData.append("images", files[i]);
     }
 
-    const cameraTrigger = document.getElementById('cameraBtnTrigger');
-    if (cameraTrigger) {
-        cameraTrigger.onclick = function(e) {
-            e.preventDefault();
-            cameraInput.click();
-        };
-    }
+    try {
+        // استبدل الرابط أدناه برابط الـ Worker الخاص بك إن لزم الأمر
+        const workerUrl = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
+            ? "https://your-worker-subdomain.workers.dev/" 
+            : "/api/quiz"; // أو حط رابط الـ Worker المباشر بتاعك هنا بين العلامات ""
 
-    const galleryTrigger = document.getElementById('galleryBtnTrigger');
-    if (galleryTrigger) {
-        galleryTrigger.onclick = function(e) {
-            e.preventDefault();
-            galleryInput.click();
-        };
-    }
+        const response = await fetch(workerUrl, {
+            method: "POST",
+            body: formData
+        });
 
-    const processFiles = (event) => {
-        const files = event.target.files;
-        const previewContainer = document.getElementById('previewImagesContainer');
-        if (previewContainer) previewContainer.innerHTML = ''; 
+        if (!response.ok) throw new Error("فشل السيرفر في معالجة الصور.");
 
-        if (files.length > 0) {
-            for (let i = 0; i < files.length; i++) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.width = '65px';
-                    img.style.height = '65px';
-                    img.style.objectFit = 'cover';
-                    img.style.borderRadius = '6px';
-                    img.style.border = '2px solid #007bff';
-                    previewContainer.appendChild(img);
-                }
-                reader.readAsDataURL(files[i]);
-            }
-            if (typeof sendImagesToSmartWorker === 'function') {
-                sendImagesToSmartWorker(files);
-            }
+        const data = await response.json();
+        if (data && data.questions) {
+            questions = data.questions;
+            currentQuestionIndex = 0;
+            showQuestion();
+        } else {
+            alert("لم يقم الذكاء الاصطناعي بصياغة أسئلة واضحة، حاول مرة أخرى بصورة أوضح.");
         }
-    };
-
-    galleryInput.onchange = processFiles;
-    cameraInput.onchange = processFiles;
+    } catch (error) {
+        alert("حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: " + error.message);
+    }
 }
 
-// تشغيل جلب البيانات والإحصائيات تلقائياً عند البدء
-loadStats();
+// دالة معالجة الصور وعرض المعاينة المباشرة
+function handleDirectFileSelection(event) {
+    const files = event.target.files;
+    const previewContainer = document.getElementById('previewImagesContainer');
+    if (previewContainer) previewContainer.innerHTML = ''; 
+
+    if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '65px';
+                img.style.height = '65px';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '6px';
+                img.style.border = '2px solid #007bff';
+                previewContainer.appendChild(img);
+            }
+            reader.readAsDataURL(files[i]);
+        }
+        sendImagesToSmartWorker(files);
+    }
+}
 </script>
+
+<input type="file" id="cameraInputReal" accept="image/*" capture="environment" style="display: none;" onchange="handleDirectFileSelection(event)">
+<input type="file" id="galleryInputReal" accept="image/*" multiple style="display: none;" onchange="handleDirectFileSelection(event)">
+
 </body>
 </html>
