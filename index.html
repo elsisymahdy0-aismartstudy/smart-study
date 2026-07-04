@@ -689,7 +689,6 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="logo">
             <div class="logo-icon">🧠</div>
@@ -751,10 +750,8 @@
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
 
-        <!-- HOME SECTION -->
         <div id="home-section">
             <div class="header">
                 <div class="welcome-text">
@@ -764,7 +761,6 @@
                 <div class="brain-icon">🧬</div>
             </div>
 
-            <!-- Capture Area -->
             <div class="capture-area" id="captureArea">
                 <div id="captureInitial">
                     <div class="capture-icon">📷</div>
@@ -799,11 +795,9 @@
                 </div>
             </div>
 
-            <!-- Hidden file inputs -->
             <input type="file" id="cameraInput" class="hidden" accept="image/*" capture="environment" onchange="handleImage(event)">
             <input type="file" id="galleryInput" class="hidden" accept="image/*" onchange="handleImage(event)">
 
-            <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-number stat-purple" id="statTotal">0</div>
@@ -823,14 +817,12 @@
                 </div>
             </div>
 
-            <!-- Big Emoji -->
             <div class="emoji-section">
                 <div class="big-emoji" id="bigEmoji">😐</div>
                 <div class="emoji-label" id="emojiLabel">ابدأ التعلم!</div>
                 <div class="emoji-percentage" id="emojiPercent">0% إجابات صحيحة</div>
             </div>
 
-            <!-- Activity -->
             <div class="activity-card">
                 <div class="activity-header">
                     <span class="activity-title">النشاط الأخير</span>
@@ -845,7 +837,6 @@
             </div>
         </div>
 
-        <!-- SUMMARIZE SECTION -->
         <div id="summarize-section" class="hidden">
             <button class="back-btn" onclick="showSection('home')">← رجوع</button>
             <h2 style="margin-bottom: 20px;">📝 تلخيص المحتوى</h2>
@@ -856,7 +847,6 @@
             </div>
         </div>
 
-        <!-- QUIZ MODE SELECTION -->
         <div id="quiz-mode-section" class="hidden">
             <button class="back-btn" onclick="showSection('home')">← رجوع</button>
             <h2 style="margin-bottom: 10px;">اختر نوع الاختبار</h2>
@@ -881,7 +871,6 @@
             </div>
         </div>
 
-        <!-- QUIZ SECTION -->
         <div id="quiz-section" class="hidden">
             <button class="back-btn" onclick="restartQuiz()">← إنهاء الاختبار</button>
             <div class="quiz-container">
@@ -894,7 +883,6 @@
             </div>
         </div>
 
-        <!-- RESULTS SECTION -->
         <div id="results-section" class="hidden">
             <div class="quiz-container" style="text-align: center; padding: 40px;">
                 <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
@@ -1039,8 +1027,8 @@
                 updateStatsDisplay();
             }
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            if (event && event.target) {
-                event.target.closest('.nav-link')?.classList.add('active');
+            if (window.event && window.event.target) {
+                window.event.target.closest('.nav-link')?.classList.add('active');
             }
         }
 
@@ -1491,127 +1479,83 @@ ${combinedText}
                 <div class="question-box">
                     <span class="question-type-badge">${typeBadge}</span>
                     <div class="question-text">
-                      <div class="question-text">
-                سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
-                ${q.question}
-            </div>
-            ${contentHtml}
-            <div id="resultMessage"></div>
-            <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
+                        سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
+                        ${q.question}
+                    </div>
+                    ${contentHtml}
+                    <div id="resultMessage"></div>
+                    <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
+                    // تكملة السطر 1487 والـ Template Literal
+            <button class="next-btn hidden" id="nextQuestionBtn">التالي</button>
         </div>
-    `;
+    `; 
+
+    // سطر 1489: ربط الأحداث بأزرار الإجابات وزر التالي
+    setupQuestionEvents();
 }
 
-function checkAnswer(selected, btn) {
-    if (answered) return;
-    answered = true;
-    
-    const q = questions[currentQuestionIndex];
+// دالة للتحقق من الإجابة وإظهار زر "التالي"
+function checkAnswer(userAnswer, correctAnswer) {
     const resultDiv = document.getElementById('resultMessage');
+    const nextBtn = document.getElementById('nextQuestionBtn');
     
-    // Disable all buttons
-    document.querySelectorAll('.option-btn, .tf-btn').forEach(b => b.classList.add('disabled'));
-    
-    stats.totalQuestions++;
-    
-    if (selected === q.correct) {
-        if (btn) btn.classList.add('correct');
-        resultDiv.innerHTML = '<div class="result-message correct">✅ صح! إجابة صحيحة!</div>';
-        score++;
-        stats.correctAnswers++;
-        addActivity('correct', `إجابة صحيحة في سؤال ${currentQuestionIndex + 1} (${getTypeName(q.type)})`);
+    if (userAnswer === correctAnswer) {
+        resultDiv.innerHTML = "<p style='color: green;'>إجابة صحيحة! 🎉</p>";
+        score += 10; // زيادة السكور
     } else {
-        if (btn) btn.classList.add('wrong');
-        // Show correct
-        document.querySelectorAll('.option-btn, .tf-btn').forEach(b => {
-            if (b.textContent.includes(q.correct) || b.textContent.trim() === q.correct) {
-                b.classList.add('correct');
+        resultDiv.innerHTML = `<p style='color: red;'>إجابة خاطئة. الإجابة الصحيحة هي: ${correctAnswer}</p>`;
+    }
+    
+    // إظهار زر التالي بعد الإجابة
+    if (nextBtn) nextBtn.classList.remove('hidden');
+}
+
+// دالة إعداد الانتقال للسؤال التالي أو إنهاء الاختبار
+function setupQuestionEvents() {
+    const nextBtn = document.getElementById('nextQuestionBtn');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion(); // عرض السؤال التالي
+            } else {
+                endQuiz(); // إنهاء الكويز إذا انتهت الأسئلة
             }
         });
-        resultDiv.innerHTML = `<div class="result-message wrong">❌ غلط! الإجابة الصحيحة هي: ${q.correct}</div>`;
-        addActivity('wrong', `إجابة خاطئة في سؤال ${currentQuestionIndex + 1}`);
     }
-    
-    updateStats();
-    document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex + 1}`;
-    document.getElementById('nextBtn').classList.remove('hidden');
 }
 
-function checkFillAnswer() {
-    if (answered) return;
-    const input = document.getElementById('fillAnswer');
-    const userAnswer = input.value.trim();
-    if (!userAnswer) {
-        alert('الرجاء كتابة إجابة!');
-        return;
-    }
-    checkAnswer(userAnswer, null);
-}
-
-function checkDirectAnswer() {
-    if (answered) return;
-    const input = document.getElementById('directAnswer');
-    const userAnswer = input.value.trim();
-    if (!userAnswer) {
-        alert('الرجاء كتابة إجابة!');
-        return;
-    }
-    checkAnswer(userAnswer, null);
-}
-
-function getTypeName(type) {
-    const names = { mcq: 'اختياري', tf: 'صح/خطأ', fill: 'تكميلي', direct: 'مباشر' };
-    return names[type] || type;
-}
-
-function updateStats() {
-    stats.level = Math.floor(stats.correctAnswers / 10) + 1;
-    saveStats();
-    updateStatsDisplay();
-}
-
-function nextQuestion() {
-    currentQuestionIndex++;
-    showQuestion();
-}
-
-function showResults() {
+// دالة إنهاء الاختبار وإرسال/حفظ الإحصائيات
+function endQuiz() {
     clearInterval(timerInterval);
+    alert(`انتهى الاختبار! نتيجتك هي: ${score}`);
     
-    document.querySelectorAll('.main-content > div').forEach(div => div.classList.add('hidden'));
-    document.getElementById('results-section').classList.remove('hidden');
-    
-    const percentage = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
-    document.getElementById('final-score').textContent = `${score} / ${questions.length}`;
-    
-    let message = '';
-    if (percentage === 100) message = '🌟 ممتاز! كل الإجابات صحيحة!';
-    else if (percentage >= 80) message = '😄 أداء رائع!';
-    else if (percentage >= 60) message = '😊 جيد!';
-    else if (percentage >= 40) message = '🙂 لازم تذاكر أكتر!';
-    else message = '😐 لازم تركز أكتر!';
-    
-    document.getElementById('final-message').textContent = message;
-    
-    // Details
-    let details = `أنواع الأسئلة:\n`;
-    questions.forEach((q, i) => {
-        const typeName = getTypeName(q.type);
-        const isCorrect = i < score; // Simplified
-    });
-    document.getElementById('final-details').textContent = `نسبة النجاح: ${percentage}%`;
-    
-    addActivity('correct', `انتهى اختبار بنتيجة ${score}/${questions.length}`);
+    // هنا يتم إرسال البيانات إلى الـ Cloudflare Worker الخاص بك إذا كنت تفعل ذلك
+    saveStatsToServer(score); 
 }
 
-function restartQuiz() {
+// دالة جلب الإحصائيات من السيرفر (Cloudflare Worker)
+function loadStats() {
+    console.log("جاري تحميل الإحصائيات...");
+    // كود الـ Fetch الخاص بالـ Worker يوضع هنا
+}
+
+/* ========================================================
+   وهنا نصل إلى الجزء الأخير تماماً الظاهر في الصورة الأولى 
+   ======================================================== */
+
+function resetGame() {
     clearInterval(timerInterval);
     questions = [];
     currentQuestionIndex = 0;
     score = 0;
     timeLeft = 0;
+
     showSection('home');
 }
 
-// Load stats
+// تحميل الإحصائيات عند بدء تشغيل الصفحة
 loadStats();
+</script>
+</body>
+</html>
