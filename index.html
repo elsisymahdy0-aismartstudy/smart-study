@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+
+# Create the complete fixed HTML file
+html_part1 = '''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1073,7 +1075,7 @@
                 alert(`⚠️ الحد الأقصى هو ${MAX_PHOTOS} صور!`);
                 return;
             }
-            const choice = confirm('📷 اضغط "موافق" للكاميرا\n🖼️ اضغط "إلغاء" للمعرض');
+            const choice = confirm('📷 اضغط "موافق" للكاميرا\\n🖼️ اضغط "إلغاء" للمعرض');
             if (choice) openCamera();
             else openGallery();
         }
@@ -1107,7 +1109,7 @@
                 photos.push({ src: preview.src, text: text });
                 
                 // Combine all texts
-                if (combinedText) combinedText += '\n\n---\n\n';
+                if (combinedText) combinedText += '\\n\\n---\\n\\n';
                 combinedText += text;
                 
                 resultDiv.textContent = combinedText;
@@ -1197,103 +1199,19 @@
                 case 'quick':
                     questionCount = 3;
                     timeLimit = 300;
-                    promptText = `بناءً على النص التالي، أنشئ ${questionCount} أسئلة فقط.
-
-النص:
-"""
-${combinedText}
-"""
-
-أنواع الأسئلة المطلوبة:
-- سؤال 1: اختيار من متعدد (أ، ب، ج، د)
-- سؤال 2: صح أو خطأ
-- سؤال 3: أكمل الجملة
-
-لكل سؤال اكتب الإجابة الصحيحة.
-
-الشكل:
-سؤال 1 (اختيار من متعدد): ...
-أ) ...
-ب) ...
-ج) ...
-د) ...
-الإجابة: أ
-
-سؤال 2 (صح أو خطأ): ...
-الإجابة: صح
-
-سؤال 3 (أكمل): ...
-الإجابة: ...`;
+                    promptText = `بناءً على النص التالي، أنشئ ${questionCount} أسئلة فقط.\\n\\nالنص:\\n"""\\n${combinedText}\\n"""\\n\\nأنواع الأسئلة المطلوبة:\\n- سؤال 1: اختيار من متعدد (أ، ب، ج، د)\\n- سؤال 2: صح أو خطأ\\n- سؤال 3: أكمل الجملة\\n\\nلكل سؤال اكتب الإجابة الصحيحة.\\n\\nالشكل:\\nسؤال 1 (اختيار من متعدد): ...\\nأ) ...\\nب) ...\\nج) ...\\nد) ...\\nالإجابة: أ\\n\\nسؤال 2 (صح أو خطأ): ...\\nالإجابة: صح\\n\\nسؤال 3 (أكمل): ...\\nالإجابة: ...`;
                     break;
                     
                 case 'full':
                     questionCount = 15;
                     timeLimit = 1500;
-                    promptText = `بناءً على النص التالي، أنشئ امتحان كامل متنوع من ${questionCount} سؤال.
-
-النص:
-"""
-${combinedText}
-"""
-
-أنواع الأسئلة المطلوبة:
-- 5 أسئلة اختيار من متعدد (أ، ب، ج، د)
-- 3 أسئلة صح أو خطأ
-- 4 أسئلة أكمل الجملة
-- 3 أسئلة مباشرة (سؤال وجواب)
-
-لكل سؤال اكتب الإجابة الصحيحة.
-
-الشكل:
-سؤال 1 (اختيار من متعدد): ...
-أ) ...
-ب) ...
-ج) ...
-د) ...
-الإجابة: أ
-
-سؤال 2 (صح أو خطأ): ...
-الإجابة: صح
-
-سؤال 3 (أكمل): ...
-الإجابة: ...
-
-سؤال 4 (مباشر): ...
-الإجابة: ...`;
+                    promptText = `بناءً على النص التالي، أنشئ امتحان كامل متنوع من ${questionCount} سؤال.\\n\\nالنص:\\n"""\\n${combinedText}\\n"""\\n\\nأنواع الأسئلة المطلوبة:\\n- 5 أسئلة اختيار من متعدد (أ، ب، ج، د)\\n- 3 أسئلة صح أو خطأ\\n- 4 أسئلة أكمل الجملة\\n- 3 أسئلة مباشرة (سؤال وجواب)\\n\\nلكل سؤال اكتب الإجابة الصحيحة.\\n\\nالشكل:\\nسؤال 1 (اختيار من متعدد): ...\\nأ) ...\\nب) ...\\nج) ...\\nد) ...\\nالإجابة: أ\\n\\nسؤال 2 (صح أو خطأ): ...\\nالإجابة: صح\\n\\nسؤال 3 (أكمل): ...\\nالإجابة: ...\\n\\nسؤال 4 (مباشر): ...\\nالإجابة: ...`;
                     break;
                     
                 case 'challenge':
                     questionCount = 10;
                     timeLimit = 900;
-                    promptText = `بناءً على النص التالي، أنشئ ${questionCount} أسئلة صعبة.
-
-النص:
-"""
-${combinedText}
-"""
-
-أنواع الأسئلة:
-- 4 اختيار من متعدد (أ، ب، ج، د)
-- 2 صح أو خطأ (خادعة)
-- 2 أكمل الجملة (تحتاج فهم عميق)
-- 2 سؤال مباشر صعب
-
-الشكل:
-سؤال 1 (اختيار من متعدد): ...
-أ) ...
-ب) ...
-ج) ...
-د) ...
-الإجابة: أ
-
-سؤال 2 (صح أو خطأ): ...
-الإجابة: خطأ
-
-سؤال 3 (أكمل): ...
-الإجابة: ...
-
-سؤال 4 (مباشر): ...
-الإجابة: ...`;
+                    promptText = `بناءً على النص التالي، أنشئ ${questionCount} أسئلة صعبة.\\n\\nالنص:\\n"""\\n${combinedText}\\n"""\\n\\nأنواع الأسئلة:\\n- 4 اختيار من متعدد (أ، ب، ج، د)\\n- 2 صح أو خطأ (خادعة)\\n- 2 أكمل الجملة (تحتاج فهم عميق)\\n- 2 سؤال مباشر صعب\\n\\nالشكل:\\nسؤال 1 (اختيار من متعدد): ...\\nأ) ...\\nب) ...\\nج) ...\\nد) ...\\nالإجابة: أ\\n\\nسؤال 2 (صح أو خطأ): ...\\nالإجابة: خطأ\\n\\nسؤال 3 (أكمل): ...\\nالإجابة: ...\\n\\nسؤال 4 (مباشر): ...\\nالإجابة: ...`;
                     break;
             }
 
@@ -1332,13 +1250,12 @@ ${combinedText}
 
         function parseMixedQuestions(text) {
             const questions = [];
-            const blocks = text.split(/(?:سؤال\s*\d+[:.]|^\d+[:.])/m).filter(q => q.trim());
+            const blocks = text.split(/(?:سؤال\\s*\\d+[:.]|^\\d+[:.])/m).filter(q => q.trim());
             
             for (let block of blocks) {
-                const lines = block.trim().split('\n').filter(l => l.trim());
+                const lines = block.trim().split('\\n').filter(l => l.trim());
                 if (lines.length < 2) continue;
                 
-                // Detect question type
                 let qType = 'mcq';
                 const firstLine = lines[0].toLowerCase();
                 
@@ -1350,7 +1267,7 @@ ${combinedText}
                     qType = 'direct';
                 }
                 
-                const questionText = lines[0].replace(/^[•\-]\s*/, '').trim();
+                const questionText = lines[0].replace(/^[•\\-]\\s*/, '').trim();
                 const options = [];
                 let correctAnswer = '';
                 let correctText = '';
@@ -1358,8 +1275,7 @@ ${combinedText}
                 for (let i = 1; i < lines.length; i++) {
                     const line = lines[i].trim();
                     
-                    // MCQ options
-                    const optionMatch = line.match(/^([أبجدABCD])[.)]\s*(.+)/i);
+                    const optionMatch = line.match(/^([أبجدABCD])[.)]\\s*(.+)/i);
                     if (optionMatch) {
                         const letter = optionMatch[1].toUpperCase();
                         const arabicLetter = 
@@ -1372,8 +1288,7 @@ ${combinedText}
                         options.push({ letter: arabicLetter, text: optionText });
                     }
                     
-                    // Answer line
-                    const answerMatch = line.match(/الإجابة\s*[:.]\s*(.+)/i);
+                    const answerMatch = line.match(/الإجابة\\s*[:.]\\s*(.+)/i);
                     if (answerMatch) {
                         const ans = answerMatch[1].trim();
                         if (ans === 'صح' || ans === 'صحيح' || ans.toLowerCase() === 'true') {
@@ -1430,179 +1345,213 @@ ${combinedText}
                 timeLeft--;
             }, 1000);
         }
+'''
 
-       function showQuestion() {
-    const container = document.getElementById('questionContainer');
-    const progress = ((currentQuestionIndex) / questions.length) * 100;
-    
-    document.getElementById('progressBar').style.width = progress + '%';
-    document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex}`;
-    
-    if (currentQuestionIndex >= questions.length) {
-        showResults();
-        return;
-    }
-    
-    const q = questions[currentQuestionIndex];
-    answered = false;
-    
-    let typeBadge = '';
-    let contentHtml = '';
-    
-    switch(q.type) {
-        case 'mcq':
-            typeBadge = 'اختيار من متعدد';
-            let optionsHtml = q.options.map(opt => `
-                <button class="option-btn" onclick="checkAnswer('${opt.letter}', this)">
-                    ${opt.letter}) ${opt.text}
-                </button>
-            `).join('');
-            contentHtml = `<div class="options-grid">${optionsHtml}</div>`;
-            break;
+print(f"Part 1 length: {len(html_part1)} chars")
+        
+html_part2 = '''
+        function showQuestion() {
+            const container = document.getElementById('questionContainer');
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
             
-        case 'tf':
-            typeBadge = 'صح أو خطأ';
-            contentHtml = `
-                <div class="tf-buttons">
-                    <button class="tf-btn" onclick="checkAnswer('صح', this)">✅ صح</button>
-                    <button class="tf-btn" onclick="checkAnswer('خطأ', this)">❌ خطأ</button>
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex}`;
+            
+            if (currentQuestionIndex >= questions.length) {
+                showResults();
+                return;
+            }
+            
+            const q = questions[currentQuestionIndex];
+            answered = false;
+            
+            let typeBadge = '';
+            let contentHtml = '';
+            
+            switch(q.type) {
+                case 'mcq':
+                    typeBadge = 'اختيار من متعدد';
+                    let optionsHtml = q.options.map(opt => `
+                        <button class="option-btn" onclick="checkAnswer('${opt.letter}', this)">
+                            ${opt.letter}) ${opt.text}
+                        </button>
+                    `).join('');
+                    contentHtml = `<div class="options-grid">${optionsHtml}</div>`;
+                    break;
+                    
+                case 'tf':
+                    typeBadge = 'صح أو خطأ';
+                    contentHtml = `
+                        <div class="tf-buttons">
+                            <button class="tf-btn" onclick="checkAnswer('صح', this)">✅ صح</button>
+                            <button class="tf-btn" onclick="checkAnswer('خطأ', this)">❌ خطأ</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'fill':
+                    typeBadge = 'أكمل الجملة';
+                    contentHtml = `
+                        <input type="text" class="fill-input" id="fillAnswer" placeholder="اكتب إجابتك هنا...">
+                        <button class="next-btn" onclick="checkFillAnswer()">تحقق</button>
+                    `;
+                    break;
+                    
+                case 'direct':
+                    typeBadge = 'سؤال مباشر';
+                    contentHtml = `
+                        <input type="text" class="fill-input" id="directAnswer" placeholder="اكتب إجابتك هنا...">
+                        <button class="next-btn" onclick="checkDirectAnswer()">تحقق</button>
+                    `;
+                    break;
+            }
+            
+            container.innerHTML = `
+                <div class="question-box">
+                    <span class="question-type-badge">${typeBadge}</span>
+                    <div class="question-text">
+                        سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
+                        ${q.question}
+                    </div>
+                    ${contentHtml}
+                    <div id="resultMessage"></div>
+                    <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
                 </div>
             `;
-            break;
-            
-        case 'fill':
-            typeBadge = 'أكمل الجملة';
-            contentHtml = `
-                <input type="text" class="fill-input" id="fillAnswer" placeholder="اكتب إجابتك هنا...">
-                <button class="next-btn" onclick="checkFillAnswer()">تحقق</button>
-            `;
-            break;
-            
-        case 'direct':
-            typeBadge = 'سؤال مباشر';
-            contentHtml = `
-                <input type="text" class="fill-input" id="directAnswer" placeholder="اكتب إجابتك هنا...">
-                <button class="next-btn" onclick="checkDirectAnswer()">تحقق</button>
-            `;
-            break;
-    }
-    
-    container.innerHTML = `
-        <div class="question-box">
-            <span class="question-type-badge">${typeBadge}</span>
-            <div class="question-text">
-                سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
-                ${q.question}
-            </div>
-            ${contentHtml}
-            <div id="resultMessage"></div>
-            <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button>
-        </div>
-    `;
-}
+        }
 
-function checkAnswer(selected, btn) {
-    if (answered) return;
-    answered = true;
-    
-    const q = questions[currentQuestionIndex];
-    const resultDiv = document.getElementById('resultMessage');
-    
-    document.querySelectorAll('.option-btn, .tf-btn').forEach(b => b.classList.add('disabled'));
-    
-    stats.totalQuestions++;
-    
-    if (selected === q.correct) {
-        if (btn) btn.classList.add('correct');
-        resultDiv.innerHTML = '<div class="result-message correct">✅ صح! إجابة صحيحة!</div>';
-        score++;
-        stats.correctAnswers++;
-        addActivity('correct', `إجابة صحيحة في سؤال ${currentQuestionIndex + 1} (${getTypeName(q.type)})`);
-    } else {
-        if (btn) btn.classList.add('wrong');
-        document.querySelectorAll('.option-btn, .tf-btn').forEach(b => {
-            if (b.textContent.includes(q.correct) || b.textContent.trim() === q.correct) {
-                b.classList.add('correct');
+        function checkAnswer(selected, btn) {
+            if (answered) return;
+            answered = true;
+            
+            const q = questions[currentQuestionIndex];
+            const resultDiv = document.getElementById('resultMessage');
+            
+            // Disable all buttons
+            document.querySelectorAll('.option-btn, .tf-btn').forEach(b => b.classList.add('disabled'));
+            
+            stats.totalQuestions++;
+            
+            if (selected === q.correct) {
+                if (btn) btn.classList.add('correct');
+                resultDiv.innerHTML = '<div class="result-message correct">✅ صح! إجابة صحيحة!</div>';
+                score++;
+                stats.correctAnswers++;
+                addActivity('correct', `إجابة صحيحة في سؤال ${currentQuestionIndex + 1} (${getTypeName(q.type)})`);
+            } else {
+                if (btn) btn.classList.add('wrong');
+                // Show correct
+                document.querySelectorAll('.option-btn, .tf-btn').forEach(b => {
+                    if (b.textContent.includes(q.correct) || b.textContent.trim() === q.correct) {
+                        b.classList.add('correct');
+                    }
+                });
+                resultDiv.innerHTML = `<div class="result-message wrong">❌ غلط! الإجابة الصحيحة هي: ${q.correct}</div>`;
+                addActivity('wrong', `إجابة خاطئة في سؤال ${currentQuestionIndex + 1}`);
             }
-        });
-        resultDiv.innerHTML = `<div class="result-message wrong">❌ غلط! الإجابة الصحيحة هي: ${q.correct}</div>`;
-        addActivity('wrong', `إجابة خاطئة في سؤال ${currentQuestionIndex + 1}`);
-    }
-    
-    updateStats();
-    document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex + 1}`;
-    document.getElementById('nextBtn').classList.remove('hidden');
-}
+            
+            updateStats();
+            document.getElementById('score').textContent = `النتيجة: ${score} / ${currentQuestionIndex + 1}`;
+            document.getElementById('nextBtn').classList.remove('hidden');
+        }
 
-function checkFillAnswer() {
-    if (answered) return;
-    const input = document.getElementById('fillAnswer');
-    const userAnswer = input.value.trim();
-    if (!userAnswer) {
-        alert('الرجاء كتابة إجابة!');
-        return;
-    }
-    checkAnswer(userAnswer, null);
-}
+        function checkFillAnswer() {
+            if (answered) return;
+            const input = document.getElementById('fillAnswer');
+            const userAnswer = input.value.trim();
+            if (!userAnswer) {
+                alert('الرجاء كتابة إجابة!');
+                return;
+            }
+            checkAnswer(userAnswer, null);
+        }
 
-function checkDirectAnswer() {
-    if (answered) return;
-    const input = document.getElementById('directAnswer');
-    const userAnswer = input.value.trim();
-    if (!userAnswer) {
-        alert('الرجاء كتابة إجابة!');
-        return;
-    }
-    checkAnswer(userAnswer, null);
-}
+        function checkDirectAnswer() {
+            if (answered) return;
+            const input = document.getElementById('directAnswer');
+            const userAnswer = input.value.trim();
+            if (!userAnswer) {
+                alert('الرجاء كتابة إجابة!');
+                return;
+            }
+            checkAnswer(userAnswer, null);
+        }
 
-function getTypeName(type) {
-    const names = { mcq: 'اختياري', tf: 'صح/خطأ', fill: 'تكميلي', direct: 'مباشر' };
-    return names[type] || type;
-}
+        function getTypeName(type) {
+            const names = { mcq: 'اختياري', tf: 'صح/خطأ', fill: 'تكميلي', direct: 'مباشر' };
+            return names[type] || type;
+        }
 
-function updateStats() {
-    stats.level = Math.floor(stats.correctAnswers / 10) + 1;
-    saveStats();
-    updateStatsDisplay();
-}
+        function updateStats() {
+            stats.level = Math.floor(stats.correctAnswers / 10) + 1;
+            saveStats();
+            updateStatsDisplay();
+        }
 
-function nextQuestion() {
-    currentQuestionIndex++;
-    showQuestion();
-}
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
 
-function showResults() {
-    clearInterval(timerInterval);
-    
-    document.querySelectorAll('.main-content > div').forEach(div => div.classList.add('hidden'));
-    document.getElementById('results-section').classList.remove('hidden');
-    
-    const percentage = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
-    document.getElementById('final-score').textContent = `${score} / ${questions.length}`;
-    
-    let message = '';
-    if (percentage === 100) message = '🌟 ممتاز! كل الإجابات صحيحة!';
-    else if (percentage >= 80) message = '😄 أداء رائع!';
-    else if (percentage >= 60) message = '😊 جيد!';
-    else if (percentage >= 40) message = '🙂 لازم تذاكر أكتر!';
-    else message = '😐 لازم تركز أكتر!';
-    
-    document.getElementById('final-message').textContent = message;
-    document.getElementById('final-details').textContent = `نسبة النجاح: ${percentage}%`;
-    
-    addActivity('correct', `انتهى اختبار بنتيجة ${score}/${questions.length}`);
-}
+        function showResults() {
+            clearInterval(timerInterval);
+            
+            document.querySelectorAll('.main-content > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById('results-section').classList.remove('hidden');
+            
+            const percentage = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
+            document.getElementById('final-score').textContent = `${score} / ${questions.length}`;
+            
+            let message = '';
+            if (percentage === 100) message = '🌟 ممتاز! كل الإجابات صحيحة!';
+            else if (percentage >= 80) message = '😄 أداء رائع!';
+            else if (percentage >= 60) message = '😊 جيد!';
+            else if (percentage >= 40) message = '🙂 لازم تذاكر أكتر!';
+            else message = '😐 لازم تركز أكتر!';
+            
+            document.getElementById('final-message').textContent = message;
+            
+            // Details
+            let details = `أنواع الأسئلة:\n`;
+            questions.forEach((q, i) => {
+                const typeName = getTypeName(q.type);
+                const isCorrect = i < score; // Simplified
+            });
+            document.getElementById('final-details').textContent = `نسبة النجاح: ${percentage}%`;
+            
+            addActivity('correct', `انتهى اختبار بنتيجة ${score}/${questions.length}`);
+        }
 
-function restartQuiz() {
-    clearInterval(timerInterval);
-    questions = [];
-    currentQuestionIndex = 0;
-    score = 0;
-    timeLeft = 0;
-    showSection('home');
-}
+        function restartQuiz() {
+            clearInterval(timerInterval);
+            questions = [];
+            currentQuestionIndex = 0;
+            score = 0;
+            timeLeft = 0;
+            showSection('home');
+        }
 
-loadStats();
-     
-    
+        // Load stats
+        loadStats();
+    </script>
+</body>
+</html>'''
+
+# Combine both parts
+full_html = html_part1 + html_part2
+
+# Save as two parts
+with open('/mnt/agents/output/smart_study_part1.html', 'w', encoding='utf-8') as f:
+    f.write(html_part1)
+
+with open('/mnt/agents/output/smart_study_part2.html', 'w', encoding='utf-8') as f:
+    f.write(html_part2)
+
+# Also save the complete file
+with open('/mnt/agents/output/smart_study_complete.html', 'w', encoding='utf-8') as f:
+    f.write(full_html)
+
+print(f"Part 1: {len(html_part1)} chars")
+print(f"Part 2: {len(html_part2)} chars")
+print(f"Total: {len(full_html)} chars")
+print("Files saved successfully!")
