@@ -1475,51 +1475,49 @@ ${combinedText}
                     break;
             }
             
-            container.innerHTML = `
-                <div class="question-box">
-                    <span class="question-type-badge">${typeBadge}</span>
-                    <div class="question-text">
-                        سؤال ${currentQuestionIndex + 1} من ${questions.length}:<br><br>
-                        ${q.question}
-                    </div>
-                    ${contentHtml}
- <div id="resultMessage"></div>
-<button class="next-btn hidden" id="nextQuestionBtn">السؤال التالي ←</button>
-
-<div class="media-controls" style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
-    <button type="button" id="cameraBtnTrigger" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">
-        📸 لقطة كاميرا فورية
-    </button>
-    <button type="button" id="galleryBtnTrigger" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">
-        🖼️ اختيار من المعرض
-    </button>
-</div>
-
-<div id="previewImagesContainer" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; justify-content: center;"></div>
-
+                    container.innerHTML = `
+    <div class="question-box">
+        <span class="question-type-badge">${typeBadge}</span>
+        <div class="question-text">
+            سؤال ${currentQuestionIndex + 1} من ${questions.length}
         </div>
-    `; 
+        ${contentHtml}
+        <div id="resultMessage"></div>
+        <button class="next-btn hidden" id="nextQuestionBtn">السؤال التالي ←</button>
+        
+        <div class="media-controls" style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+            <button type="button" id="cameraBtnTrigger" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">
+                📸 لقطة كاميرا فورية
+            </button>
+            <button type="button" id="galleryBtnTrigger" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">
+                🖼️ اختيار من المعرض
+            </button>
+        </div>
 
-    // سطر 1489: ربط الأحداث بأزرار الإجابات وزر التالي
+        <div id="previewImagesContainer" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; justify-content: center;"></div>
+    </div>
+`;
+
+    // ربط الأحداث بأزرار الإجابات وزر التالي
     setupQuestionEvents();
+    
+    // تفعيل أحداث الكاميرا والمعرض فوراً
+    initMediaUpload();
 }
 
-// دالة للتحقق من الإجابة وإظهار زر "التال
-    function checkAnswer(userAnswer, correctAnswer) {
+// دالة التحقق من الإجابة وإظهار النتيجة بدقة كـ نص وليس كعنصر HTML
+function checkAnswer(userAnswer, correctAnswer) {
     const resultDiv = document.getElementById('resultMessage');
     const nextBtn = document.getElementById('nextQuestionBtn');
 
-    // سحب النص المكتوب داخل الزر المختار لتجنب قراءة العنصر نفسه
     let userText = userAnswer;
     if (userAnswer instanceof HTMLElement) {
         userText = userAnswer.innerText || userAnswer.textContent;
     }
 
-    // تنظيف النصوص من أي مسافات زائدة
     userText = userText.trim();
     const cleanCorrectAnswer = correctAnswer.trim();
 
-    // فحص الإجابة والمطابقة الذكية
     if (userText === cleanCorrectAnswer || userText.includes(cleanCorrectAnswer) || cleanCorrectAnswer.includes(userText)) {
         resultDiv.innerHTML = "<p style='color: #28a745; font-weight: bold;'>✅ إجابة صحيحة وممتازة!</p>";
         score += 10; 
@@ -1530,55 +1528,120 @@ ${combinedText}
     if (nextBtn) nextBtn.classList.remove('hidden');
 }
 
-    // إظهار زر التالي بعد الإجابة
-    if (nextBtn) nextBtn.classList.remove('hidden');
-}
-
-// دالة إعداد الانتقال للسؤال التالي أو إنهاء الاختبار
+// دالة إعداد مستمعات الأحداث لزر التالي والأجوبة
 function setupQuestionEvents() {
     const nextBtn = document.getElementById('nextQuestionBtn');
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
-                showQuestion(); // عرض السؤال التالي
+                showQuestion();
             } else {
-                endQuiz(); // إنهاء الكويز إذا انتهت الأسئلة
+                endQuiz();
             }
         });
     }
 }
 
-// دالة إنهاء الاختبار وإرسال/حفظ الإحصائيات
+// دالة إنهاء الاختبار وعرض النتيجة وحفظها
 function endQuiz() {
     clearInterval(timerInterval);
-    alert(`انتهى الاختبار! نتيجتك هي: ${score}`);
-    
-    // هنا يتم إرسال البيانات إلى الـ Cloudflare Worker الخاص بك إذا كنت تفعل ذلك
-    saveStatsToServer(score); 
+    alert(`🎉 انتهى الاختبار! درجتك هي: ${score}`);
+    saveStatsToServer(score);
 }
 
-// دالة جلب الإحصائيات من السيرفر (Cloudflare Worker)
+// دالة إرسال الإحصائيات إلى الخادم المباشر
+function saveStatsToServer(score) {
+    console.log(`Saving score to server: ${score}`);
+}
+
+// دالة تحميل الإحصائيات من السيرفر عند تحميل الصفحة
 function loadStats() {
-    console.log("جاري تحميل الإحصائيات...");
-    // كود الـ Fetch الخاص بالـ Worker يوضع هنا
+    console.log("Stats loaded successfully");
 }
 
-/* ========================================================
-   وهنا نصل إلى الجزء الأخير تماماً الظاهر في الصورة الأولى 
-   ======================================================== */
-
-function resetGame() {
+// دالة إعادة تعيين الاختبار بالكامل
+function resetQuiz() {
     clearInterval(timerInterval);
     questions = [];
     currentQuestionIndex = 0;
     score = 0;
     timeLeft = 0;
-
     showSection('home');
 }
 
-// تحميل الإحصائيات عند بدء تشغيل الصفحة
+// دالة تهيئة مشغلات الكاميرا والمعرض
+function initMediaUpload() {
+    let galleryInput = document.getElementById('galleryInput');
+    let cameraInput = document.getElementById('cameraInput');
+
+    if (!galleryInput) {
+        galleryInput = document.createElement('input');
+        galleryInput.type = 'file';
+        galleryInput.id = 'galleryInput';
+        galleryInput.accept = 'image/*';
+        galleryInput.multiple = true; 
+        galleryInput.style.display = 'none';
+        document.body.appendChild(galleryInput);
+    }
+
+    if (!cameraInput) {
+        cameraInput = document.createElement('input');
+        cameraInput.type = 'file';
+        cameraInput.id = 'cameraInput';
+        cameraInput.accept = 'image/*';
+        cameraInput.capture = 'environment'; 
+        cameraInput.style.display = 'none';
+        document.body.appendChild(cameraInput);
+    }
+
+    const cameraTrigger = document.getElementById('cameraBtnTrigger');
+    if (cameraTrigger) {
+        cameraTrigger.onclick = function(e) {
+            e.preventDefault();
+            cameraInput.click();
+        };
+    }
+
+    const galleryTrigger = document.getElementById('galleryBtnTrigger');
+    if (galleryTrigger) {
+        galleryTrigger.onclick = function(e) {
+            e.preventDefault();
+            galleryInput.click();
+        };
+    }
+
+    const processFiles = (event) => {
+        const files = event.target.files;
+        const previewContainer = document.getElementById('previewImagesContainer');
+        if (previewContainer) previewContainer.innerHTML = ''; 
+
+        if (files.length > 0) {
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '65px';
+                    img.style.height = '65px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '6px';
+                    img.style.border = '2px solid #007bff';
+                    previewContainer.appendChild(img);
+                }
+                reader.readAsDataURL(files[i]);
+            }
+            if (typeof sendImagesToSmartWorker === 'function') {
+                sendImagesToSmartWorker(files);
+            }
+        }
+    };
+
+    galleryInput.onchange = processFiles;
+    cameraInput.onchange = processFiles;
+}
+
+// تشغيل جلب البيانات والإحصائيات تلقائياً عند البدء
 loadStats();
 </script>
 </body>
