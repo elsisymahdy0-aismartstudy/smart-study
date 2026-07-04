@@ -1,6 +1,5 @@
 
-# Write the complete fixed HTML file directly to disk - Part 1 (HTML + CSS + beginning of JS)
-part1 = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1502,20 +1501,4 @@ part2 = '''        const WORKER_URL = "https://smart-study-api.elsisymahdy0.work
         loadStats();
     </script>
 </body>
-</html>'''
-
-with open('/mnt/agents/output/smart_study_part2.html', 'w', encoding='utf-8') as f:
-    f.write(part2)
-
-# Also create the complete file
-with open('/mnt/agents/output/smart_study_part1.html', 'r', encoding='utf-8') as f:
-    part1_content = f.read()
-
-complete = part1_content + part2
-
-with open('/mnt/agents/output/smart_study_complete.html', 'w', encoding='utf-8') as f:
-    f.write(complete)
-
-print(f"Part 2 saved: {len(part2)} chars")
-print(f"Complete file: {len(complete)} chars")
-print("All files saved successfully!")
+</html>''
