@@ -1,6 +1,6 @@
 
-# Write the complete fixed HTML file directly to disk - Part 1 (HTML + CSS + beginning of JS)
-part1 = '''<!DOCTYPE html>
+# Create a completely new version with extensive image display fixes
+html_complete = '''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -15,9 +15,6 @@ part1 = '''<!DOCTYPE html>
             color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
         }
         .sidebar {
             position: fixed;
@@ -221,12 +218,18 @@ part1 = '''<!DOCTYPE html>
         .capture-btn.gallery {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
         }
+        /* FIXED: Image preview styles */
         .preview-image {
             max-width: 100%;
-            max-height: 250px;
+            max-height: 300px;
+            width: auto;
+            height: auto;
             border-radius: 15px;
             margin-bottom: 15px;
             border: 2px solid rgba(139, 92, 246, 0.3);
+            display: block !important;
+            object-fit: contain;
+            background: rgba(0,0,0,0.3);
         }
         .text-result {
             width: 100%;
@@ -241,8 +244,6 @@ part1 = '''<!DOCTYPE html>
             margin-bottom: 15px;
             text-align: right;
             line-height: 1.6;
-            -webkit-user-select: text;
-            user-select: text;
         }
         .action-buttons {
             display: flex;
@@ -382,33 +383,6 @@ part1 = '''<!DOCTYPE html>
         .activity-text div { font-size: 13px; }
         .activity-text small { font-size: 11px; color: #888; }
         .hidden { display: none !important; }
-        .quiz-types {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .quiz-type-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            text-align: center;
-            touch-action: manipulation;
-        }
-        .quiz-type-card:hover {
-            border-color: #8b5cf6;
-            transform: translateY(-3px);
-        }
-        .quiz-type-card.selected {
-            border-color: #8b5cf6;
-            background: rgba(139, 92, 246, 0.1);
-        }
-        .type-icon { font-size: 30px; margin-bottom: 8px; }
-        .type-title { font-size: 14px; font-weight: 700; }
-        .type-desc { font-size: 12px; color: #888; }
         .quiz-container {
             background: linear-gradient(145deg, rgba(30, 30, 50, 0.8), rgba(20, 20, 40, 0.9));
             border-radius: 20px;
@@ -611,6 +585,7 @@ part1 = '''<!DOCTYPE html>
             position: relative;
             overflow: hidden;
             display: inline-block;
+            cursor: pointer;
         }
         .file-input-wrapper input[type=file] {
             position: absolute;
@@ -621,13 +596,13 @@ part1 = '''<!DOCTYPE html>
             height: 100%;
             cursor: pointer;
             z-index: 100;
+            font-size: 100px;
         }
         @media (max-width: 1024px) {
             .sidebar { width: 200px; }
             .main-content { margin-right: 200px; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .mode-grid { grid-template-columns: 1fr; }
-            .quiz-types { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
             .sidebar { display: none; }
@@ -723,11 +698,11 @@ part1 = '''<!DOCTYPE html>
                     <div class="capture-text">التقاط صورة للكتاب</div>
                     <div class="capture-sub">اختر طريقة إضافة الصورة</div>
                     <div class="capture-buttons">
-                        <label class="capture-btn file-input-wrapper" style="cursor: pointer;">
+                        <label class="capture-btn file-input-wrapper">
                             📷 كاميرا
                             <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleImage(event)">
                         </label>
-                        <label class="capture-btn gallery file-input-wrapper" style="cursor: pointer;">
+                        <label class="capture-btn gallery file-input-wrapper">
                             🖼️ المعرض
                             <input type="file" id="galleryInput" accept="image/*" onchange="handleImage(event)">
                         </label>
@@ -736,7 +711,7 @@ part1 = '''<!DOCTYPE html>
                 </div>
                 
                 <div id="captureContent" class="hidden">
-                    <img id="previewImage" class="preview-image" alt="معاينة">
+                    <img id="previewImage" class="preview-image" alt="معاينة الصورة" style="display:none;">
                     <div class="text-result" id="textResult">⏳ جاري قراءة النص...</div>
                     <div class="action-buttons">
                         <button class="action-btn btn-summarize" onclick="showSummarize()">
@@ -861,660 +836,7 @@ part1 = '''<!DOCTYPE html>
     <script>
 '''
 
-with open('/mnt/agents/output/smart_study_part1.html', 'w', encoding='utf-8') as f:
-    f.write(part1)
-
-print(f"Part 1 saved: {len(part1)} chars")
-# Write Part 2 - JavaScript (from const WORKER_URL to end)
-part2 = '''        const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
-        const MAX_PHOTOS = 5;
-
-        // ===== Stats =====
-        let stats = {
-            totalQuestions: 0,
-            correctAnswers: 0,
-            level: 1,
-            activities: []
-        };
-
-        let photos = [];
-        let combinedText = '';
-
-        function loadStats() {
-            try {
-                const saved = localStorage.getItem('smartStudyStats');
-                if (saved) {
-                    stats = JSON.parse(saved);
-                    updateStatsDisplay();
-                }
-            } catch (e) {
-                console.log('No saved stats');
-            }
-        }
-
-        function saveStats() {
-            try {
-                localStorage.setItem('smartStudyStats', JSON.stringify(stats));
-            } catch (e) {
-                console.log('Could not save stats');
-            }
-        }
-
-        function updateStatsDisplay() {
-            const percent = stats.totalQuestions > 0 
-                ? Math.round((stats.correctAnswers / stats.totalQuestions) * 100) 
-                : 0;
-            
-            const statTotal = document.getElementById('statTotal');
-            const statCorrect = document.getElementById('statCorrect');
-            const statPercent = document.getElementById('statPercent');
-            const statLevel = document.getElementById('statLevel');
-            const sidebarLevel = document.getElementById('sidebarLevel');
-            
-            if (statTotal) statTotal.textContent = stats.totalQuestions;
-            if (statCorrect) statCorrect.textContent = stats.correctAnswers;
-            if (statPercent) statPercent.textContent = percent + '%';
-            if (statLevel) statLevel.textContent = stats.level;
-            if (sidebarLevel) sidebarLevel.textContent = stats.level;
-            
-            updateBigEmoji(percent);
-            updateActivityList();
-        }
-
-        function updateBigEmoji(percent) {
-            const emoji = document.getElementById('bigEmoji');
-            const label = document.getElementById('emojiLabel');
-            const percentText = document.getElementById('emojiPercent');
-            
-            if (!emoji || !label || !percentText) return;
-            
-            let emojiChar, labelText;
-            
-            if (stats.totalQuestions === 0) {
-                emojiChar = '😐';
-                labelText = 'ابدأ التعلم!';
-            } else if (percent <= 20) {
-                emojiChar = '😞';
-                labelText = 'لا تستسلم!';
-            } else if (percent <= 40) {
-                emojiChar = '🙂';
-                labelText = 'جيد! استمر';
-            } else if (percent <= 60) {
-                emojiChar = '😊';
-                labelText = 'ممتاز!';
-            } else if (percent <= 80) {
-                emojiChar = '😄';
-                labelText = 'رائع!';
-            } else {
-                emojiChar = '🤩';
-                labelText = 'عبقري!';
-            }
-            
-            emoji.textContent = emojiChar;
-            label.textContent = labelText;
-            percentText.textContent = percent + '% إجابات صحيحة';
-        }
-
-        function updateActivityList() {
-            const list = document.getElementById('activityList');
-            if (!list) return;
-            
-            if (stats.activities.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div>لا يوجد نشاط بعد</div><small style="color: #666;">ابدأ بحل أسئلة أو تصوير كتاب</small></div>';
-                return;
-            }
-            
-            let html = '';
-            const recent = stats.activities.slice(-3).reverse();
-            
-            for (let act of recent) {
-                let icon, bg;
-                if (act.type === 'correct') { icon = '✅'; bg = 'rgba(34,197,94,0.2)'; }
-                else if (act.type === 'wrong') { icon = '❌'; bg = 'rgba(239,68,68,0.2)'; }
-                else if (act.type === 'read') { icon = '📷'; bg = 'rgba(59,130,246,0.2)'; }
-                else { icon = '📝'; bg = 'rgba(139,92,246,0.2)'; }
-                
-                html += '<div class="activity-item"><div class="activity-icon" style="background: ' + bg + ';">' + icon + '</div><div class="activity-text"><div>' + act.text + '</div><small>' + act.time + '</small></div></div>';
-            }
-            
-            list.innerHTML = html;
-        }
-
-        function addActivity(type, text) {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-            
-            stats.activities.push({ type: type, text: text, time: timeStr });
-            if (stats.activities.length > 10) stats.activities = stats.activities.slice(-10);
-            
-            saveStats();
-            updateStatsDisplay();
-        }
-
-        // ===== Navigation =====
-        function showSection(section) {
-            document.querySelectorAll('.main-content > div').forEach(function(div) { div.classList.add('hidden'); });
-            
-            const sectionEl = document.getElementById(section + '-section');
-            if (sectionEl) sectionEl.classList.remove('hidden');
-            
-            if (section === 'home') {
-                updateStatsDisplay();
-            }
-            
-            document.querySelectorAll('.nav-link').forEach(function(link) { link.classList.remove('active'); });
-            if (event && event.target) {
-                const navLink = event.target.closest('.nav-link');
-                if (navLink) navLink.classList.add('active');
-            }
-        }
-
-        function showSummarize() {
-            document.querySelectorAll('.main-content > div').forEach(function(div) { div.classList.add('hidden'); });
-            const summarizeSection = document.getElementById('summarize-section');
-            if (summarizeSection) summarizeSection.classList.remove('hidden');
-            
-            const summarizeInput = document.getElementById('summarize-input');
-            if (summarizeInput) summarizeInput.value = combinedText;
-        }
-
-        function showQuizModes() {
-            if (!combinedText || combinedText.trim().length < 10) {
-                alert('⚠️ لا يوجد نص كافي! صور كتاب أولاً.');
-                return;
-            }
-            document.querySelectorAll('.main-content > div').forEach(function(div) { div.classList.add('hidden'); });
-            const quizModeSection = document.getElementById('quiz-mode-section');
-            if (quizModeSection) quizModeSection.classList.remove('hidden');
-        }
-
-        // ===== Camera & Gallery - FIXED FOR MOBILE =====
-        function openCamera() {
-            const cameraInput = document.getElementById('cameraInput');
-            if (cameraInput) {
-                cameraInput.click();
-            }
-        }
-
-        function openGallery() {
-            const galleryInput = document.getElementById('galleryInput');
-            if (galleryInput) {
-                galleryInput.click();
-            }
-        }
-
-        function showAddPhotoOptions() {
-            if (photos.length >= MAX_PHOTOS) {
-                alert('⚠️ الحد الأقصى هو ' + MAX_PHOTOS + ' صور!');
-                return;
-            }
-            const choice = confirm('📷 اضغط "موافق" للكاميرا\n🖼️ اضغط "إلغاء" للمعرض');
-            if (choice) openCamera();
-            else openGallery();
-        }
-
-        async function handleImage(event) {
-            const file = event.target.files[0];
-            if (!file) {
-                console.log('No file selected');
-                return;
-            }
-
-            if (photos.length >= MAX_PHOTOS) {
-                alert('⚠️ الحد الأقصى هو ' + MAX_PHOTOS + ' صور!');
-                return;
-            }
-
-            // Show content area
-            const captureInitial = document.getElementById('captureInitial');
-            const captureContent = document.getElementById('captureContent');
-            const captureArea = document.getElementById('captureArea');
-            
-            if (captureInitial) captureInitial.classList.add('hidden');
-            if (captureContent) captureContent.classList.remove('hidden');
-            if (captureArea) captureArea.classList.add('has-content');
-
-            const preview = document.getElementById('previewImage');
-            if (preview) {
-                preview.src = URL.createObjectURL(file);
-                preview.style.display = 'block';
-            }
-
-            const resultDiv = document.getElementById('textResult');
-            if (resultDiv) resultDiv.textContent = '⏳ جاري قراءة النص من الصورة...';
-
-            try {
-                const base64 = await fileToBase64(file);
-                const text = await callWorker('readImage', { imageBase64: base64 });
-                
-                photos.push({ src: preview ? preview.src : '', text: text });
-                
-                if (combinedText) combinedText += '\n\n---\n\n';
-                combinedText += text;
-                
-                if (resultDiv) resultDiv.textContent = combinedText;
-                
-                const counterText = 'الصور: ' + photos.length + ' / ' + MAX_PHOTOS;
-                const photoCounter = document.getElementById('photoCounter');
-                const photoCounter2 = document.getElementById('photoCounter2');
-                if (photoCounter) photoCounter.textContent = counterText;
-                if (photoCounter2) photoCounter2.textContent = counterText;
-                
-                addActivity('read', 'تم قراءة صورة ' + photos.length);
-                
-            } catch (error) {
-                console.error('Image processing error:', error);
-                if (resultDiv) resultDiv.textContent = '❌ حدث خطأ: ' + error.message;
-            }
-        }
-
-        function fileToBase64(file) {
-            return new Promise(function(resolve, reject) {
-                const reader = new FileReader();
-                reader.onload = function() {
-                    resolve(reader.result.split(',')[1]);
-                };
-                reader.onerror = function(err) {
-                    reject(err);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        // ===== API =====
-        async function callWorker(action, data) {
-            const response = await fetch(WORKER_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: action, ...data })
-            });
-
-            if (!response.ok) throw new Error('خطأ في الاتصال بالخادم');
-
-            const result = await response.json();
-            if (result.error) throw new Error(result.error.message || 'خطأ غير معروف');
-            if (result.choices && result.choices[0]) return result.choices[0].message.content;
-            throw new Error('لم يتم العثور على نتيجة');
-        }
-
-        // ===== Summarize =====
-        async function doSummarize() {
-            const text = document.getElementById('summarize-input');
-            if (!text || !text.value.trim()) {
-                alert('الرجاء إدخال نص أولاً!');
-                return;
-            }
-
-            const output = document.getElementById('summarize-output');
-            const resultArea = document.getElementById('summarize-result');
-            
-            if (output) output.classList.remove('hidden');
-            if (resultArea) resultArea.value = '⏳ جاري التلخيص...';
-
-            try {
-                const result = await callWorker('summarize', { text: text.value });
-                if (resultArea) resultArea.value = result;
-                addActivity('summarize', 'تم تلخيص نص');
-            } catch (error) {
-                if (resultArea) resultArea.value = '❌ خطأ: ' + error.message;
-            }
-        }
-
-        // ===== Quiz =====
-        let questions = [];
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let answered = false;
-        let quizMode = '';
-        let timerInterval;
-        let timeLeft;
-
-        async function startQuiz(mode) {
-            if (!combinedText || combinedText.trim().length < 10) {
-                alert('⚠️ لا يوجد نص كافي! صور كتاب أولاً.');
-                return;
-            }
-
-            quizMode = mode;
-            
-            let timeLimit, questionCount;
-            let promptText;
-            
-            switch(mode) {
-                case 'quick':
-                    questionCount = 3;
-                    timeLimit = 300;
-                    promptText = 'بناءً على النص التالي، أنشئ ' + questionCount + ' أسئلة فقط.\n\nالنص:\n"""\n' + combinedText + '\n"""\n\nأنواع الأسئلة المطلوبة:\n- سؤال 1: اختيار من متعدد (أ، ب، ج، د)\n- سؤال 2: صح أو خطأ\n- سؤال 3: أكمل الجملة\n\nلكل سؤال اكتب الإجابة الصحيحة.\n\nالشكل:\nسؤال 1 (اختيار من متعدد): ...\nأ) ...\nب) ...\nج) ...\nد) ...\nالإجابة: أ\n\nسؤال 2 (صح أو خطأ): ...\nالإجابة: صح\n\nسؤال 3 (أكمل): ...\nالإجابة: ...';
-                    break;
-                    
-                case 'full':
-                    questionCount = 15;
-                    timeLimit = 1500;
-                    promptText = 'بناءً على النص التالي، أنشئ امتحان كامل متنوع من ' + questionCount + ' سؤال.\n\nالنص:\n"""\n' + combinedText + '\n"""\n\nأنواع الأسئلة المطلوبة:\n- 5 أسئلة اختيار من متعدد (أ، ب، ج، د)\n- 3 أسئلة صح أو خطأ\n- 4 أسئلة أكمل الجملة\n- 3 أسئلة مباشرة (سؤال وجواب)\n\nلكل سؤال اكتب الإجابة الصحيحة.\n\nالشكل:\nسؤال 1 (اختيار من متعدد): ...\nأ) ...\nب) ...\nج) ...\nد) ...\nالإجابة: أ\n\nسؤال 2 (صح أو خطأ): ...\nالإجابة: صح\n\nسؤال 3 (أكمل): ...\nالإجابة: ...\n\nسؤال 4 (مباشر): ...\nالإجابة: ...';
-                    break;
-                    
-                case 'challenge':
-                    questionCount = 10;
-                    timeLimit = 900;
-                    promptText = 'بناءً على النص التالي، أنشئ ' + questionCount + ' أسئلة صعبة.\n\nالنص:\n"""\n' + combinedText + '\n"""\n\nأنواع الأسئلة:\n- 4 اختيار من متعدد (أ، ب، ج، د)\n- 2 صح أو خطأ (خادعة)\n- 2 أكمل الجملة (تحتاج فهم عميق)\n- 2 سؤال مباشر صعب\n\nالشكل:\nسؤال 1 (اختيار من متعدد): ...\nأ) ...\nب) ...\nج) ...\nد) ...\nالإجابة: أ\n\nسؤال 2 (صح أو خطأ): ...\nالإجابة: خطأ\n\nسؤال 3 (أكمل): ...\nالإجابة: ...\n\nسؤال 4 (مباشر): ...\nالإجابة: ...';
-                    break;
-            }
-
-            document.querySelectorAll('.main-content > div').forEach(function(div) { div.classList.add('hidden'); });
-            const quizSection = document.getElementById('quiz-section');
-            if (quizSection) quizSection.classList.remove('hidden');
-
-            try {
-                const response = await fetch(WORKER_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'questions', text: promptText })
-                });
-                
-                const result = await response.json();
-                const aiText = result.choices[0].message.content;
-                
-                questions = parseMixedQuestions(aiText);
-                
-                if (questions.length === 0) {
-                    throw new Error('لم يتم إنشاء أسئلة صحيحة.');
-                }
-                
-                currentQuestionIndex = 0;
-                score = 0;
-                timeLeft = timeLimit;
-                
-                startTimer();
-                showQuestion();
-                
-            } catch (error) {
-                alert('❌ خطأ: ' + error.message);
-                showSection('home');
-            }
-        }
-
-        function parseMixedQuestions(text) {
-            const questions = [];
-            const blocks = text.split(/(?:سؤال\s*\d+[:.]|^\d+[:.])/m).filter(function(q) { return q.trim(); });
-            
-            for (let block of blocks) {
-                const lines = block.trim().split('\n').filter(function(l) { return l.trim(); });
-                if (lines.length < 2) continue;
-                
-                let qType = 'mcq';
-                const firstLine = lines[0].toLowerCase();
-                
-                if (firstLine.indexOf('صح') !== -1 || firstLine.indexOf('خطأ') !== -1 || firstLine.indexOf('صحيح') !== -1) {
-                    qType = 'tf';
-                } else if (firstLine.indexOf('أكمل') !== -1 || firstLine.indexOf('اكمل') !== -1) {
-                    qType = 'fill';
-                } else if (firstLine.indexOf('مباشر') !== -1 || firstLine.indexOf('اشرح') !== -1 || firstLine.indexOf('عرف') !== -1) {
-                    qType = 'direct';
-                }
-                
-                const questionText = lines[0].replace(/^[•\-]\s*/, '').trim();
-                const options = [];
-                let correctAnswer = '';
-                let correctText = '';
-                
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    
-                    const optionMatch = line.match(/^([أبجدABCD])[.)]\s*(.+)/i);
-                    if (optionMatch) {
-                        const letter = optionMatch[1].toUpperCase();
-                        let arabicLetter = letter;
-                        if (letter === 'A') arabicLetter = 'أ';
-                        else if (letter === 'B') arabicLetter = 'ب';
-                        else if (letter === 'C') arabicLetter = 'ج';
-                        else if (letter === 'D') arabicLetter = 'د';
-                        
-                        let optionText = optionMatch[2];
-                        options.push({ letter: arabicLetter, text: optionText });
-                    }
-                    
-                    const answerMatch = line.match(/الإجابة\s*[:.]\s*(.+)/i);
-                    if (answerMatch) {
-                        const ans = answerMatch[1].trim();
-                        if (ans === 'صح' || ans === 'صحيح' || ans.toLowerCase() === 'true') {
-                            correctAnswer = 'صح';
-                        } else if (ans === 'خطأ' || ans.toLowerCase() === 'false') {
-                            correctAnswer = 'خطأ';
-                        } else if (/^[أبجد]$/i.test(ans)) {
-                            const letter = ans.toUpperCase();
-                            if (letter === 'A') correctAnswer = 'أ';
-                            else if (letter === 'B') correctAnswer = 'ب';
-                            else if (letter === 'C') correctAnswer = 'ج';
-                            else if (letter === 'D') correctAnswer = 'د';
-                            else correctAnswer = ans;
-                        } else {
-                            correctText = ans;
-                            correctAnswer = ans;
-                        }
-                    }
-                }
-                
-                if (questionText) {
-                    questions.push({
-                        question: questionText,
-                        type: qType,
-                        options: options.length > 0 ? options : null,
-                        correct: correctAnswer || correctText || 'أ'
-                    });
-                }
-            }
-            
-            return questions.length > 0 ? questions : [{
-                question: 'تعذر تحليل الأسئلة',
-                type: 'mcq',
-                options: [{ letter: 'أ', text: 'إعادة المحاولة' }],
-                correct: 'أ'
-            }];
-        }
-
-        function startTimer() {
-            const timerEl = document.getElementById('timer');
-            if (!timerEl) return;
-            
-            timerInterval = setInterval(function() {
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    showResults();
-                    return;
-                }
-                
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                timerEl.textContent = '⏱️ الوقت المتبقي: ' + minutes + ':' + seconds.toString().padStart(2, '0');
-                timerEl.style.color = timeLeft <= 30 ? '#ef4444' : '#f59e0b';
-                
-                timeLeft--;
-            }, 1000);
-        }
-
-        function showQuestion() {
-            const container = document.getElementById('questionContainer');
-            if (!container) return;
-            
-            const progress = ((currentQuestionIndex) / questions.length) * 100;
-            
-            const progressBar = document.getElementById('progressBar');
-            const scoreEl = document.getElementById('score');
-            
-            if (progressBar) progressBar.style.width = progress + '%';
-            if (scoreEl) scoreEl.textContent = 'النتيجة: ' + score + ' / ' + currentQuestionIndex;
-            
-            if (currentQuestionIndex >= questions.length) {
-                showResults();
-                return;
-            }
-            
-            const q = questions[currentQuestionIndex];
-            answered = false;
-            
-            let typeBadge = '';
-            let contentHtml = '';
-            
-            switch(q.type) {
-                case 'mcq':
-                    typeBadge = 'اختيار من متعدد';
-                    let optionsHtml = '';
-                    if (q.options) {
-                        for (let opt of q.options) {
-                            optionsHtml += '<button class="option-btn" onclick="checkAnswer(&quot;' + opt.letter + '&quot;, this)">' + opt.letter + ') ' + opt.text + '</button>';
-                        }
-                    }
-                    contentHtml = '<div class="options-grid">' + optionsHtml + '</div>';
-                    break;
-                    
-                case 'tf':
-                    typeBadge = 'صح أو خطأ';
-                    contentHtml = '<div class="tf-buttons"><button class="tf-btn" onclick="checkAnswer(&quot;صح&quot;, this)">✅ صح</button><button class="tf-btn" onclick="checkAnswer(&quot;خطأ&quot;, this)">❌ خطأ</button></div>';
-                    break;
-                    
-                case 'fill':
-                    typeBadge = 'أكمل الجملة';
-                    contentHtml = '<input type="text" class="fill-input" id="fillAnswer" placeholder="اكتب إجابتك هنا..."><button class="next-btn" onclick="checkFillAnswer()">تحقق</button>';
-                    break;
-                    
-                case 'direct':
-                    typeBadge = 'سؤال مباشر';
-                    contentHtml = '<input type="text" class="fill-input" id="directAnswer" placeholder="اكتب إجابتك هنا..."><button class="next-btn" onclick="checkDirectAnswer()">تحقق</button>';
-                    break;
-            }
-            
-            container.innerHTML = '<div class="question-box"><span class="question-type-badge">' + typeBadge + '</span><div class="question-text">سؤال ' + (currentQuestionIndex + 1) + ' من ' + questions.length + ':<br><br>' + q.question + '</div>' + contentHtml + '<div id="resultMessage"></div><button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">السؤال التالي →</button></div>';
-        }
-
-        function checkAnswer(selected, btn) {
-            if (answered) return;
-            answered = true;
-            
-            const q = questions[currentQuestionIndex];
-            const resultDiv = document.getElementById('resultMessage');
-            
-            document.querySelectorAll('.option-btn, .tf-btn').forEach(function(b) { b.classList.add('disabled'); });
-            
-            stats.totalQuestions++;
-            
-            if (selected === q.correct) {
-                if (btn) btn.classList.add('correct');
-                if (resultDiv) resultDiv.innerHTML = '<div class="result-message correct">✅ صح! إجابة صحيحة!</div>';
-                score++;
-                stats.correctAnswers++;
-                addActivity('correct', 'إجابة صحيحة في سؤال ' + (currentQuestionIndex + 1) + ' (' + getTypeName(q.type) + ')');
-            } else {
-                if (btn) btn.classList.add('wrong');
-                document.querySelectorAll('.option-btn, .tf-btn').forEach(function(b) {
-                    if (b.textContent.indexOf(q.correct) !== -1 || b.textContent.trim() === q.correct) {
-                        b.classList.add('correct');
-                    }
-                });
-                if (resultDiv) resultDiv.innerHTML = '<div class="result-message wrong">❌ غلط! الإجابة الصحيحة هي: ' + q.correct + '</div>';
-                addActivity('wrong', 'إجابة خاطئة في سؤال ' + (currentQuestionIndex + 1));
-            }
-            
-            updateStats();
-            const scoreEl = document.getElementById('score');
-            if (scoreEl) scoreEl.textContent = 'النتيجة: ' + score + ' / ' + (currentQuestionIndex + 1);
-            const nextBtn = document.getElementById('nextBtn');
-            if (nextBtn) nextBtn.classList.remove('hidden');
-        }
-
-        function checkFillAnswer() {
-            if (answered) return;
-            const input = document.getElementById('fillAnswer');
-            if (!input) return;
-            const userAnswer = input.value.trim();
-            if (!userAnswer) {
-                alert('الرجاء كتابة إجابة!');
-                return;
-            }
-            checkAnswer(userAnswer, null);
-        }
-
-        function checkDirectAnswer() {
-            if (answered) return;
-            const input = document.getElementById('directAnswer');
-            if (!input) return;
-            const userAnswer = input.value.trim();
-            if (!userAnswer) {
-                alert('الرجاء كتابة إجابة!');
-                return;
-            }
-            checkAnswer(userAnswer, null);
-        }
-
-        function getTypeName(type) {
-            const names = { mcq: 'اختياري', tf: 'صح/خطأ', fill: 'تكميلي', direct: 'مباشر' };
-            return names[type] || type;
-        }
-
-        function updateStats() {
-            stats.level = Math.floor(stats.correctAnswers / 10) + 1;
-            saveStats();
-            updateStatsDisplay();
-        }
-
-        function nextQuestion() {
-            currentQuestionIndex++;
-            showQuestion();
-        }
-
-        function showResults() {
-            clearInterval(timerInterval);
-            
-            document.querySelectorAll('.main-content > div').forEach(function(div) { div.classList.add('hidden'); });
-            const resultsSection = document.getElementById('results-section');
-            if (resultsSection) resultsSection.classList.remove('hidden');
-            
-            const percentage = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
-            const finalScore = document.getElementById('final-score');
-            if (finalScore) finalScore.textContent = score + ' / ' + questions.length;
-            
-            let message = '';
-            if (percentage === 100) message = '🌟 ممتاز! كل الإجابات صحيحة!';
-            else if (percentage >= 80) message = '😄 أداء رائع!';
-            else if (percentage >= 60) message = '😊 جيد!';
-            else if (percentage >= 40) message = '🙂 لازم تذاكر أكتر!';
-            else message = '😐 لازم تركز أكتر!';
-            
-            const finalMessage = document.getElementById('final-message');
-            if (finalMessage) finalMessage.textContent = message;
-            
-            const finalDetails = document.getElementById('final-details');
-            if (finalDetails) finalDetails.textContent = 'نسبة النجاح: ' + percentage + '%';
-            
-            addActivity('correct', 'انتهى اختبار بنتيجة ' + score + '/' + questions.length);
-        }
-
-        function restartQuiz() {
-            clearInterval(timerInterval);
-            questions = [];
-            currentQuestionIndex = 0;
-            score = 0;
-            timeLeft = 0;
-            showSection('home');
-        }
-
-        // Load stats
-        loadStats();
-    </script>
-</body>
-</html>'''
-
-with open('/mnt/agents/output/smart_study_part2.html', 'w', encoding='utf-8') as f:
-    f.write(part2)
-
-# Also create the complete file
-with open('/mnt/agents/output/smart_study_part1.html', 'r', encoding='utf-8') as f:
-    part1_content = f.read()
-
-complete = part1_content + part2
-
 with open('/mnt/agents/output/smart_study_complete.html', 'w', encoding='utf-8') as f:
-    f.write(complete)
+    f.write(html_complete)
 
-print(f"Part 2 saved: {len(part2)} chars")
-print(f"Complete file: {len(complete)} chars")
-print("All files saved successfully!")
+print(f"HTML+CSS part saved: {len(html_complete)} chars")
