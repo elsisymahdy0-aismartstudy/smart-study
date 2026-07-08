@@ -12,7 +12,7 @@
             --text-main: #1e1b4b;
             --text-sub: #64748b;
             --primary-purple: #7c3aed;
-            --primary-light: rgba(124, 58, 237, 0.1);
+            --primary-light: rgba(124, 58, 237, 0.08);
             --accent-yellow: #f59e0b;
             --border-color: #e2e8f0;
             --success-bg: #d1fae5;
@@ -29,12 +29,13 @@
             --text-sub: #a1a1aa;
             --border-color: #26233d;
             --nav-bg: #131124;
+            --primary-light: rgba(124, 58, 237, 0.2);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; padding-bottom: 90px; }
 
-        /* App Header */
+        /* Header */
         .app-header {
             display: flex;
             justify-content: space-between;
@@ -59,11 +60,11 @@
             gap: 6px;
         }
 
-        .brand-logo { font-size: 22px; font-weight: 900; color: var(--primary-purple); }
+        .brand-logo { font-size: 20px; font-weight: 900; color: var(--primary-purple); }
 
         .container { max-width: 500px; margin: 0 auto; padding: 15px; }
 
-        /* Cards */
+        /* Cards Layout */
         .card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -78,7 +79,7 @@
             color: white;
             border: none;
             width: 100%;
-            padding: 12px;
+            padding: 13px;
             border-radius: 12px;
             font-weight: 700;
             font-size: 15px;
@@ -86,9 +87,9 @@
             transition: 0.2s;
             margin-top: 10px;
         }
-        .btn-action:hover { opacity: 0.9; }
+        .btn-action:hover { opacity: 0.92; }
 
-        /* منحنى التقدم المستوى */
+        /* Level Progress Curve */
         .level-tracker {
             display: flex;
             justify-content: space-between;
@@ -100,7 +101,7 @@
         .level-tracker::before {
             content: '';
             position: absolute;
-            top: 25px;
+            top: 22px;
             left: 10%;
             right: 10%;
             height: 4px;
@@ -125,19 +126,19 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            margin: 0 auto 5px auto;
+            margin: 0 auto 6px auto;
             transition: 0.3s;
         }
 
         .level-step.active .level-icon {
             border-color: var(--primary-purple);
-            box-shadow: 0 0 15px var(--primary-purple);
+            box-shadow: 0 0 12px var(--primary-purple);
             transform: scale(1.15);
         }
 
-        .level-title { font-size: 12px; font-weight: 700; color: var(--text-sub); }
+        .level-title { font-size: 11px; font-weight: 700; color: var(--text-sub); }
 
-        /* Counters Grid */
+        /* Statistics Grid */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .stat-box {
             background: var(--card-bg);
@@ -149,7 +150,7 @@
         .stat-number { font-size: 26px; font-weight: 800; color: var(--primary-purple); }
         .stat-label { font-size: 12px; color: var(--text-sub); font-weight: 600; margin-top: 4px; }
 
-        /* Quiz Types Buttons */
+        /* Quiz Type Selection Buttons */
         .quiz-types-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
         .quiz-type-btn {
             background: var(--primary-light);
@@ -160,11 +161,12 @@
             font-weight: 700;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             cursor: pointer;
         }
 
-        /* Test Controls & UI */
-        .timer-display { font-size: 22px; font-weight: 800; color: var(--accent-yellow); text-align: center; margin-bottom: 10px; }
+        /* Quiz Engine UI */
+        .timer-display { font-size: 20px; font-weight: 800; color: var(--accent-yellow); text-align: center; margin-bottom: 10px; }
         .progress-bar-bg { height: 8px; background: var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
         .progress-bar-fill { height: 100%; background: var(--primary-purple); width: 0%; transition: width 0.3s; }
 
@@ -179,7 +181,7 @@
             color: var(--text-main);
         }
 
-        /* Bottom Nav Bar */
+        /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -228,18 +230,18 @@
             <div class="card">
                 <h3 style="margin-bottom: 10px;">رفع المواد والأوراق 📸</h3>
                 <div style="border: 2px dashed var(--primary-purple); padding: 25px; text-align: center; border-radius: 15px; cursor: pointer; background: var(--primary-light);" onclick="document.getElementById('imgInput').click()">
-                    اضغط للالتقاط أو اختيار صورة الدرس
+                    اضغط هنا لالتقاط أو رفع صورة الدرس
                     <input type="file" id="imgInput" accept="image/*" class="hidden" onchange="handleFile(event)">
                 </div>
                 
-                <button class="btn-action" onclick="toggleQuizOptions()">إنشاء أسئلة ✨</button>
+                <button class="btn-action" onclick="toggleQuizOptions()">إنشاء أسئلة تفاعلية ✨</button>
 
                 <div id="quizOptions" class="quiz-types-group hidden">
                     <div class="quiz-type-btn" onclick="startQuiz('quick')">⚡ اختبار سريع <small>(5 أسئلة)</small></div>
                     <div class="quiz-type-btn" onclick="startQuiz('full')">📄 امتحان كامل <small>(15 سؤال)</small></div>
                     <div class="quiz-type-btn" onclick="startQuiz('challenge')">🔥 وضع التحدي <small>(أسئلة عباقرة)</small></div>
                 </div>
-                <div id="loadingStatus" style="text-align: center; color: var(--accent-yellow); font-weight: 700; margin-top: 10px;" class="hidden">⏳ جاري معالجة الصورة واستخراج الاختبار...</div>
+                <div id="loadingStatus" style="text-align: center; color: var(--accent-yellow); font-weight: 700; margin-top: 10px;" class="hidden">⏳ جاري معالجة الصورة بواسطة الموديل...</div>
             </div>
 
             <div class="card">
@@ -279,7 +281,7 @@
                 <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress"></div></div>
                 
                 <div style="text-align: center; font-weight: 700; color: var(--text-sub); margin-bottom: 10px;">
-                    النتيجة: <span id="currentScore">0</span> / <span id="totalQuestions">0</span>
+                    النتيجة الحالية: <span id="currentScore">0</span> / <span id="totalQuestions">0</span>
                 </div>
 
                 <h3 id="qTitle" style="margin-bottom: 15px;">عنوان السؤال</h3>
@@ -287,7 +289,7 @@
                 <div id="mcqBox"></div>
                 
                 <div id="textBox" class="hidden">
-                    <input type="text" id="textAns" class="input-box" placeholder="اكتب إجابتك هنا...">
+                    <input type="text" id="textAns" class="input-box" placeholder="اكتب إجابتك النصية هنا...">
                     <button class="btn-action" onclick="submitTextAnswer()">تحقق من الإجابة</button>
                 </div>
 
@@ -388,16 +390,16 @@
         reader.readAsDataURL(file);
     }
 
-    // إظهار أزرار أنواع الأسئلة
+    // إظهار خيارات التحدي والاختبارات
     function toggleQuizOptions() {
         if(!base64Img) {
-            alert("من فضلك التقاط أو رفع صورة الدرس أولاً!");
+            alert("من فضلك قم بـ التقاط أو رفع صورة الدرس أولاً!");
             return;
         }
         document.getElementById('quizOptions').classList.remove('hidden');
     }
 
-    // بدء الاختبار والتواصل مع الذكاء الاصطناعي
+    // بدء الاختبار والتواصل مع API الموديل
     async function startQuiz(type) {
         document.getElementById('loadingStatus').classList.remove('hidden');
         document.getElementById('quizOptions').classList.add('hidden');
@@ -418,7 +420,7 @@
             stats.lessons++;
             updateStatsUI();
 
-            // فتح الواجهة
+            // التبديل لشاشة الاختبار
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
             document.getElementById('tab-quiz').classList.remove('hidden');
 
@@ -427,7 +429,7 @@
             renderQuestion();
 
         } catch(err) {
-            alert("حدث خطأ أثناء الاتصال بالخادم، تأكد من إعدادات الـ Worker!");
+            alert("حدث خطأ أثناء الاتصال بالخادم، يُرجى التأكد من مسار Cloudflare Worker الخاص بك.");
             console.error(err);
             document.getElementById('quizOptions').classList.remove('hidden');
         } finally {
@@ -435,7 +437,7 @@
         }
     }
 
-    // العداد التنازلي للوقت
+    // العداد التنازلي
     function startTimer() {
         clearInterval(timerInterval);
         timerInterval = setInterval(() => {
@@ -451,7 +453,7 @@
         }, 1000);
     }
 
-    // عرض السؤال الحالي
+    // عرض السؤال
     function renderQuestion() {
         const q = currentQuiz[qIndex];
         document.getElementById('qTitle').innerText = `سؤال ${qIndex + 1}: ${q.question}`;
@@ -464,7 +466,7 @@
         mcqBox.innerHTML = '';
         document.getElementById('textAns').value = '';
 
-        // شريط التقدم
+        // شريط التقدم العلوي
         const pct = (qIndex / currentQuiz.length) * 100;
         document.getElementById('progress').style.width = pct + '%';
 
@@ -528,7 +530,7 @@
             showFeedback(result.isCorrect, result.isCorrect ? "✅ إجابة صحيحة!" : `❌ إجابة خاطئة! الإجابة: ${q.correctAnswer}`);
 
         } catch(e) {
-            alert("خطأ في تقييم الإجابة.");
+            alert("حدث خطأ في تقييم الإجابة.");
         }
     }
 
@@ -551,7 +553,7 @@
         }
     }
 
-    // تحديث الإحصائيات والمنحنى الحقيقي
+    // تحديث البيانات وشريط التقدم
     function updateStatsUI() {
         document.getElementById('statDocs').innerText = stats.docs;
         document.getElementById('statLessons').innerText = stats.lessons;
@@ -560,7 +562,7 @@
         const acc = stats.totalAnswered > 0 ? Math.round((stats.correct / stats.totalAnswered) * 100) : 0;
         document.getElementById('statAcc').innerText = `${acc}%`;
 
-        // تحديث المنحنى الحقيقي بناءً على نسبة الإجابات الصحيحة
+        // تحديث المستويات (😐 -> 🙂 -> 😎 -> 🦾 -> 👑)
         document.querySelectorAll('.level-step').forEach(s => s.classList.remove('active'));
         if(acc < 20) document.getElementById('lvl-0').classList.add('active');
         else if(acc < 40) document.getElementById('lvl-1').classList.add('active');
@@ -568,11 +570,11 @@
         else if(acc < 80) document.getElementById('lvl-3').classList.add('active');
         else document.getElementById('lvl-4').classList.add('active');
 
-        // تحديث تقارير وسجل النظام
+        // تحديث قسم السجل والتقارير
         if(stats.totalAnswered > 0) {
             document.getElementById('historyEmptyMsg').classList.add('hidden');
-            document.getElementById('historyList').innerHTML = `<p>✅ تم إنجاز ${stats.totalAnswered} سؤالاً بنجاح بنسبة دقة ${acc}%.</p>`;
-            document.getElementById('reportStatus').innerText = `أداؤك ممتاز! دقة إجاباتك الحالية هي ${acc}% استمر في التقدم.`;
+            document.getElementById('historyList').innerHTML = `<p style="padding: 10px; background: var(--primary-light); border-radius: 8px;">✅ أتممت ${stats.totalAnswered} سؤالاً بنسبة دقة بلغت ${acc}%.</p>`;
+            document.getElementById('reportStatus').innerText = `أداؤك ممتاز جداً! بلغت نسبة دقة إجاباتك الحالية ${acc}%.`;
         }
     }
 
@@ -583,7 +585,7 @@
         
         const box = document.getElementById('chatMessages');
         box.innerHTML += `<div style="text-align: left; margin: 8px 0; color: var(--primary-purple); font-weight: 700;">🙋‍♂️: ${input.value}</div>`;
-        box.innerHTML += `<div style="text-align: right; margin: 8px 0; color: var(--text-main);">🤖: جاري تحليل سؤالك بناءً على المواد الدراسية...</div>`;
+        box.innerHTML += `<div style="text-align: right; margin: 8px 0; color: var(--text-main);">🤖: جاري تحليل السؤال المرفق بالصورة...</div>`;
         input.value = '';
         box.scrollTop = box.scrollHeight;
     }
