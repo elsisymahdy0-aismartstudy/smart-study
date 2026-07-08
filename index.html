@@ -3,291 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة Study الذكية</title>
+    <title>ذكي - Zeka Study</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --primary: #8b5cf6;
-            --primary-hover: #7c3aed;
-            --text: #f8fafc;
-            --text-sub: #94a3b8;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --border: #334155;
+            --bg-color: #0d0b18;
+            --card-bg: #171527;
+            --card-border: #26233d;
+            --primary-purple: #7c3aed;
+            --primary-hover: #6d28d9;
+            --accent-yellow: #f59e0b;
+            --text-white: #ffffff;
+            --text-sub: #a1a1aa;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; }
+        body { background-color: var(--bg-color); color: var(--text-white); min-height: 100vh; padding: 15px; display: flex; justify-content: center; }
 
-        .container { max-width: 800px; margin: 0 auto; }
-        
-        header { text-align: center; margin-bottom: 25px; }
-        header h1 { color: var(--primary); font-size: 28px; }
-        header p { color: var(--text-sub); font-size: 14px; }
+        .app-container { width: 100%; max-width: 480px; }
 
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-        
-        .upload-zone {
-            border: 2px dashed var(--primary); border-radius: 12px; padding: 25px; text-align: center;
-            cursor: pointer; background: rgba(139, 92, 246, 0.05); transition: 0.3s;
+        /* الهيدر والعناوين */
+        header { text-align: center; margin-bottom: 20px; }
+        header h1 { font-size: 26px; font-weight: 800; color: var(--text-white); }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        .upload-zone:hover { background: rgba(139, 92, 246, 0.15); }
 
-        .btn {
-            background: var(--primary); color: white; border: none; padding: 12px 20px;
-            border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; margin-top: 10px; transition: 0.2s;
+        .upload-box {
+            border: 2px dashed var(--primary-purple);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(124, 58, 237, 0.05);
         }
-        .btn:hover { background: var(--primary-hover); }
 
-        /* أزرار خيارات الاختبار الثلاثة */
-        .quiz-modes-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
+        .main-btn {
+            background: var(--primary-purple);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: 0.2s;
         }
-        .mode-btn {
-            background: #0f172a; border: 2px solid var(--border); color: var(--text);
-            padding: 15px 8px; border-radius: 12px; cursor: pointer; text-align: center;
-            font-weight: bold; font-size: 14px; transition: 0.3s;
-            display: flex; flex-direction: column; align-items: center; gap: 5px;
+        .main-btn:hover { background: var(--primary-hover); }
+
+        /* الأزرار الثلاثة التي تظهر عند الضغط على إنشاء أسئلة */
+        .quiz-types-container { margin-top: 15px; display: grid; gap: 10px; }
+        .type-btn {
+            background: #1f1c35;
+            border: 2px solid var(--card-border);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.2s;
         }
-        .mode-btn:hover { border-color: var(--primary); transform: translateY(-2px); }
-        .mode-btn.quick { border-color: var(--success); }
-        .mode-btn.full { border-color: var(--primary); }
-        .mode-btn.challenge { border-color: var(--danger); }
+        .type-btn:hover { border-color: var(--primary-purple); background: #282444; }
 
-        .hidden { display: none; }
-        
-        .summary-box { background: #0f172a; border-right: 4px solid var(--primary); padding: 15px; border-radius: 8px; line-height: 1.8; margin-top: 15px; }
-
-        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .timer-badge { background: var(--warning); color: #000; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; }
-
-        .question-card { background: #0f172a; padding: 20px; border-radius: 12px; }
-        .badge { background: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 10px; }
-        
-        .options-grid { display: grid; gap: 10px; margin-top: 15px; }
-        .opt-btn {
-            background: var(--card-bg); border: 1px solid var(--border); color: var(--text);
-            padding: 12px; border-radius: 8px; text-align: right; cursor: pointer; font-size: 15px;
+        /* العداد التنازلي وشريط التقدم */
+        .timer-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-yellow);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        .opt-btn:hover { border-color: var(--primary); }
+
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .progress-bar-fill {
+            background: var(--primary-purple);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .score-badge {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+        }
+
+        .q-type-badge {
+            background: rgba(124, 58, 237, 0.2);
+            color: #c4b5fd;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .q-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; line-height: 1.5; }
+
+        /* خيارات الأسئلة */
+        .options-list { display: grid; gap: 10px; }
+        .opt-card {
+            background: #1f1c35;
+            border: 1px solid var(--card-border);
+            padding: 14px;
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: right;
+            transition: 0.2s;
+        }
+        .opt-card:hover { border-color: var(--primary-purple); }
 
         input[type="text"] {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border);
-            background: #0f172a; color: white; margin-top: 10px; font-size: 15px;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: #1f1c35;
+            color: white;
+            font-size: 15px;
+            margin-bottom: 10px;
         }
 
-        .feedback-box { padding: 15px; border-radius: 8px; margin-top: 15px; font-weight: bold; }
-        .feedback-box.correct { background: rgba(34, 197, 94, 0.2); color: var(--success); border: 1px solid var(--success); }
-        .feedback-box.wrong { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        /* رسائل النتيجة */
+        .status-box {
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 12px;
+            font-size: 15px;
+        }
+        .status-box.success { background: rgba(16, 185, 129, 0.2); color: var(--success-green); border: 1px solid var(--success-green); }
+        .status-box.error { background: rgba(239, 68, 68, 0.2); color: var(--danger-red); border: 1px solid var(--danger-red); }
 
-        .loading { text-align: center; color: var(--primary); font-size: 16px; margin: 20px 0; font-weight: bold; }
+        .hidden { display: none !important; }
+        .loading-txt { text-align: center; color: var(--accent-yellow); font-weight: 700; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="app-container">
     <header>
-        <h1>🧠 منصة Study للذكاء الاصطناعي</h1>
-        <p>ارفع صورة الدرس واختر نظام الاختبار المناسب لك</p>
+        <h1>Zeka Study 🧠</h1>
     </header>
 
-    <div class="card">
-        <div class="upload-zone" onclick="document.getElementById('imgInput').click()">
-            📸 اضغط هنا لالتقاط أو اختيار صورة الدرس
-            <input type="file" id="imgInput" accept="image/*" class="hidden" onchange="handleImageSelection(event)">
+    <div class="card" id="uploadCard">
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+            📸 اضغط هنا لالتقاط/رفع صورة الدرس
+            <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="onFileSelected(event)">
         </div>
 
-        <div id="quizTypeSelector" class="hidden">
-            <h3 style="margin-top: 20px; text-align: center; font-size: 15px;">اختر نوع الاختبار:</h3>
-            <div class="quiz-modes-grid">
-                <button class="mode-btn quick" onclick="startGeneratedQuiz('quick')">
-                    ⚡ <span>اختبار سريع</span>
-                    <small style="color: var(--text-sub);">(5 أسئلة)</small>
-                </button>
-                <button class="mode-btn full" onclick="startGeneratedQuiz('full')">
-                    📄 <span>امتحان كامل</span>
-                    <small style="color: var(--text-sub);">(15 سؤالاً)</small>
-                </button>
-                <button class="mode-btn challenge" onclick="startGeneratedQuiz('challenge')">
-                    🔥 <span>وضع التحدي</span>
-                    <small style="color: var(--text-sub);">(عباقرة + تايمر)</small>
-                </button>
-            </div>
+        <button class="main-btn" id="generateBtn" onclick="showQuizButtons()">إنشاء أسئلة ✨</button>
+
+        <div id="quizTypesBox" class="quiz-types-container hidden">
+            <button class="type-btn" onclick="startQuizMode('quick')">
+                <span>⚡ اختبار سريع</span>
+                <small style="color: var(--text-sub)">(5 أسئلة)</small>
+            </button>
+            <button class="type-btn" onclick="startQuizMode('full')">
+                <span>📄 امتحان كامل</span>
+                <small style="color: var(--text-sub)">(15 سؤالاً)</small>
+            </button>
+            <button class="type-btn" onclick="startQuizMode('challenge')">
+                <span>🔥 وضع التحدي</span>
+                <small style="color: var(--text-sub)">(أسئلة عباقرة + تايمر)</small>
+            </button>
         </div>
 
-        <div id="loading" class="loading hidden">⏳ جاري تحليل الدرس وتوليد الأسئلة بواسطة الذكاء الاصطناعي...</div>
+        <div id="loadingTxt" class="loading-txt hidden">⏳ جاري قراءة الصورة وتوليد الاختبار...</div>
     </div>
 
-    <div id="summarySection" class="card hidden">
-        <h2>📝 ملخص الدرس</h2>
-        <div id="summaryContent" class="summary-box"></div>
+    <div class="card hidden" id="summaryCard">
+        <h3 style="color: var(--accent-yellow); margin-bottom: 8px;">📝 ملخص الدرس:</h3>
+        <p id="summaryText" style="line-height: 1.7; color: var(--text-sub);"></p>
     </div>
 
-    <div id="quizSection" class="card hidden">
-        <div class="quiz-header">
-            <h2>🎯 السؤال (<span id="qIndex">1</span> من <span id="qTotal">0</span>)</h2>
-            <div id="timerBox" class="timer-badge hidden">⏱️ المتبقي: <span id="timerVal">20</span> ثانية</div>
+    <div class="card hidden" id="quizCard">
+        <div class="timer-header">
+            ⏱️ الوقت المتبقي: <span id="timerText">25:00</span>
         </div>
 
-        <div class="question-card">
-            <span class="badge" id="qType">نوع السؤال</span>
-            <h3 id="qText">السؤال سيظهر هنا...</h3>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
 
-            <div id="mcqOptions" class="options-grid hidden"></div>
+        <div class="score-badge">
+            النتيجة: <span id="userScore">0</span> / <span id="totalQuestions">0</span>
+        </div>
 
-            <div id="textInputBox" class="hidden">
-                <input type="text" id="userAnswerText" placeholder="اكتب إجابتك النموذجية هنا...">
-                <button class="btn" onclick="submitTextAnswer()">تحقق من الإجابة ⚡</button>
+        <div>
+            <span class="q-type-badge" id="qTypeLabel">اختيار من متعدد</span>
+            <div class="score-badge" style="text-align: right; font-size: 14px;">سؤال <span id="qCurrent">1</span> من <span id="qTotal">15</span>:</div>
+            <h2 class="q-title" id="qTitleText">السؤال هنا؟</h2>
+
+            <div class="options-list" id="mcqContainer"></div>
+
+            <div id="textContainer" class="hidden">
+                <input type="text" id="textAnswerInput" placeholder="اكتب الإجابة هنا...">
+                <button class="main-btn" onclick="submitTextAnswer()">تحقق</button>
             </div>
 
-            <div id="feedback" class="feedback-box hidden"></div>
-            <button id="nextBtn" class="btn hidden" onclick="nextQuestion()">السؤال التالي ➡️</button>
+            <div id="feedbackBox" class="status-box hidden"></div>
+
+            <button id="nextBtn" class="main-btn hidden" style="background: #282444;" onclick="nextQuestion()">السؤال التالي ➔</button>
         </div>
     </div>
 </div>
 
 <script>
     const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
-    
-    let selectedImageBase64 = null;
-    let currentData = null;
-    let currentQIndex = 0;
-    let timerInterval = null;
-    let isChallengeMode = false;
 
-    function handleImageSelection(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+    let base64Image = null;
+    let quizData = null;
+    let currentIdx = 0;
+    let score = 0;
+    let timerSeconds = 25 * 60; // 25 دقيقة
+    let timerTimer = null;
 
+    function onFileSelected(e) {
+        const file = e.target.files[0];
+        if(!file) return;
         const reader = new FileReader();
-        reader.onload = function(e) {
-            selectedImageBase64 = e.target.result;
-            document.getElementById('quizTypeSelector').classList.remove('hidden');
+        reader.onload = (evt) => {
+            base64Image = evt.target.result;
+            alert("تم إرفاق الصورة بنجاح! اضغط الآن على إنشاء أسئلة.");
         };
         reader.readAsDataURL(file);
     }
 
-    async function startGeneratedQuiz(type) {
-        if (!selectedImageBase64) return;
+    function showQuizButtons() {
+        if(!base64Image) {
+            alert("من فضلك ارفع صورة الدرس أولاً!");
+            return;
+        }
+        document.getElementById('quizTypesBox').classList.remove('hidden');
+    }
 
-        isChallengeMode = (type === 'challenge');
-        document.getElementById('loading').classList.remove('hidden');
-        document.getElementById('quizTypeSelector').classList.add('hidden');
+    async function startQuizMode(type) {
+        document.getElementById('loadingTxt').classList.remove('hidden');
+        document.getElementById('quizTypesBox').classList.add('hidden');
 
         try {
             const res = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'analyze', image: selectedImageBase64, quizType: type })
+                body: JSON.stringify({ action: 'analyze', image: base64Image, quizType: type })
             });
 
-            const rawData = await res.json();
-            const aiResponse = JSON.parse(rawData.choices[0].message.content);
-            
-            currentData = aiResponse;
-            currentQIndex = 0;
+            const raw = await res.json();
+            const data = JSON.parse(raw.choices[0].message.content);
 
-            displaySummary(aiResponse.summary);
-            startQuiz(aiResponse.questions);
+            quizData = data;
+            currentIdx = 0;
+            score = 0; // إعادة التصفير للنتيجة
 
-        } catch (err) {
-            alert("حدث خطأ، تأكد من تعديل كود الـ Worker وحفظه!");
+            // عرض الملخص
+            document.getElementById('summaryText').innerText = data.summary;
+            document.getElementById('summaryCard').classList.remove('hidden');
+
+            // تجهيز شاشة الاختبار
+            document.getElementById('uploadCard').classList.add('hidden');
+            document.getElementById('quizCard').classList.remove('hidden');
+
+            document.getElementById('totalQuestions').innerText = data.questions.length;
+            document.getElementById('qTotal').innerText = data.questions.length;
+
+            startGlobalTimer();
+            renderCurrentQuestion();
+
+        } catch(err) {
+            alert("حدث خطأ أثناء التواصل مع الذكاء الاصطناعي!");
             console.error(err);
-            document.getElementById('quizTypeSelector').classList.remove('hidden');
+            document.getElementById('quizTypesBox').classList.remove('hidden');
         } finally {
-            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('loadingTxt').classList.add('hidden');
         }
     }
 
-    function displaySummary(summary) {
-        document.getElementById('summaryContent').innerText = summary;
-        document.getElementById('summarySection').classList.remove('hidden');
-    }
-
-    function startQuiz(questions) {
-        document.getElementById('quizSection').classList.remove('hidden');
-        document.getElementById('qTotal').innerText = questions.length;
-        renderQuestion();
-    }
-
-    function renderQuestion() {
-        clearInterval(timerInterval);
-        const q = currentData.questions[currentQIndex];
-        document.getElementById('qIndex').innerText = currentQIndex + 1;
-        document.getElementById('qText').innerText = q.question;
-        document.getElementById('feedback').classList.add('hidden');
-        document.getElementById('nextBtn').classList.add('hidden');
-
-        const mcqBox = document.getElementById('mcqOptions');
-        const textInputBox = document.getElementById('textInputBox');
-        mcqBox.innerHTML = '';
-        document.getElementById('userAnswerText').value = '';
-
-        const timerBox = document.getElementById('timerBox');
-        if (isChallengeMode) {
-            timerBox.classList.remove('hidden');
-            startTimer(20);
-        } else {
-            timerBox.classList.add('hidden');
-        }
-
-        if (q.type === 'mcq' || q.type === 'tf') {
-            mcqBox.classList.remove('hidden');
-            textInputBox.classList.add('hidden');
-
-            const opts = q.type === 'tf' ? ['صح', 'خطأ'] : q.options;
-            opts.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'opt-btn';
-                btn.innerText = opt;
-                btn.onclick = () => {
-                    clearInterval(timerInterval);
-                    evaluateMCQ(opt, q.correctAnswer, q.explanation);
-                };
-                mcqBox.appendChild(btn);
-            });
-            document.getElementById('qType').innerText = q.type === 'tf' ? 'صح أو خطأ' : 'اختيار من متعدد';
-
-        } else {
-            mcqBox.classList.add('hidden');
-            textInputBox.classList.remove('hidden');
-            document.getElementById('qType').innerText = q.type === 'fill' ? 'أكمل الجملة' : 'ما المقصد / اشرح';
-        }
-    }
-
-    function startTimer(seconds) {
-        let timeLeft = seconds;
-        document.getElementById('timerVal').innerText = timeLeft;
-
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            document.getElementById('timerVal').innerText = timeLeft;
-
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                showFeedback(false, "⏰ انتهى الوقت المحدد للسؤال!");
+    function startGlobalTimer() {
+        clearInterval(timerTimer);
+        timerTimer = setInterval(() => {
+            if(timerSeconds <= 0) {
+                clearInterval(timerTimer);
+                alert("انتهى الوقت المحدد للاختبار!");
+                return;
             }
+            timerSeconds--;
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            document.getElementById('timerText').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }, 1000);
     }
 
-    function evaluateMCQ(selected, correct, explanation) {
+    function renderCurrentQuestion() {
+        const q = quizData.questions[currentIdx];
+
+        // تحديث الرقم والتصفير الحسابي
+        document.getElementById('qCurrent').innerText = currentIdx + 1;
+        document.getElementById('userScore').innerText = score;
+
+        // تحديث شريط التقدم الأصفر/البنفسجي
+        const progressPct = ((currentIdx) / quizData.questions.length) * 100;
+        document.getElementById('progressFill').style.width = progressPct + "%";
+
+        document.getElementById('qTitleText').innerText = q.question;
+        document.getElementById('feedbackBox').classList.add('hidden');
+        document.getElementById('nextBtn').classList.add('hidden');
+
+        const mcqBox = document.getElementById('mcqContainer');
+        const textBox = document.getElementById('textContainer');
+        mcqBox.innerHTML = '';
+        document.getElementById('textAnswerInput').value = '';
+
+        if(q.type === 'mcq' || q.type === 'tf') {
+            mcqBox.classList.remove('hidden');
+            textBox.classList.add('hidden');
+            document.getElementById('qTypeLabel').innerText = q.type === 'tf' ? 'صح أو خطأ' : 'اختيار من متعدد';
+
+            const options = q.type === 'tf' ? ['صح', 'خطأ'] : q.options;
+            options.forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'opt-card';
+                btn.innerText = opt;
+                btn.onclick = () => checkMCQ(opt, q.correctAnswer, q.explanation);
+                mcqBox.appendChild(btn);
+            });
+        } else {
+            mcqBox.classList.add('hidden');
+            textBox.classList.remove('hidden');
+            document.getElementById('qTypeLabel').innerText = q.type === 'fill' ? 'أكمل الجملة' : 'سؤال مباشر / اشرح';
+        }
+    }
+
+    function checkMCQ(selected, correct, explanation) {
         const isCorrect = selected.trim() === correct.trim();
-        showFeedback(isCorrect, isCorrect ? "إجابة صحيحة وممتازة! 🎉" : `إجابة خاطئة ❌. الإجابة الصحيحة هي: (${correct}). ${explanation || ''}`);
+        if(isCorrect) score++;
+
+        document.getElementById('userScore').innerText = score;
+        showFeedback(isCorrect, isCorrect ? "✅ صح! إجابة صحيحة!" : `❌ غلط! الإجابة الصحيحة هي: ${correct} \n${explanation || ''}`);
     }
 
     async function submitTextAnswer() {
-        clearInterval(timerInterval);
-        const uAns = document.getElementById('userAnswerText').value.trim();
-        if(!uAns) { alert("من فضلك اكتب إجابتك أولاً!"); return; }
+        const ans = document.getElementById('textAnswerInput').value.trim();
+        if(!ans) return;
 
-        const q = currentData.questions[currentQIndex];
-        document.getElementById('loading').classList.remove('hidden');
+        const q = quizData.questions[currentIdx];
+        document.getElementById('loadingTxt').classList.remove('hidden');
 
         try {
             const res = await fetch(WORKER_URL, {
@@ -297,39 +386,42 @@
                     action: 'evaluate',
                     question: q.question,
                     correctAnswer: q.correctAnswer,
-                    userAnswer: uAns
+                    userAnswer: ans
                 })
             });
 
-            const rawData = await res.json();
-            const result = JSON.parse(rawData.choices[0].message.content);
+            const raw = await res.json();
+            const result = JSON.parse(raw.choices[0].message.content);
+
+            if(result.isCorrect) score++;
+            document.getElementById('userScore').innerText = score;
 
             showFeedback(result.isCorrect, result.isCorrect 
-                ? "✅ إجابة صحيحة ومكتملة المعنى!" 
-                : `❌ إجابة غير دقيقة أو غير مكتملة. \nالتوضيح: ${result.feedback}`);
+                ? "✅ صح! إجابة صحيحة!" 
+                : `❌ غلط! الإجابة الصحيحة هي: ${q.correctAnswer} \n ${result.feedback}`);
 
-        } catch (err) {
-            console.error(err);
-            alert("حدث خطأ في تقييم الإجابة.");
+        } catch(e) {
+            alert("حدث خطأ أثناء تقييم الإجابة.");
         } finally {
-            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('loadingTxt').classList.add('hidden');
         }
     }
 
     function showFeedback(isCorrect, msg) {
-        const fb = document.getElementById('feedback');
-        fb.innerText = msg;
-        fb.className = `feedback-box ${isCorrect ? 'correct' : 'wrong'}`;
-        fb.classList.remove('hidden');
+        const box = document.getElementById('feedbackBox');
+        box.innerText = msg;
+        box.className = `status-box ${isCorrect ? 'success' : 'error'}`;
+        box.classList.remove('hidden');
         document.getElementById('nextBtn').classList.remove('hidden');
     }
 
     function nextQuestion() {
-        currentQIndex++;
-        if (currentQIndex < currentData.questions.length) {
-            renderQuestion();
+        currentIdx++;
+        if(currentIdx < quizData.questions.length) {
+            renderCurrentQuestion();
         } else {
-            alert("🏆 ألمعي! لقد أنهيت هذا الاختبار بنجاح.");
+            document.getElementById('progressFill').style.width = "100%";
+            alert(`🏆 انتهى الاختبار! درجتك النهائية هي: ${score} من ${quizData.questions.length}`);
         }
     }
 </script>
