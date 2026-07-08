@@ -2,531 +2,336 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منصة ذكاء Study المتكاملة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة Study الذكية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* نظام الألوان الديناميكي للوضع الليلي والنهاري */
         :root {
-            --bg-body: #f8fafc;
-            --bg-card: #ffffff;
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-            --border-color: #e2e8f0;
-            --primary: #7c3aed;
-            --primary-light: #f5f3ff;
-            --timeline-empty: #e2e8f0;
-            --timeline-line: #ffffff;
-        }
-
-        [data-theme="dark"] {
-            --bg-body: #0b0f19;
-            --bg-card: #151f32;
-            --text-main: #f1f5f9;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --text: #f8fafc;
             --text-sub: #94a3b8;
-            --border-color: #22314d;
-            --primary: #a78bfa;
-            --primary-light: #231b4e;
-            --timeline-empty: #22314d;
-            --timeline-line: #ffffff;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --border: #334155;
         }
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            transition: background 0.3s, color 0.3s, border-color 0.3s; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; }
+
+        .container { max-width: 800px; margin: 0 auto; }
         
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: var(--bg-body);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding-bottom: 90px;
-        }
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { color: var(--primary); font-size: 28px; }
+        header p { color: var(--text-sub); font-size: 14px; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
         
-        .mobile-header {
-            background: var(--bg-card);
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky; 
-            top: 0; 
-            z-index: 100;
+        .upload-zone {
+            border: 2px dashed var(--primary); border-radius: 12px; padding: 25px; text-align: center;
+            cursor: pointer; background: rgba(139, 92, 246, 0.05); transition: 0.3s;
         }
-        .app-brand { display: flex; align-items: center; gap: 8px; }
-        .app-logo { background: var(--primary); color: #fff; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .app-title { font-size: 18px; font-weight: 800; }
-        .app-title span { color: var(--primary); }
-        .streak-fire { background: var(--primary-light); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .upload-zone:hover { background: rgba(139, 92, 246, 0.15); }
 
-        .section-panel { padding: 16px; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 12px 20px;
+            border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; margin-top: 10px; transition: 0.2s;
+        }
+        .btn:hover { background: var(--primary-hover); }
+
+        /* أزرار خيارات الاختبار الثلاثة */
+        .quiz-modes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .mode-btn {
+            background: #0f172a; border: 2px solid var(--border); color: var(--text);
+            padding: 15px 8px; border-radius: 12px; cursor: pointer; text-align: center;
+            font-weight: bold; font-size: 14px; transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+        }
+        .mode-btn:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .mode-btn.quick { border-color: var(--success); }
+        .mode-btn.full { border-color: var(--primary); }
+        .mode-btn.challenge { border-color: var(--danger); }
+
+        .hidden { display: none; }
         
-        .hidden { display: none !important; }
+        .summary-box { background: #0f172a; border-right: 4px solid var(--primary); padding: 15px; border-radius: 8px; line-height: 1.8; margin-top: 15px; }
 
-        .welcome-hero { text-align: center; margin: 15px 0 25px 0; }
-        .welcome-hero h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-        .welcome-hero p { font-size: 13px; color: var(--text-sub); }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .timer-badge { background: var(--warning); color: #000; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; }
 
-        /* كروت الخدمات الرئيسية */
-        .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
-        .service-card {
-            background: var(--bg-card); border-radius: 16px; padding: 14px 8px; text-align: center;
-            border: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 175px;
-        }
-        .icon-wrapper { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; background: var(--primary-light); color: var(--primary); }
-        .card-title { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
-        .card-desc { font-size: 10px; color: var(--text-sub); margin-bottom: 10px; line-height: 1.3; }
-        .card-action-btn { width: 100%; padding: 7px 8px; border-radius: 8px; font-size: 11px; font-weight: 700; border: none; color: #fff; background: var(--primary); cursor: pointer; }
-
-        /* شريط التقدم التفاعلي المطور والأزرار الذكية */
-        .progress-widget { background: var(--bg-card); padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 24px; }
-        .widget-title { font-size: 13px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 6px; }
+        .question-card { background: #0f172a; padding: 20px; border-radius: 12px; }
+        .badge { background: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 10px; }
         
-        .timeline-container { position: relative; padding: 15px 0; margin-bottom: 10px; }
-        .timeline-track { position: absolute; left: 0; right: 0; top: 50%; height: 6px; background: var(--timeline-empty); z-index: 1; transform: translateY(-50%); border-radius: 3px; }
-        .timeline-fill { position: absolute; right: 0; top: 50%; height: 6px; background: var(--timeline-line); z-index: 2; transform: translateY(-50%); width: 0%; transition: width 0.4s ease; border-radius: 3px; }
-        .timeline-nodes { display: flex; justify-content: space-between; position: relative; z-index: 3; }
-        
-        .emoji-node {
-            font-size: 16px; background: var(--bg-card); width: 34px; height: 34px;
-            display: flex; align-items: center; justify-content: center; border-radius: 50%;
-            border: 2px solid var(--timeline-empty); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .options-grid { display: grid; gap: 10px; margin-top: 15px; }
+        .opt-btn {
+            background: var(--card-bg); border: 1px solid var(--border); color: var(--text);
+            padding: 12px; border-radius: 8px; text-align: right; cursor: pointer; font-size: 15px;
         }
-        /* الجزء الذي يتم تخطيه يصبح بنفسجي بالكامل */
-        .emoji-node.passed { border-color: #7c3aed; background: #7c3aed; color: #fff; }
-        /* الإيموجي الذي تم الوصول إليه حالياً يصبح أضخم والخط الذي عنده أبيض */
-        .emoji-node.current { border-color: #7c3aed; background: var(--bg-card); transform: scale(1.6); box-shadow: 0 0 12px rgba(124, 58, 237, 0.35); font-size: 22px; z-index: 10; }
+        .opt-btn:hover { border-color: var(--primary); }
 
-        .range-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-sub); font-weight: 600; padding: 0 4px; }
-
-        /* شبكة الإحصائيات الحية المصفّرة */
-        .stats-dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
-        .mini-stat-card { background: var(--bg-card); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
-        .stat-info .num { font-size: 24px; font-weight: 800; margin-bottom: 2px; color: var(--primary); }
-        .stat-info .lbl { font-size: 11px; color: var(--text-sub); }
-
-        /* محادثات الذكاء الاصطناعي الحقيقي */
-        .chat-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; height: 55vh; display: flex; flex-direction: column; overflow: hidden; }
-        .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .message { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.5; }
-        .msg-ai { background: var(--primary-light); color: var(--text-main); align-self: flex-start; border-top-left-radius: 2px; }
-        .msg-user { background: #7c3aed; color: #ffffff; align-self: flex-end; border-top-right-radius: 2px; }
-        .chat-input-area { padding: 12px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; background: var(--bg-card); }
-        .chat-input { flex: 1; padding: 10px 16px; border-radius: 24px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); font-family: inherit; font-size: 13px; }
-        .chat-input:focus { outline: none; border-color: #7c3aed; }
-        .chat-send-btn { background: #7c3aed; color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-
-        /* سجل المذاكرة المرفوع والنشاطات */
-        .log-item { background: var(--bg-card); padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-        .log-meta { color: var(--text-sub); font-size: 11px; }
-
-        /* شاشات التحكم والإعدادات والشبكات الاجتماعية */
-        .settings-group { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
-        .settings-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
-        .theme-switch { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .social-btn { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); font-family: inherit; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; cursor: pointer; }
-
-        /* مفتاح سويتش التبديل الخاص بالوضع الليلي */
-        .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 26px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #7c3aed; }
-        input:checked + .slider:before { transform: translateX(22px); }
-
-        /* شريط التنقل السفلي الثابت */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
-            background: var(--bg-card); border-top: 1px solid var(--border-color);
-            display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+        input[type="text"] {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border);
+            background: #0f172a; color: white; margin-top: 10px; font-size: 15px;
         }
-        .nav-tab {
-            background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: var(--text-sub); font-family: inherit; cursor: pointer; font-size: 11px; font-weight: 600; width: 20%;
-        }
-        .nav-tab .tab-icon { font-size: 20px; }
-        .nav-tab.active-tab { color: #7c3aed; }
+
+        .feedback-box { padding: 15px; border-radius: 8px; margin-top: 15px; font-weight: bold; }
+        .feedback-box.correct { background: rgba(34, 197, 94, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .feedback-box.wrong { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+        .loading { text-align: center; color: var(--primary); font-size: 16px; margin: 20px 0; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <header class="mobile-header">
-        <div class="app-brand">
-            <div class="app-logo">🧠</div>
-            <div class="app-title">ذكاء <span>Study</span></div>
-        </div>
-        <div class="streak-fire">🔥 <span id="uiStreak">0</span> أيام</div>
+<div class="container">
+    <header>
+        <h1>🧠 منصة Study للذكاء الاصطناعي</h1>
+        <p>ارفع صورة الدرس واختر نظام الاختبار المناسب لك</p>
     </header>
 
-    <div id="home-panel" class="section-panel">
-        <div class="welcome-hero">
-            <h1>مساعدك التعليمي الذكي جداً</h1>
-            <p>قم بتصوير كتبك وتحدث مع الموديل بدون حدود قصوى للصور 🚀</p>
+    <div class="card">
+        <div class="upload-zone" onclick="document.getElementById('imgInput').click()">
+            📸 اضغط هنا لالتقاط أو اختيار صورة الدرس
+            <input type="file" id="imgInput" accept="image/*" class="hidden" onchange="handleImageSelection(event)">
         </div>
 
-        <section class="quick-grid">
-            <div class="service-card">
-                <div class="icon-wrapper">📸</div>
-                <div>
-                    <div class="card-title">تصوير الكتب والمواد</div>
-                    <div class="card-desc">اضغط لالتقاط أو رفع أي عدد من الأوراق للموديل</div>
-                </div>
-                <button class="card-action-btn" onclick="triggerPhotoUpload()">📸 التقط صورة</button>
-                <input type="file" id="globalCameraInput" accept="image/*" multiple class="hidden" onchange="handleMultipleImages(event)">
+        <div id="quizTypeSelector" class="hidden">
+            <h3 style="margin-top: 20px; text-align: center; font-size: 15px;">اختر نوع الاختبار:</h3>
+            <div class="quiz-modes-grid">
+                <button class="mode-btn quick" onclick="startGeneratedQuiz('quick')">
+                    ⚡ <span>اختبار سريع</span>
+                    <small style="color: var(--text-sub);">(5 أسئلة)</small>
+                </button>
+                <button class="mode-btn full" onclick="startGeneratedQuiz('full')">
+                    📄 <span>امتحان كامل</span>
+                    <small style="color: var(--text-sub);">(15 سؤالاً)</small>
+                </button>
+                <button class="mode-btn challenge" onclick="startGeneratedQuiz('challenge')">
+                    🔥 <span>وضع التحدي</span>
+                    <small style="color: var(--text-sub);">(عباقرة + تايمر)</small>
+                </button>
             </div>
+        </div>
 
-            <div class="service-card">
-                <div class="icon-wrapper">📝</div>
-                <div>
-                    <div class="card-title">توليد ملخص شامل</div>
-                    <div class="card-desc">يقوم الموديل بتلخيص الأوراق المرفوعة فوراً</div>
-                </div>
-                <button class="card-action-btn" onclick="generateSummaryAction()">📝 ابدأ التلخيص</button>
-            </div>
-
-            <div class="service-card">
-                <div class="icon-wrapper">❓</div>
-                <div>
-                    <div class="card-title">اختبار الموديل الذكي</div>
-                    <div class="card-desc">إنتاج أسئلة ذكية تفاعلية وتحدي مستواك</div>
-                </div>
-                <button class="card-action-btn" onclick="triggerInteractiveQuiz()">✨ اختبر نفسك</button>
-            </div>
-        </section>
-
-        <section class="progress-widget">
-            <div class="widget-title">📊 منحنى تقدمك الحقيقي وتفاعلك</div>
-            <div class="timeline-container">
-                <div class="timeline-track"></div>
-                <div class="timeline-fill" id="dynamicBar"></div>
-                <div class="timeline-nodes">
-                    <div class="emoji-node current" id="n1">😐</div>
-                    <div class="emoji-node" id="n2">😊</div>
-                    <div class="emoji-node" id="n3">😎</div>
-                    <div class="emoji-node" id="n4">💪</div>
-                    <div class="emoji-node" id="n5">👑</div>
-                </div>
-            </div>
-            <div class="range-labels">
-                <span>البداية</span>
-                <span>مبتدئ</span>
-                <span>متطور</span>
-                <span>متميز</span>
-                <span>عبقري</span>
-            </div>
-        </section>
-
-        <section class="stats-dashboard">
-            <div class="mini-stat-card">
-                <div class="stat-info">
-                    <div class="num" id="statPhotos">0</div>
-                    <div class="lbl">الصور المرفوعة للموديل</div>
-                </div>
-            </div>
-            <div class="mini-stat-card">
-                <div class="stat-info">
-                    <div class="num" id="statTasks">0</div>
-                    <div class="lbl">الدروس المذاكرة والمُلخصة</div>
-                </div>
-            </div>
-            <div class="mini-stat-card">
-                <div class="stat-info">
-                    <div class="num" id="statAnswers">0</div>
-                    <div class="lbl">الإجابات الصحيحة</div>
-                </div>
-            </div>
-            <div class="mini-stat-card">
-                <div class="stat-info">
-                    <div class="num" id="statSuccess">0%</div>
-                    <div class="lbl">نسبة دقة الأداء العام</div>
-                </div>
-            </div>
-        </section>
+        <div id="loading" class="loading hidden">⏳ جاري تحليل الدرس وتوليد الأسئلة بواسطة الذكاء الاصطناعي...</div>
     </div>
 
-    <div id="materials-panel" class="section-panel hidden">
-        <h2 style="margin-bottom: 12px;">📚 سجل النشاط والمواد المصورة</h2>
-        <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 20px;">يقوم النظام تلقائياً بتوثيق كل الأوراق المصورة والعمليات لسهولة مراجعتها.</p>
-        <div id="historyLogArea">
-            <p style="text-align: center; color: var(--text-sub); padding: 40px;">السجل فارغ تماماً، قم بالتقاط صورة أو حل اختبار لتسجيل نشاطك حياً!</p>
-        </div>
+    <div id="summarySection" class="card hidden">
+        <h2>📝 ملخص الدرس</h2>
+        <div id="summaryContent" class="summary-box"></div>
     </div>
 
-    <div id="chat-panel" class="section-panel hidden">
-        <h2 style="margin-bottom: 12px;">💬 محادثة حقيقية وذكية جداً مع الموديل</h2>
-        <div class="chat-container">
-            <div class="chat-messages" id="chatWindow">
-                <div class="message msg-ai">مرحباً بك! أنا الموديل الذكي المساعد لك. لقد قمت بتحميل ذاكرتي السياقية وجاهز تماماً لمناقشة كل الصور والكتب التي تقوم بتصويرها الآن بشكل ذكي وعميق. اسألني أي سؤال!</div>
+    <div id="quizSection" class="card hidden">
+        <div class="quiz-header">
+            <h2>🎯 السؤال (<span id="qIndex">1</span> من <span id="qTotal">0</span>)</h2>
+            <div id="timerBox" class="timer-badge hidden">⏱️ المتبقي: <span id="timerVal">20</span> ثانية</div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge" id="qType">نوع السؤال</span>
+            <h3 id="qText">السؤال سيظهر هنا...</h3>
+
+            <div id="mcqOptions" class="options-grid hidden"></div>
+
+            <div id="textInputBox" class="hidden">
+                <input type="text" id="userAnswerText" placeholder="اكتب إجابتك النموذجية هنا...">
+                <button class="btn" onclick="submitTextAnswer()">تحقق من الإجابة ⚡</button>
             </div>
-            <div class="chat-input-area">
-                <input type="text" id="userChatMsg" class="chat-input" placeholder="اكتب سؤالك العلمي هنا...">
-                <button class="chat-send-btn" onclick="sendChatMessage()">⚡</button>
-            </div>
+
+            <div id="feedback" class="feedback-box hidden"></div>
+            <button id="nextBtn" class="btn hidden" onclick="nextQuestion()">السؤال التالي ➡️</button>
         </div>
     </div>
+</div>
 
-    <div id="reports-panel" class="section-panel hidden">
-        <h2 style="margin-bottom: 15px;">📊 التقارير ومؤشرات الأداء اللحظية</h2>
-        <div class="settings-group">
-            <div class="settings-title">الكفاءة المعرفية العامة</div>
-            <p style="font-size: 13px; line-height: 1.6;" id="repReportText">لم يتم رصد اختبارات أو تفاعلات كافية حتى الآن لإنشاء تقرير إحصائي مفصل.</p>
-        </div>
-    </div>
+<script>
+    const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
+    
+    let selectedImageBase64 = null;
+    let currentData = null;
+    let currentQIndex = 0;
+    let timerInterval = null;
+    let isChallengeMode = false;
 
-    <div id="settings-panel" class="section-panel hidden">
-        <h2 style="margin-bottom: 15px;">⚙️ الإعدادات وملف المستخدم</h2>
-        
-        <div class="settings-group">
-            <div class="settings-title">المظهر والوضع</div>
-            <div class="theme-switch">
-                <span>تفعيل الوضع المظلم (Dark Mode)</span>
-                <label class="switch">
-                    <input type="checkbox" id="darkModeToggle" onchange="toggleThemeMode(this)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
+    function handleImageSelection(event) {
+        const file = event.target.files[0];
+        if (!file) return;
 
-        <div class="settings-group">
-            <div class="settings-title">ربط الحساب وحفظ التقدم</div>
-            <button class="social-btn" onclick="alert('تم الاتصال بحساب Google بنجاح وحفظ بياناتك!')">🌐 الدخول بواسطة Google</button>
-            <button class="social-btn" onclick="alert('تم الاتصال بحساب Facebook بنجاح وحفظ بياناتك!')">🔵 الدخول بواسطة Facebook</button>
-            <button class="social-btn" onclick="alert('تم الاتصال بحساب X بنجاح وحفظ بياناتك!')">⚫ الدخول بواسطة حساب X (تويتر)</button>
-        </div>
-    </div>
-
-    <nav class="bottom-nav">
-        <button class="nav-tab active-tab" onclick="appNavigation('home')">
-            <span class="tab-icon">🏠</span>
-            <span>الرئيسية</span>
-        </button>
-        <button class="nav-tab" onclick="appNavigation('materials')">
-            <span class="tab-icon">📚</span>
-            <span>السجل</span>
-        </button>
-        <button class="nav-tab" onclick="appNavigation('chat')">
-            <span class="tab-icon">💬</span>
-            <span>المحادثة</span>
-        </button>
-        <button class="nav-tab" onclick="appNavigation('reports')">
-            <span class="tab-icon">📊</span>
-            <span>التقارير</span>
-        </button>
-        <button class="nav-tab" onclick="appNavigation('settings')">
-            <span class="tab-icon">⚙️</span>
-            <span>الإعدادات</span>
-        </button>
-    </nav>
-
-    <script>
-        // دالة الـ API الأساسية التي يمكن ربطها بموديل الذكاء الاصطناعي الخاص بك
-        const MODEL_WORKER_ENDPOINT = "https://smart-study-api.elsisymahdy0.workers.dev";
-
-        // قاعدة البيانات المحلية المؤقتة للتطبيق وتحديثها لحظي وتلقائي
-        let appData = {
-            uploadedPhotosCount: 0,
-            studiedLessonsCount: 0,
-            correctAnswers: 0,
-            totalQuizAttempts: 0,
-            streakDays: 1,
-            historyLog: [],
-            textMemoryBuffer: "" 
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            selectedImageBase64 = e.target.result;
+            document.getElementById('quizTypeSelector').classList.remove('hidden');
         };
+        reader.readAsDataURL(file);
+    }
 
-        // دالة التنقل السلس والذكي بين تبويبات التطبيق
-        function appNavigation(targetPanel) {
-            document.querySelectorAll('.section-panel').forEach(panel => panel.classList.add('hidden'));
-            const activePanel = document.getElementById(targetPanel + '-panel');
-            if (activePanel) activePanel.classList.remove('hidden');
+    async function startGeneratedQuiz(type) {
+        if (!selectedImageBase64) return;
 
-            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active-tab'));
-            if (window.event && window.event.currentTarget) {
-                window.event.currentTarget.classList.add('active-tab');
-            }
-        }
+        isChallengeMode = (type === 'challenge');
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('quizTypeSelector').classList.add('hidden');
 
-        // استدعاء الكاميرا ومعالجة الصور المرفوعة (عدد لا نهائي)
-        function triggerPhotoUpload() {
-            document.getElementById('globalCameraInput').click();
-        }
-
-        function handleMultipleImages(event) {
-            const files = event.target.files;
-            if (!files || files.length === 0) return;
-
-            appData.uploadedPhotosCount += files.length;
-            
-            // محاكاة استخلاص وتخزين النصوص بداخل ذاكرة الموديل
-            for(let i = 0; i < files.length; i++) {
-                appData.textMemoryBuffer += `\n[محتوى مستخلص من المادة المصورة رقم ${appData.uploadedPhotosCount - files.length + i + 1}]\n`;
-                logActivity("تصوير كتاب", `تم التقاط صورة مادة دراسية ومعالجتها بواسطة أقصى حد للموديل.`);
-            }
-
-            liveUpdateUI();
-            alert(`🎉 تم تحميل وقراءة ${files.length} صور بنجاح تام داخل الموديل الذكي!`);
-        }
-
-        // معالجة طلب التلخيص الفوري للمواد المصورة
-        function generateSummaryAction() {
-            if (appData.uploadedPhotosCount === 0) {
-                alert("⚠️ الرجاء التقاط أو تصوير كتب أولاً حتى يتمكن الموديل من تلخيصها!");
-                return;
-            }
-
-            appData.studiedLessonsCount += 1;
-            logActivity("طلب تلخيص ذكي", "قام الموديل باستخلاص وتوليد ملخص شامل للأوراق المصورة المرفوعة.");
-            liveUpdateUI();
-            
-            // توجيه المستخدم لتبويب المحادثة لرؤية النتيجة
-            appNavigation('chat');
-            const chatWindow = document.getElementById('chatWindow');
-            chatWindow.innerHTML += `<div class="message msg-ai">📝 <b>الملخص الذكي للمواد التي قمت بتصويرها:</b><br>لقد قمت بتحليل كافة العبارات والنصوص في الصور، وتم تلخيص الدرس في النقاط الجوهرية والتعريفات الهامة بنجاح. أصبحت المادة جاهزة للاختبار الآن!</div>`;
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
-
-        // تشغيل نظام الاختبار التفاعلي الذكي وتعديل مستويات التقدم والإيموجي
-        function triggerInteractiveQuiz() {
-            if (appData.uploadedPhotosCount === 0) {
-                alert("⚠️ يرجى تصوير مادة علمية أولاً لإنشاء أسئلة متوافقة معها!");
-                return;
-            }
-
-            const isCorrect = confirm("❓ سؤال حركي من الموديل:\nهل تعتبر الأوراق المرفوعة كافية لتغطية الاختبار النهائي للمادة؟\n\n(اضغط 'موافق' للإجابة بنعم، أو 'إلغاء' للإجابة بلا)");
-            
-            appData.totalQuizAttempts += 1;
-            if(isCorrect) {
-                appData.correctAnswers += 1;
-                alert("✅ إجابة ذكية وصحيحة! تم تحديث مؤشرات تقدمك على الواجهة.");
-                logActivity("حل اختبار", "أجبت بشكل صحيح على سؤال الموديل التفاعلي.");
-            } else {
-                alert("❌ إجابة غير دقيقة! حاول التركيز أكثر في المرة القادمة.");
-                logActivity("حل اختبار", "محاولة حل سؤال تفاعلي ولكن النتيجة غير صحيحة.");
-            }
-            
-            liveUpdateUI();
-        }
-
-        // محرك شات ومحادثة حقيقية وذكية جداً مع الموديل
-        async function sendChatMessage() {
-            const inputField = document.getElementById('userChatMsg');
-            const msgText = inputField.value.trim();
-            if(!msgText) return;
-
-            const chatWindow = document.getElementById('chatWindow');
-            chatWindow.innerHTML += `<div class="message msg-user">${msgText}</div>`;
-            inputField.value = "";
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-
-            const typingId = "typing-" + Date.now();
-            chatWindow.innerHTML += `<div class="message msg-ai" id="${typingId}">⏳ جاري المعالجة والرد بذكاء عميق...</div>`;
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-
-            try {
-                // الربط مع الموديل مع تمرير سياق الصور المرفوعة
-                const response = await fetch(MODEL_WORKER_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: "chat",
-                        text: `سياق الكتب المصورة: ${appData.textMemoryBuffer}\n\nالسؤال: ${msgText}`
-                    })
-                });
-
-                const result = await response.json();
-                let reply = (result.choices && result.choices[0]) ? result.choices[0].message.content : "تم تحليل الاستفسار بدقة وحفظه في سياق الجلسة الذكية.";
-                document.getElementById(typingId).innerHTML = reply;
-            } catch (error) {
-                document.getElementById(typingId).innerHTML = `🤖 رد الموديل الذكي: أهلاً بك، لقد قمت بتحليل استفسارك بدقة متناهية بناءً على سياق الصور المرفوعة رقم (${appData.uploadedPhotosCount}) وتوليد الإجابة الأنسب لمستواك الدراسي الحالي.`;
-            }
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
-
-        // دالة تدوين وتوثيق العمليات داخل قائمة السجل
-        function logActivity(action, desc) {
-            const timeStr = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-            appData.historyLog.unshift({ action: action, desc: desc, time: timeStr });
-        }
-
-        // دالة المزامنة الحركية اللحظية للشريط والخطوط والإيموجيات والأرقام المصفّرة
-        function liveUpdateUI() {
-            document.getElementById('statPhotos').textContent = appData.uploadedPhotosCount;
-            document.getElementById('statTasks').textContent = appData.studiedLessonsCount;
-            document.getElementById('statAnswers').textContent = appData.correctAnswers;
-            document.getElementById('uiStreak').textContent = appData.streakDays;
-
-            // حساب النسبة المئوية للتفاعل والنجاح
-            const progressPercent = appData.totalQuizAttempts > 0 
-                ? Math.round((appData.correctAnswers / appData.totalQuizAttempts) * 100)
-                : (appData.uploadedPhotosCount * 15 > 100 ? 100 : appData.uploadedPhotosCount * 15); // زيادة النسبة تلقائياً مع رفع الصور أيضاً
-
-            document.getElementById('statSuccess').textContent = progressPercent + "%";
-
-            // تحديث تبويب التقارير فوراً
-            if(appData.totalQuizAttempts > 0 || appData.uploadedPhotosCount > 0) {
-                document.getElementById('repReportText').innerHTML = `📊 كفاءتك العلمية المسجلة حالياً هي <b>${progressPercent}%</b>.<br>إجمالي الصور المستقرة في ذاكرة الموديل: <b>${appData.uploadedPhotosCount}</b> ورقة كتاب.<br>عدد الأسئلة المجابة بشكل صحيح: <b>${appData.correctAnswers}</b> من أصل <b>${appData.totalQuizAttempts}</b> محاولة.`;
-            }
-
-            // تطبيق التحكم الدقيق في شريط التقدم النيوني وعقد الإيموجيات المخصصة
-            const fillBar = document.getElementById('dynamicBar');
-            fillBar.style.width = progressPercent + '%';
-
-            const nodes = [document.getElementById('n1'), document.getElementById('n2'), document.getElementById('n3'), document.getElementById('n4'), document.getElementById('n5')];
-            
-            // تحديد العقدة النشطة بناءً على النسبة الحالية
-            let activeIndex = 0;
-            if (progressPercent <= 20) activeIndex = 0;
-            else if (progressPercent <= 45) activeIndex = 1;
-            else if (progressPercent <= 70) activeIndex = 2;
-            else if (progressPercent <= 90) activeIndex = 3;
-            else activeIndex = 4;
-
-            // ضبط الألوان وحجم الإيموجي تلقائياً (الخطوط السابقة بنفسجية، والخط الحالي أبيض، والإيموجي الحالي أضخم)
-            nodes.forEach((node, idx) => {
-                node.className = "emoji-node"; // تصفير وتحديث
-                if (idx < activeIndex) {
-                    node.classList.add('passed'); // تصبح الخلفية بنفسجية ممتلئة للخطوط التي قبلها
-                } else if (idx === activeIndex) {
-                    node.classList.add('current'); // تضخيم الإيموجي الحالي وجعل حوافه بيضاء متفاعلة
-                }
+        try {
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'analyze', image: selectedImageBase64, quizType: type })
             });
 
-            // تحديث السجل الفعلي في شاشة "السجل"
-            const logArea = document.getElementById('historyLogArea');
-            if(appData.historyLog.length > 0) {
-                let html = "";
-                appData.historyLog.forEach(item => {
-                    html += `
-                        <div class="log-item">
-                            <div>
-                                <strong>[${item.action}]</strong> - ${item.desc}
-                            </div>
-                            <div class="log-meta">${item.time}</div>
-                        </div>
-                    `;
-                });
-                logArea.innerHTML = html;
-            }
+            const rawData = await res.json();
+            const aiResponse = JSON.parse(rawData.choices[0].message.content);
+            
+            currentData = aiResponse;
+            currentQIndex = 0;
+
+            displaySummary(aiResponse.summary);
+            startQuiz(aiResponse.questions);
+
+        } catch (err) {
+            alert("حدث خطأ، تأكد من تعديل كود الـ Worker وحفظه!");
+            console.error(err);
+            document.getElementById('quizTypeSelector').classList.remove('hidden');
+        } finally {
+            document.getElementById('loading').classList.add('hidden');
+        }
+    }
+
+    function displaySummary(summary) {
+        document.getElementById('summaryContent').innerText = summary;
+        document.getElementById('summarySection').classList.remove('hidden');
+    }
+
+    function startQuiz(questions) {
+        document.getElementById('quizSection').classList.remove('hidden');
+        document.getElementById('qTotal').innerText = questions.length;
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        clearInterval(timerInterval);
+        const q = currentData.questions[currentQIndex];
+        document.getElementById('qIndex').innerText = currentQIndex + 1;
+        document.getElementById('qText').innerText = q.question;
+        document.getElementById('feedback').classList.add('hidden');
+        document.getElementById('nextBtn').classList.add('hidden');
+
+        const mcqBox = document.getElementById('mcqOptions');
+        const textInputBox = document.getElementById('textInputBox');
+        mcqBox.innerHTML = '';
+        document.getElementById('userAnswerText').value = '';
+
+        const timerBox = document.getElementById('timerBox');
+        if (isChallengeMode) {
+            timerBox.classList.remove('hidden');
+            startTimer(20);
+        } else {
+            timerBox.classList.add('hidden');
         }
 
-        // محرك تبديل الوضع الليلي والنهاري بالكامل وحفظ الاستايلات
-        function toggleThemeMode(checkbox) {
-            if(checkbox.checked) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-            }
-        }
+        if (q.type === 'mcq' || q.type === 'tf') {
+            mcqBox.classList.remove('hidden');
+            textInputBox.classList.add('hidden');
 
-        // تفعيل النظام فور تحميل الصفحة لتصفير العدادات والتقدم
-        window.onload = function() {
-            liveUpdateUI();
-        };
-    </script>
+            const opts = q.type === 'tf' ? ['صح', 'خطأ'] : q.options;
+            opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    clearInterval(timerInterval);
+                    evaluateMCQ(opt, q.correctAnswer, q.explanation);
+                };
+                mcqBox.appendChild(btn);
+            });
+            document.getElementById('qType').innerText = q.type === 'tf' ? 'صح أو خطأ' : 'اختيار من متعدد';
+
+        } else {
+            mcqBox.classList.add('hidden');
+            textInputBox.classList.remove('hidden');
+            document.getElementById('qType').innerText = q.type === 'fill' ? 'أكمل الجملة' : 'ما المقصد / اشرح';
+        }
+    }
+
+    function startTimer(seconds) {
+        let timeLeft = seconds;
+        document.getElementById('timerVal').innerText = timeLeft;
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timerVal').innerText = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                showFeedback(false, "⏰ انتهى الوقت المحدد للسؤال!");
+            }
+        }, 1000);
+    }
+
+    function evaluateMCQ(selected, correct, explanation) {
+        const isCorrect = selected.trim() === correct.trim();
+        showFeedback(isCorrect, isCorrect ? "إجابة صحيحة وممتازة! 🎉" : `إجابة خاطئة ❌. الإجابة الصحيحة هي: (${correct}). ${explanation || ''}`);
+    }
+
+    async function submitTextAnswer() {
+        clearInterval(timerInterval);
+        const uAns = document.getElementById('userAnswerText').value.trim();
+        if(!uAns) { alert("من فضلك اكتب إجابتك أولاً!"); return; }
+
+        const q = currentData.questions[currentQIndex];
+        document.getElementById('loading').classList.remove('hidden');
+
+        try {
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'evaluate',
+                    question: q.question,
+                    correctAnswer: q.correctAnswer,
+                    userAnswer: uAns
+                })
+            });
+
+            const rawData = await res.json();
+            const result = JSON.parse(rawData.choices[0].message.content);
+
+            showFeedback(result.isCorrect, result.isCorrect 
+                ? "✅ إجابة صحيحة ومكتملة المعنى!" 
+                : `❌ إجابة غير دقيقة أو غير مكتملة. \nالتوضيح: ${result.feedback}`);
+
+        } catch (err) {
+            console.error(err);
+            alert("حدث خطأ في تقييم الإجابة.");
+        } finally {
+            document.getElementById('loading').classList.add('hidden');
+        }
+    }
+
+    function showFeedback(isCorrect, msg) {
+        const fb = document.getElementById('feedback');
+        fb.innerText = msg;
+        fb.className = `feedback-box ${isCorrect ? 'correct' : 'wrong'}`;
+        fb.classList.remove('hidden');
+        document.getElementById('nextBtn').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+        currentQIndex++;
+        if (currentQIndex < currentData.questions.length) {
+            renderQuestion();
+        } else {
+            alert("🏆 ألمعي! لقد أنهيت هذا الاختبار بنجاح.");
+        }
+    }
+</script>
 </body>
 </html>
