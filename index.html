@@ -3,380 +3,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ذكي - Zeka Study</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>ذكاء Study - منصة التعلم الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0d0b18;
-            --card-bg: #171527;
-            --card-border: #26233d;
+            --bg-body: #f4f6fb;
+            --card-bg: #ffffff;
+            --text-main: #1e1b4b;
+            --text-sub: #64748b;
             --primary-purple: #7c3aed;
-            --primary-hover: #6d28d9;
+            --primary-light: rgba(124, 58, 237, 0.1);
             --accent-yellow: #f59e0b;
-            --text-white: #ffffff;
+            --border-color: #e2e8f0;
+            --success-bg: #d1fae5;
+            --success-text: #065f46;
+            --error-bg: #fee2e2;
+            --error-text: #991b1b;
+            --nav-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --bg-body: #0d0b18;
+            --card-bg: #171527;
+            --text-main: #ffffff;
             --text-sub: #a1a1aa;
-            --success-green: #10b981;
-            --danger-red: #ef4444;
+            --border-color: #26233d;
+            --nav-bg: #131124;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-white); min-height: 100vh; padding: 15px; display: flex; justify-content: center; }
+        body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; padding-bottom: 90px; }
 
-        .app-container { width: 100%; max-width: 480px; }
+        /* App Header */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-        /* الهيدر والعناوين */
-        header { text-align: center; margin-bottom: 20px; }
-        header h1 { font-size: 26px; font-weight: 800; color: var(--text-white); }
+        .streak-badge {
+            background: #fef3c7;
+            color: #d97706;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
+        .brand-logo { font-size: 22px; font-weight: 900; color: var(--primary-purple); }
+
+        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
+
+        /* Cards */
         .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
-        .upload-box {
-            border: 2px dashed var(--primary-purple);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            cursor: pointer;
-            background: rgba(124, 58, 237, 0.05);
-        }
-
-        .main-btn {
+        .btn-action {
             background: var(--primary-purple);
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
             width: 100%;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: 0.2s;
-        }
-        .main-btn:hover { background: var(--primary-hover); }
-
-        /* الأزرار الثلاثة التي تظهر عند الضغط على إنشاء أسئلة */
-        .quiz-types-container { margin-top: 15px; display: grid; gap: 10px; }
-        .type-btn {
-            background: #1f1c35;
-            border: 2px solid var(--card-border);
-            color: white;
             padding: 12px;
             border-radius: 12px;
-            font-size: 15px;
             font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             transition: 0.2s;
+            margin-top: 10px;
         }
-        .type-btn:hover { border-color: var(--primary-purple); background: #282444; }
+        .btn-action:hover { opacity: 0.9; }
 
-        /* العداد التنازلي وشريط التقدم */
-        .timer-header {
+        /* منحنى التقدم المستوى */
+        .level-tracker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin: 25px 0 10px 0;
+        }
+
+        .level-tracker::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+
+        .level-step {
+            position: relative;
+            z-index: 2;
             text-align: center;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--accent-yellow);
-            margin-bottom: 12px;
+            flex: 1;
+        }
+
+        .level-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            font-size: 20px;
+            margin: 0 auto 5px auto;
+            transition: 0.3s;
         }
 
-        .progress-bar-bg {
-            background: rgba(255, 255, 255, 0.1);
-            height: 8px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-        .progress-bar-fill {
-            background: var(--primary-purple);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
+        .level-step.active .level-icon {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 15px var(--primary-purple);
+            transform: scale(1.15);
         }
 
-        .score-badge {
+        .level-title { font-size: 12px; font-weight: 700; color: var(--text-sub); }
+
+        /* Counters Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 15px;
             text-align: center;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-sub);
-            margin-bottom: 12px;
         }
+        .stat-number { font-size: 26px; font-weight: 800; color: var(--primary-purple); }
+        .stat-label { font-size: 12px; color: var(--text-sub); font-weight: 600; margin-top: 4px; }
 
-        .q-type-badge {
-            background: rgba(124, 58, 237, 0.2);
-            color: #c4b5fd;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .q-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; line-height: 1.5; }
-
-        /* خيارات الأسئلة */
-        .options-list { display: grid; gap: 10px; }
-        .opt-card {
-            background: #1f1c35;
-            border: 1px solid var(--card-border);
-            padding: 14px;
+        /* Quiz Types Buttons */
+        .quiz-types-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .quiz-type-btn {
+            background: var(--primary-light);
+            color: var(--primary-purple);
+            border: 1px solid var(--primary-purple);
+            padding: 12px;
             border-radius: 12px;
-            color: white;
-            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
             cursor: pointer;
-            text-align: right;
-            transition: 0.2s;
-        }
-        .opt-card:hover { border-color: var(--primary-purple); }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            background: #1f1c35;
-            color: white;
-            font-size: 15px;
-            margin-bottom: 10px;
         }
 
-        /* رسائل النتيجة */
-        .status-box {
-            padding: 14px;
+        /* Test Controls & UI */
+        .timer-display { font-size: 22px; font-weight: 800; color: var(--accent-yellow); text-align: center; margin-bottom: 10px; }
+        .progress-bar-bg { height: 8px; background: var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
+        .progress-bar-fill { height: 100%; background: var(--primary-purple); width: 0%; transition: width 0.3s; }
+
+        .opt-btn {
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            padding: 12px;
             border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Bottom Nav Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--nav-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 11px;
             font-weight: 700;
-            text-align: center;
-            margin-top: 12px;
-            font-size: 15px;
+            cursor: pointer;
         }
-        .status-box.success { background: rgba(16, 185, 129, 0.2); color: var(--success-green); border: 1px solid var(--success-green); }
-        .status-box.error { background: rgba(239, 68, 68, 0.2); color: var(--danger-red); border: 1px solid var(--danger-red); }
+
+        .nav-item.active { color: var(--primary-purple); }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
 
         .hidden { display: none !important; }
-        .loading-txt { text-align: center; color: var(--accent-yellow); font-weight: 700; margin-top: 10px; }
+        .input-box { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); margin: 8px 0; }
+        .feedback { padding: 12px; border-radius: 10px; text-align: center; font-weight: 700; margin-top: 10px; }
+        .feedback.success { background: var(--success-bg); color: var(--success-text); }
+        .feedback.error { background: var(--error-bg); color: var(--error-text); }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <header>
-        <h1>Zeka Study 🧠</h1>
+    <header class="app-header">
+        <div class="streak-badge">🔥 <span id="streakDays">1</span> أيام</div>
+        <div class="brand-logo">ذكاء Study 🧠</div>
     </header>
 
-    <div class="card" id="uploadCard">
-        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-            📸 اضغط هنا لالتقاط/رفع صورة الدرس
-            <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="onFileSelected(event)">
-        </div>
+    <div class="container">
 
-        <button class="main-btn" id="generateBtn" onclick="showQuizButtons()">إنشاء أسئلة ✨</button>
+        <div id="tab-home" class="tab-content">
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">رفع المواد والأوراق 📸</h3>
+                <div style="border: 2px dashed var(--primary-purple); padding: 25px; text-align: center; border-radius: 15px; cursor: pointer; background: var(--primary-light);" onclick="document.getElementById('imgInput').click()">
+                    اضغط للالتقاط أو اختيار صورة الدرس
+                    <input type="file" id="imgInput" accept="image/*" class="hidden" onchange="handleFile(event)">
+                </div>
+                
+                <button class="btn-action" onclick="toggleQuizOptions()">إنشاء أسئلة ✨</button>
 
-        <div id="quizTypesBox" class="quiz-types-container hidden">
-            <button class="type-btn" onclick="startQuizMode('quick')">
-                <span>⚡ اختبار سريع</span>
-                <small style="color: var(--text-sub)">(5 أسئلة)</small>
-            </button>
-            <button class="type-btn" onclick="startQuizMode('full')">
-                <span>📄 امتحان كامل</span>
-                <small style="color: var(--text-sub)">(15 سؤالاً)</small>
-            </button>
-            <button class="type-btn" onclick="startQuizMode('challenge')">
-                <span>🔥 وضع التحدي</span>
-                <small style="color: var(--text-sub)">(أسئلة عباقرة + تايمر)</small>
-            </button>
-        </div>
-
-        <div id="loadingTxt" class="loading-txt hidden">⏳ جاري قراءة الصورة وتوليد الاختبار...</div>
-    </div>
-
-    <div class="card hidden" id="summaryCard">
-        <h3 style="color: var(--accent-yellow); margin-bottom: 8px;">📝 ملخص الدرس:</h3>
-        <p id="summaryText" style="line-height: 1.7; color: var(--text-sub);"></p>
-    </div>
-
-    <div class="card hidden" id="quizCard">
-        <div class="timer-header">
-            ⏱️ الوقت المتبقي: <span id="timerText">25:00</span>
-        </div>
-
-        <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progressFill"></div>
-        </div>
-
-        <div class="score-badge">
-            النتيجة: <span id="userScore">0</span> / <span id="totalQuestions">0</span>
-        </div>
-
-        <div>
-            <span class="q-type-badge" id="qTypeLabel">اختيار من متعدد</span>
-            <div class="score-badge" style="text-align: right; font-size: 14px;">سؤال <span id="qCurrent">1</span> من <span id="qTotal">15</span>:</div>
-            <h2 class="q-title" id="qTitleText">السؤال هنا؟</h2>
-
-            <div class="options-list" id="mcqContainer"></div>
-
-            <div id="textContainer" class="hidden">
-                <input type="text" id="textAnswerInput" placeholder="اكتب الإجابة هنا...">
-                <button class="main-btn" onclick="submitTextAnswer()">تحقق</button>
+                <div id="quizOptions" class="quiz-types-group hidden">
+                    <div class="quiz-type-btn" onclick="startQuiz('quick')">⚡ اختبار سريع <small>(5 أسئلة)</small></div>
+                    <div class="quiz-type-btn" onclick="startQuiz('full')">📄 امتحان كامل <small>(15 سؤال)</small></div>
+                    <div class="quiz-type-btn" onclick="startQuiz('challenge')">🔥 وضع التحدي <small>(أسئلة عباقرة)</small></div>
+                </div>
+                <div id="loadingStatus" style="text-align: center; color: var(--accent-yellow); font-weight: 700; margin-top: 10px;" class="hidden">⏳ جاري معالجة الصورة واستخراج الاختبار...</div>
             </div>
 
-            <div id="feedbackBox" class="status-box hidden"></div>
+            <div class="card">
+                <h4>📊 منحنى تقدمك الحقيقي وتفاعلك</h4>
+                <div class="level-tracker">
+                    <div class="level-step active" id="lvl-0"><div class="level-icon">😐</div><div class="level-title">البداية</div></div>
+                    <div class="level-step" id="lvl-1"><div class="level-icon">🙂</div><div class="level-title">مبتدئ</div></div>
+                    <div class="level-step" id="lvl-2"><div class="level-icon">😎</div><div class="level-title">متطور</div></div>
+                    <div class="level-step" id="lvl-3"><div class="level-icon">🦾</div><div class="level-title">متميز</div></div>
+                    <div class="level-step" id="lvl-4"><div class="level-icon">👑</div><div class="level-title">عبقري</div></div>
+                </div>
+            </div>
 
-            <button id="nextBtn" class="main-btn hidden" style="background: #282444;" onclick="nextQuestion()">السؤال التالي ➔</button>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number" id="statDocs">0</div>
+                    <div class="stat-label">الصور المرفوعة للموديل</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statLessons">0</div>
+                    <div class="stat-label">الدروس المذاكرة والملخصة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statCorrect">0</div>
+                    <div class="stat-label">الإجابات الصحيحة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statAcc">0%</div>
+                    <div class="stat-label">نسبة دقة الأداء العام</div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
+        <div id="tab-quiz" class="tab-content hidden">
+            <div class="card">
+                <div class="timer-display">⏱️ الوقت المتبقي: <span id="timer">25:00</span></div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress"></div></div>
+                
+                <div style="text-align: center; font-weight: 700; color: var(--text-sub); margin-bottom: 10px;">
+                    النتيجة: <span id="currentScore">0</span> / <span id="totalQuestions">0</span>
+                </div>
+
+                <h3 id="qTitle" style="margin-bottom: 15px;">عنوان السؤال</h3>
+
+                <div id="mcqBox"></div>
+                
+                <div id="textBox" class="hidden">
+                    <input type="text" id="textAns" class="input-box" placeholder="اكتب إجابتك هنا...">
+                    <button class="btn-action" onclick="submitTextAnswer()">تحقق من الإجابة</button>
+                </div>
+
+                <div id="feedback" class="feedback hidden"></div>
+                <button id="nextBtn" class="btn-action hidden" style="background: #334155;" onclick="nextQuestion()">السؤال التالي ➔</button>
+            </div>
+        </div>
+
+        <div id="tab-history" class="tab-content hidden">
+            <div class="card">
+                <h3>📚 سجل النشاط والمواد المصورة</h3>
+                <p style="color: var(--text-sub); margin-top: 10px;" id="historyEmptyMsg">السجل فارغ تماماً، قم بالتقاط صورة أو حل اختبار لتسجيل نشاطك حياً!</p>
+                <div id="historyList"></div>
+            </div>
+        </div>
+
+        <div id="tab-chat" class="tab-content hidden">
+            <div class="card">
+                <h3>💬 محادثة ذكية مع الموديل</h3>
+                <div id="chatMessages" style="height: 250px; overflow-y: auto; margin: 15px 0; border: 1px solid var(--border-color); padding: 10px; border-radius: 10px;">
+                    <p style="color: var(--text-sub);">مرحباً بك! أنا الموديل الذكي المساعد لك. اسألني أي سؤال عن أوراقك!</p>
+                </div>
+                <input type="text" id="chatInput" class="input-box" placeholder="اكتب سؤالك العلمي هنا...">
+                <button class="btn-action" onclick="sendChatMessage()">إرسال</button>
+            </div>
+        </div>
+
+        <div id="tab-reports" class="tab-content hidden">
+            <div class="card">
+                <h3>📊 التقارير ومؤشرات الأداء</h3>
+                <p style="color: var(--text-sub); margin-top: 10px;" id="reportStatus">لم يتم رصد تفاعلات كافية حتى الآن لإجراء تقرير تفصيلي.</p>
+            </div>
+        </div>
+
+        <div id="tab-settings" class="tab-content hidden">
+            <div class="card">
+                <h3>⚙️ الإعدادات وملف المستخدم</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <span>تفعيل الوضع المظلم (Dark Mode)</span>
+                    <input type="checkbox" onchange="toggleDarkMode(this.checked)">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)"><span class="nav-icon">🏠</span>الرئيسية</div>
+        <div class="nav-item" onclick="switchTab('history', this)"><span class="nav-icon">📚</span>السجل</div>
+        <div class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span>المحادثة</div>
+        <div class="nav-item" onclick="switchTab('reports', this)"><span class="nav-icon">📊</span>التقارير</div>
+        <div class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span>الإعدادات</div>
+    </nav>
 <script>
     const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
 
-    let base64Image = null;
-    let quizData = null;
-    let currentIdx = 0;
-    let score = 0;
-    let timerSeconds = 25 * 60; // 25 دقيقة
-    let timerTimer = null;
+    // العدادات والمؤشرات العامة
+    let stats = {
+        docs: 0,
+        lessons: 0,
+        correct: 0,
+        totalAnswered: 0
+    };
 
-    function onFileSelected(e) {
+    let base64Img = null;
+    let currentQuiz = null;
+    let qIndex = 0;
+    let score = 0;
+    let timerInterval = null;
+    let secondsLeft = 25 * 60;
+
+    // التنقل بين الأقسام من القائمة السفلية
+    function switchTab(tabName, el) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        if(el) el.classList.add('active');
+    }
+
+    // تفعيل الوضع المظلم
+    function toggleDarkMode(isDark) {
+        if(isDark) document.body.classList.add('dark-mode');
+        else document.body.classList.remove('dark-mode');
+    }
+
+    // اختيار الصورة
+    function handleFile(e) {
         const file = e.target.files[0];
         if(!file) return;
         const reader = new FileReader();
         reader.onload = (evt) => {
-            base64Image = evt.target.result;
-            alert("تم إرفاق الصورة بنجاح! اضغط الآن على إنشاء أسئلة.");
+            base64Img = evt.target.result;
+            stats.docs++;
+            updateStatsUI();
+            alert("تم إرفاق صورة الدرس بنجاح!");
         };
         reader.readAsDataURL(file);
     }
 
-    function showQuizButtons() {
-        if(!base64Image) {
-            alert("من فضلك ارفع صورة الدرس أولاً!");
+    // إظهار أزرار أنواع الأسئلة
+    function toggleQuizOptions() {
+        if(!base64Img) {
+            alert("من فضلك التقاط أو رفع صورة الدرس أولاً!");
             return;
         }
-        document.getElementById('quizTypesBox').classList.remove('hidden');
+        document.getElementById('quizOptions').classList.remove('hidden');
     }
 
-    async function startQuizMode(type) {
-        document.getElementById('loadingTxt').classList.remove('hidden');
-        document.getElementById('quizTypesBox').classList.add('hidden');
+    // بدء الاختبار والتواصل مع الذكاء الاصطناعي
+    async function startQuiz(type) {
+        document.getElementById('loadingStatus').classList.remove('hidden');
+        document.getElementById('quizOptions').classList.add('hidden');
 
         try {
             const res = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'analyze', image: base64Image, quizType: type })
+                body: JSON.stringify({ action: 'analyze', image: base64Img, quizType: type })
             });
 
             const raw = await res.json();
             const data = JSON.parse(raw.choices[0].message.content);
 
-            quizData = data;
-            currentIdx = 0;
-            score = 0; // إعادة التصفير للنتيجة
+            currentQuiz = data.questions;
+            qIndex = 0;
+            score = 0;
+            stats.lessons++;
+            updateStatsUI();
 
-            // عرض الملخص
-            document.getElementById('summaryText').innerText = data.summary;
-            document.getElementById('summaryCard').classList.remove('hidden');
+            // فتح الواجهة
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById('tab-quiz').classList.remove('hidden');
 
-            // تجهيز شاشة الاختبار
-            document.getElementById('uploadCard').classList.add('hidden');
-            document.getElementById('quizCard').classList.remove('hidden');
-
-            document.getElementById('totalQuestions').innerText = data.questions.length;
-            document.getElementById('qTotal').innerText = data.questions.length;
-
-            startGlobalTimer();
-            renderCurrentQuestion();
+            document.getElementById('totalQuestions').innerText = currentQuiz.length;
+            startTimer();
+            renderQuestion();
 
         } catch(err) {
-            alert("حدث خطأ أثناء التواصل مع الذكاء الاصطناعي!");
+            alert("حدث خطأ أثناء الاتصال بالخادم، تأكد من إعدادات الـ Worker!");
             console.error(err);
-            document.getElementById('quizTypesBox').classList.remove('hidden');
+            document.getElementById('quizOptions').classList.remove('hidden');
         } finally {
-            document.getElementById('loadingTxt').classList.add('hidden');
+            document.getElementById('loadingStatus').classList.add('hidden');
         }
     }
 
-    function startGlobalTimer() {
-        clearInterval(timerTimer);
-        timerTimer = setInterval(() => {
-            if(timerSeconds <= 0) {
-                clearInterval(timerTimer);
-                alert("انتهى الوقت المحدد للاختبار!");
+    // العداد التنازلي للوقت
+    function startTimer() {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if(secondsLeft <= 0) {
+                clearInterval(timerInterval);
+                alert("انتهى وقت الاختبار!");
                 return;
             }
-            timerSeconds--;
-            const mins = Math.floor(timerSeconds / 60);
-            const secs = timerSeconds % 60;
-            document.getElementById('timerText').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            secondsLeft--;
+            const m = Math.floor(secondsLeft / 60);
+            const s = secondsLeft % 60;
+            document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
         }, 1000);
     }
 
-    function renderCurrentQuestion() {
-        const q = quizData.questions[currentIdx];
-
-        // تحديث الرقم والتصفير الحسابي
-        document.getElementById('qCurrent').innerText = currentIdx + 1;
-        document.getElementById('userScore').innerText = score;
-
-        // تحديث شريط التقدم الأصفر/البنفسجي
-        const progressPct = ((currentIdx) / quizData.questions.length) * 100;
-        document.getElementById('progressFill').style.width = progressPct + "%";
-
-        document.getElementById('qTitleText').innerText = q.question;
-        document.getElementById('feedbackBox').classList.add('hidden');
+    // عرض السؤال الحالي
+    function renderQuestion() {
+        const q = currentQuiz[qIndex];
+        document.getElementById('qTitle').innerText = `سؤال ${qIndex + 1}: ${q.question}`;
+        document.getElementById('currentScore').innerText = score;
+        document.getElementById('feedback').classList.add('hidden');
         document.getElementById('nextBtn').classList.add('hidden');
 
-        const mcqBox = document.getElementById('mcqContainer');
-        const textBox = document.getElementById('textContainer');
+        const mcqBox = document.getElementById('mcqBox');
+        const textBox = document.getElementById('textBox');
         mcqBox.innerHTML = '';
-        document.getElementById('textAnswerInput').value = '';
+        document.getElementById('textAns').value = '';
+
+        // شريط التقدم
+        const pct = (qIndex / currentQuiz.length) * 100;
+        document.getElementById('progress').style.width = pct + '%';
 
         if(q.type === 'mcq' || q.type === 'tf') {
             mcqBox.classList.remove('hidden');
             textBox.classList.add('hidden');
-            document.getElementById('qTypeLabel').innerText = q.type === 'tf' ? 'صح أو خطأ' : 'اختيار من متعدد';
+            const opts = q.type === 'tf' ? ['صح', 'خطأ'] : q.options;
 
-            const options = q.type === 'tf' ? ['صح', 'خطأ'] : q.options;
-            options.forEach(opt => {
-                const btn = document.createElement('div');
-                btn.className = 'opt-card';
-                btn.innerText = opt;
-                btn.onclick = () => checkMCQ(opt, q.correctAnswer, q.explanation);
-                mcqBox.appendChild(btn);
+            opts.forEach(opt => {
+                const b = document.createElement('div');
+                b.className = 'opt-btn';
+                b.innerText = opt;
+                b.onclick = () => checkMCQ(opt, q.correctAnswer);
+                mcqBox.appendChild(b);
             });
         } else {
             mcqBox.classList.add('hidden');
             textBox.classList.remove('hidden');
-            document.getElementById('qTypeLabel').innerText = q.type === 'fill' ? 'أكمل الجملة' : 'سؤال مباشر / اشرح';
         }
     }
 
-    function checkMCQ(selected, correct, explanation) {
-        const isCorrect = selected.trim() === correct.trim();
-        if(isCorrect) score++;
-
-        document.getElementById('userScore').innerText = score;
-        showFeedback(isCorrect, isCorrect ? "✅ صح! إجابة صحيحة!" : `❌ غلط! الإجابة الصحيحة هي: ${correct} \n${explanation || ''}`);
+    // التحقق من الاختيارات
+    function checkMCQ(userAns, correctAns) {
+        stats.totalAnswered++;
+        const isRight = userAns.trim() === correctAns.trim();
+        if(isRight) {
+            score++;
+            stats.correct++;
+        }
+        updateStatsUI();
+        showFeedback(isRight, isRight ? "✅ إجابة صحيحة!" : `❌ إجابة خاطئة! الإجابة الصحيحة هي: ${correctAns}`);
     }
 
+    // التحقق من الأسئلة المقالية
     async function submitTextAnswer() {
-        const ans = document.getElementById('textAnswerInput').value.trim();
-        if(!ans) return;
+        const userAns = document.getElementById('textAns').value.trim();
+        if(!userAns) return;
 
-        const q = quizData.questions[currentIdx];
-        document.getElementById('loadingTxt').classList.remove('hidden');
+        const q = currentQuiz[qIndex];
+        stats.totalAnswered++;
 
         try {
             const res = await fetch(WORKER_URL, {
@@ -386,43 +514,78 @@
                     action: 'evaluate',
                     question: q.question,
                     correctAnswer: q.correctAnswer,
-                    userAnswer: ans
+                    userAnswer: userAns
                 })
             });
-
             const raw = await res.json();
             const result = JSON.parse(raw.choices[0].message.content);
 
-            if(result.isCorrect) score++;
-            document.getElementById('userScore').innerText = score;
-
-            showFeedback(result.isCorrect, result.isCorrect 
-                ? "✅ صح! إجابة صحيحة!" 
-                : `❌ غلط! الإجابة الصحيحة هي: ${q.correctAnswer} \n ${result.feedback}`);
+            if(result.isCorrect) {
+                score++;
+                stats.correct++;
+            }
+            updateStatsUI();
+            showFeedback(result.isCorrect, result.isCorrect ? "✅ إجابة صحيحة!" : `❌ إجابة خاطئة! الإجابة: ${q.correctAnswer}`);
 
         } catch(e) {
-            alert("حدث خطأ أثناء تقييم الإجابة.");
-        } finally {
-            document.getElementById('loadingTxt').classList.add('hidden');
+            alert("خطأ في تقييم الإجابة.");
         }
     }
 
-    function showFeedback(isCorrect, msg) {
-        const box = document.getElementById('feedbackBox');
-        box.innerText = msg;
-        box.className = `status-box ${isCorrect ? 'success' : 'error'}`;
-        box.classList.remove('hidden');
+    function showFeedback(isRight, text) {
+        const fb = document.getElementById('feedback');
+        fb.innerText = text;
+        fb.className = `feedback ${isRight ? 'success' : 'error'}`;
+        fb.classList.remove('hidden');
         document.getElementById('nextBtn').classList.remove('hidden');
     }
 
     function nextQuestion() {
-        currentIdx++;
-        if(currentIdx < quizData.questions.length) {
-            renderCurrentQuestion();
+        qIndex++;
+        if(qIndex < currentQuiz.length) {
+            renderQuestion();
         } else {
-            document.getElementById('progressFill').style.width = "100%";
-            alert(`🏆 انتهى الاختبار! درجتك النهائية هي: ${score} من ${quizData.questions.length}`);
+            document.getElementById('progress').style.width = '100%';
+            alert(`🎉 انتهى الاختبار! درجتك النهائية هي: ${score} من ${currentQuiz.length}`);
+            switchTab('home');
         }
+    }
+
+    // تحديث الإحصائيات والمنحنى الحقيقي
+    function updateStatsUI() {
+        document.getElementById('statDocs').innerText = stats.docs;
+        document.getElementById('statLessons').innerText = stats.lessons;
+        document.getElementById('statCorrect').innerText = stats.correct;
+
+        const acc = stats.totalAnswered > 0 ? Math.round((stats.correct / stats.totalAnswered) * 100) : 0;
+        document.getElementById('statAcc').innerText = `${acc}%`;
+
+        // تحديث المنحنى الحقيقي بناءً على نسبة الإجابات الصحيحة
+        document.querySelectorAll('.level-step').forEach(s => s.classList.remove('active'));
+        if(acc < 20) document.getElementById('lvl-0').classList.add('active');
+        else if(acc < 40) document.getElementById('lvl-1').classList.add('active');
+        else if(acc < 60) document.getElementById('lvl-2').classList.add('active');
+        else if(acc < 80) document.getElementById('lvl-3').classList.add('active');
+        else document.getElementById('lvl-4').classList.add('active');
+
+        // تحديث تقارير وسجل النظام
+        if(stats.totalAnswered > 0) {
+            document.getElementById('historyEmptyMsg').classList.add('hidden');
+            document.getElementById('historyList').innerHTML = `<p>✅ تم إنجاز ${stats.totalAnswered} سؤالاً بنجاح بنسبة دقة ${acc}%.</p>`;
+            document.getElementById('reportStatus').innerText = `أداؤك ممتاز! دقة إجاباتك الحالية هي ${acc}% استمر في التقدم.`;
+        }
+    }
+
+    // المحادثة المباشرة
+    function sendChatMessage() {
+        const input = document.getElementById('chatInput');
+        if(!input.value.trim()) return;
+        
+        const box = document.getElementById('chatMessages');
+        box.innerHTML += `<div style="text-align: left; margin: 8px 0; color: var(--primary-purple); font-weight: 700;">🙋‍♂️: ${input.value}</div>`;
+        box.innerHTML += `<div style="text-align: right; margin: 8px 0; color: var(--text-main);">🤖: جاري تحليل سؤالك بناءً على المواد الدراسية...</div>`;
+        input.value = '';
+        box.scrollTop = box.scrollHeight;
     }
 </script>
 </body>
