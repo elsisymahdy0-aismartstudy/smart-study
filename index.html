@@ -1,6 +1,8 @@
 
-# The string got cut off. Let me write the file in parts using file operations
-# First, write the first part
+# Build the complete HTML file with the requested fixes
+# Fix 1: Remove all white text/code that appears on screen (Python code comments)
+# Fix 2: "Next Question" button should be bright (primary gradient), not gray
+# Fix 3: Stats should start realistic (all zeros, not fake data)
 
 part1 = '''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -757,7 +759,7 @@ part1 = '''<!DOCTYPE html>
         <div id="tab-home" class="tab-content">
             <div class="hero-banner animate-fade-in-up">
                 <div class="hero-content">
-                    <h2 class="hero-title">مرحباً بك في <span class="highlight">ذكاء Study!</span></h2>
+                    <h2 class="hero-title">مرحبا بك في <span class="highlight">ذكاء Study!</span></h2>
                     <p class="hero-subtitle">✨ تعلم بذكاء، أفهم أسرع، وتفوق بسهولة</p>
                     <button class="hero-btn" onclick="scrollToUpload()">
                         ابدأ رحلتك الذكية <i class="fas fa-rocket"></i>
@@ -781,7 +783,7 @@ part1 = '''<!DOCTYPE html>
                 <div class="feature-card" onclick="openCamera()">
                     <div class="feature-icon blue">📷</div>
                     <div class="feature-title">تصوير كتاب</div>
-                    <div class="feature-desc">افتح الكاميرا والتقط أي كتاب للبدء فوراً</div>
+                    <div class="feature-desc">افتح الكاميرا والتقط أي كتاب للبدء فورا</div>
                     <div class="feature-arrow blue"><i class="fas fa-arrow-right"></i></div>
                 </div>
                 <div class="feature-card" onclick="openGallery()">
@@ -867,7 +869,7 @@ part1 = '''<!DOCTYPE html>
                 </div>
                 <p class="progress-subtitle">كلما زادت إجاباتك الصحيحة، يتغير إثر إيجابي للمستوى الأعلى!</p>
                 <div class="emoji-track">
-                    <div class="emoji-step active" id="lvl-0">
+                    <div class="emoji-step" id="lvl-0">
                         <div class="emoji-icon">🎉</div>
                         <div class="emoji-label">100%-81%</div>
                     </div>
@@ -883,7 +885,7 @@ part1 = '''<!DOCTYPE html>
                         <div class="emoji-icon">🙂</div>
                         <div class="emoji-label">40%-21%</div>
                     </div>
-                    <div class="emoji-step" id="lvl-4">
+                    <div class="emoji-step active" id="lvl-4">
                         <div class="emoji-icon">😐</div>
                         <div class="emoji-label">20%-0%</div>
                     </div>
@@ -896,7 +898,7 @@ part1 = '''<!DOCTYPE html>
                     <div class="stat-info">
                         <div class="stat-number" id="statAcc">0%</div>
                         <div class="stat-label">نسبة النجاح</div>
-                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 12% عن الأسبوع الماضي</div>
+                        <div class="stat-change up" id="statAccChange" style="opacity:0;"><i class="fas fa-arrow-up"></i> --</div>
                     </div>
                 </div>
                 <div class="stat-box">
@@ -904,7 +906,7 @@ part1 = '''<!DOCTYPE html>
                     <div class="stat-info">
                         <div class="stat-number" id="statCorrect">0</div>
                         <div class="stat-label">الإجابات الصحيحة</div>
-                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 28 إجابة جديدة</div>
+                        <div class="stat-change up" id="statCorrectChange" style="opacity:0;"><i class="fas fa-arrow-up"></i> --</div>
                     </div>
                 </div>
                 <div class="stat-box">
@@ -912,7 +914,7 @@ part1 = '''<!DOCTYPE html>
                     <div class="stat-info">
                         <div class="stat-number" id="statLessons">0</div>
                         <div class="stat-label">المواد الدراسية</div>
-                        <div class="stat-change fire"><i class="fas fa-fire"></i> نشطة حالياً</div>
+                        <div class="stat-change fire" id="statLessonsChange" style="opacity:0;"><i class="fas fa-fire"></i> --</div>
                     </div>
                 </div>
                 <div class="stat-box">
@@ -920,22 +922,18 @@ part1 = '''<!DOCTYPE html>
                     <div class="stat-info">
                         <div class="stat-number" id="statStreak">1</div>
                         <div class="stat-label">معدل الحضور اليومي</div>
-                        <div class="stat-change fire"><i class="fas fa-fire"></i> حافظ على الاستمرارية</div>
+                        <div class="stat-change fire" id="statStreakChange" style="opacity:0;"><i class="fas fa-fire"></i> --</div>
                     </div>
                 </div>
             </div>
         </div>
 '''
 
-# Write part 1
 output_path = '/mnt/agents/output/zeka_study_app.html'
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(part1)
 
 print(f"Part 1 written: {len(part1)} chars")
-        
-output_path = '/mnt/agents/output/zeka_study_app.html'
-
 part2 = '''
         <div id="tab-quiz" class="tab-content hidden">
             <div class="card">
@@ -997,7 +995,7 @@ part2 = '''
 
                 <div id="feedback" class="feedback hidden"></div>
                 
-                <button id="nextBtn" class="btn-action hidden" style="background: #334155;" onclick="nextQuestion()">
+                <button id="nextBtn" class="btn-action primary hidden" onclick="nextQuestion()">
                     السؤال التالي <i class="fas fa-arrow-left"></i>
                 </button>
             </div>
