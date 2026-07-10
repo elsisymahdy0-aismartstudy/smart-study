@@ -1,1036 +1,10 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ذكاء Study - منصة التعلم الذكية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --bg-body: #f8f9fd;
-            --card-bg: #ffffff;
-            --text-main: #1a1a2e;
-            --text-sub: #6b7280;
-            --text-light: #9ca3af;
-            --primary-purple: #7c3aed;
-            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
-            --primary-light: rgba(124, 58, 237, 0.08);
-            --primary-lighter: rgba(124, 58, 237, 0.04);
-            --accent-yellow: #f59e0b;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --accent-blue: #3b82f6;
-            --accent-orange: #f97316;
-            --border-color: #e5e7eb;
-            --border-light: #f3f4f6;
-            --success-bg: #d1fae5;
-            --success-text: #065f46;
-            --error-bg: #fee2e2;
-            --error-text: #991b1b;
-            --warning-bg: #fef3c7;
-            --warning-text: #92400e;
-            --info-bg: #dbeafe;
-            --info-text: #1e40af;
-            --nav-bg: #ffffff;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 40px rgba(124, 58, 237, 0.12);
-            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
-            --radius-full: 9999px;
-        }
 
-        body.dark-mode {
-            --bg-body: #0a0a1a;
-            --card-bg: #131124;
-            --text-main: #f1f5f9;
-            --text-sub: #94a3b8;
-            --text-light: #64748b;
-            --border-color: #1e1b3a;
-            --border-light: #1a1830;
-            --nav-bg: #0f0e1c;
-            --primary-light: rgba(124, 58, 237, 0.15);
-            --primary-lighter: rgba(124, 58, 237, 0.08);
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
-            --shadow-lg: 0 10px 40px rgba(0,0,0,0.4);
-        }
+# Build the complete HTML file with the requested fixes
+# Fix 1: Remove all white text/code that appears on screen (Python code comments)
+# Fix 2: "Next Question" button should be bright (primary gradient), not gray
+# Fix 3: Stats should start realistic (all zeros, not fake data)
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        html { scroll-behavior: smooth; }
-        body { 
-            background-color: var(--bg-body); 
-            color: var(--text-main); 
-            min-height: 100vh; 
-            padding-bottom: 90px; 
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--primary-purple); border-radius: var(--radius-full); }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 5px rgba(124, 58, 237, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.6); }
-        }
-
-        .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
-        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
-        .animate-scale-in { animation: scaleIn 0.4s ease-out forwards; }
-
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .notification-btn {
-            width: 42px; height: 42px; border-radius: var(--radius-full);
-            background: var(--primary-lighter); border: 1px solid var(--border-color);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: all 0.3s ease;
-        }
-        .notification-btn:hover { background: var(--primary-light); transform: scale(1.05); }
-        .notification-btn i { font-size: 18px; color: var(--text-sub); }
-        .notification-dot {
-            position: absolute; top: 8px; right: 8px;
-            width: 8px; height: 8px; background: var(--primary-purple);
-            border-radius: var(--radius-full); border: 2px solid var(--card-bg);
-        }
-        .brand-logo { display: flex; align-items: center; gap: 8px; }
-        .brand-logo .logo-text { 
-            font-size: 20px; font-weight: 900; color: var(--primary-purple);
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .brand-logo .logo-icon {
-            width: 40px; height: 40px; background: var(--primary-gradient);
-            border-radius: var(--radius-full);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-        }
-        .streak-badge {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            color: #d97706; padding: 6px 14px; border-radius: var(--radius-full);
-            font-weight: 800; font-size: 13px; display: flex;
-            align-items: center; gap: 6px;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
-            border: 1px solid rgba(245, 158, 11, 0.15);
-        }
-        .streak-badge i { color: #f59e0b; }
-        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
-
-        .hero-banner {
-            background: linear-gradient(135deg, #1a0a3e 0%, #2d1b69 50%, #4c1d95 100%);
-            border-radius: var(--radius-2xl); padding: 24px; margin-bottom: 20px;
-            position: relative; overflow: hidden; min-height: 200px;
-            display: flex; align-items: center; box-shadow: var(--shadow-lg);
-        }
-        .hero-banner::before {
-            content: ''; position: absolute; top: -50%; right: -20%;
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.3) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        .hero-banner::after {
-            content: ''; position: absolute; bottom: -30%; left: -10%;
-            width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(192, 132, 252, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        .hero-content { position: relative; z-index: 2; flex: 1; }
-        .hero-title {
-            font-size: 22px; font-weight: 900; color: #fff;
-            margin-bottom: 8px; line-height: 1.4;
-        }
-        .hero-title .highlight {
-            background: linear-gradient(90deg, #c084fc, #a855f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-subtitle {
-            font-size: 13px; color: rgba(255,255,255,0.7);
-            margin-bottom: 16px; line-height: 1.6;
-        }
-        .hero-btn {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white; border: none; padding: 12px 24px;
-            border-radius: var(--radius-lg); font-weight: 700; font-size: 14px;
-            cursor: pointer; transition: all 0.3s ease;
-            display: inline-flex; align-items: center; gap: 8px;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
-        }
-        .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5); }
-        .hero-btn i { font-size: 16px; }
-        .hero-image {
-            position: absolute; left: 10px; top: 50%;
-            transform: translateY(-50%); width: 140px; height: 140px; z-index: 2;
-        }
-        .hero-image .brain-emoji {
-            font-size: 100px;
-            filter: drop-shadow(0 0 20px rgba(124, 58, 237, 0.5));
-            animation: float 3s ease-in-out infinite;
-        }
-        .carousel-dots {
-            display: flex; justify-content: center; gap: 6px; margin-top: 12px;
-        }
-        .carousel-dot {
-            width: 20px; height: 4px; background: rgba(0,0,0,0.1);
-            border-radius: var(--radius-full); transition: all 0.3s;
-        }
-        .carousel-dot.active { width: 30px; background: var(--primary-purple); }
-
-        .section-title {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .section-title h2 { font-size: 18px; font-weight: 800; color: var(--text-main); }
-        .section-title .badge {
-            display: flex; align-items: center; gap: 4px;
-            font-size: 13px; font-weight: 700; color: var(--primary-purple);
-        }
-
-        .features-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 12px; margin-bottom: 20px;
-        }
-        .feature-card {
-            background: var(--card-bg); border-radius: var(--radius-xl);
-            padding: 16px 12px; text-align: center;
-            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease; cursor: pointer;
-        }
-        .feature-card:hover {
-            transform: translateY(-4px); box-shadow: var(--shadow-md);
-            border-color: var(--primary-purple);
-        }
-        .feature-icon {
-            width: 50px; height: 50px; border-radius: var(--radius-full);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; margin: 0 auto 10px; transition: all 0.3s ease;
-        }
-        .feature-card:hover .feature-icon { transform: scale(1.1); }
-        .feature-icon.blue { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
-        .feature-icon.purple { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); }
-        .feature-icon.green { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); }
-        .feature-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
-        .feature-desc { font-size: 11px; color: var(--text-sub); line-height: 1.5; margin-bottom: 10px; }
-        .feature-arrow {
-            width: 32px; height: 32px; border-radius: var(--radius-full);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto; font-size: 14px; color: white; transition: all 0.3s ease;
-        }
-        .feature-arrow.blue { background: var(--accent-blue); }
-        .feature-arrow.purple { background: var(--primary-purple); }
-        .feature-arrow.green { background: var(--accent-green); }
-        .feature-card:hover .feature-arrow { transform: scale(1.15) rotate(-5deg); }
-
-        .progress-card {
-            background: var(--card-bg); border-radius: var(--radius-2xl);
-            padding: 20px; margin-bottom: 16px;
-            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
-        }
-        .progress-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .progress-header h3 {
-            font-size: 15px; font-weight: 800; color: var(--text-main);
-            display: flex; align-items: center; gap: 6px;
-        }
-        .week-selector {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 12px; font-weight: 600; color: var(--text-sub);
-            background: var(--border-light); padding: 6px 12px;
-            border-radius: var(--radius-full); cursor: pointer;
-        }
-        .progress-subtitle {
-            font-size: 12px; color: var(--text-sub); margin-bottom: 20px; line-height: 1.5;
-        }
-        .emoji-track {
-            display: flex; justify-content: space-between; align-items: center;
-            position: relative; padding: 0 5px;
-        }
-        .emoji-track::before {
-            content: ''; position: absolute; top: 22px; left: 8%; right: 8%;
-            height: 3px;
-            background: linear-gradient(90deg, #ec4899 0%, #8b5cf6 25%, #3b82f6 50%, #f59e0b 75%, #ef4444 100%);
-            border-radius: var(--radius-full); z-index: 1;
-        }
-        .emoji-step { position: relative; z-index: 2; text-align: center; flex: 1; }
-        .emoji-icon {
-            width: 44px; height: 44px; background: var(--card-bg);
-            border: 2px solid var(--border-color); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; margin: 0 auto 6px; transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
-        }
-        .emoji-step.active .emoji-icon {
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 15px rgba(124, 58, 237, 0.3);
-            transform: scale(1.15); animation: glow 2s ease-in-out infinite;
-        }
-        .emoji-label { font-size: 10px; font-weight: 700; color: var(--text-sub); }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-        .stat-box {
-            background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl); padding: 16px;
-            display: flex; align-items: center; gap: 12px; transition: all 0.3s ease;
-        }
-        .stat-box:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-        .stat-icon {
-            width: 44px; height: 44px; border-radius: var(--radius-lg);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; flex-shrink: 0;
-        }
-        .stat-icon.purple { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); }
-        .stat-icon.green { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); }
-        .stat-icon.orange { background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); }
-        .stat-icon.blue { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
-        .stat-info { flex: 1; }
-        .stat-number { font-size: 24px; font-weight: 900; color: var(--text-main); line-height: 1.2; }
-        .stat-label { font-size: 12px; color: var(--text-sub); font-weight: 600; }
-        .stat-change {
-            font-size: 11px; font-weight: 700; display: flex;
-            align-items: center; gap: 2px; margin-top: 2px;
-        }
-        .stat-change.up { color: var(--accent-green); }
-        .stat-change.fire { color: var(--accent-orange); }
-
-        .card {
-            background: var(--card-bg); border-radius: var(--radius-2xl);
-            padding: 20px; margin-bottom: 16px;
-            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-        }
-        .card:hover { box-shadow: var(--shadow-md); }
-        .card-title {
-            font-size: 16px; font-weight: 800; color: var(--text-main);
-            margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
-        }
-
-        .upload-area {
-            border: 2px dashed var(--primary-purple); padding: 30px;
-            text-align: center; border-radius: var(--radius-xl);
-            cursor: pointer; background: var(--primary-lighter);
-            transition: all 0.3s ease; position: relative; overflow: hidden;
-        }
-        .upload-area:hover { background: var(--primary-light); border-color: #a855f7; transform: scale(1.01); }
-        .upload-area.has-images {
-            border-style: solid; border-color: var(--accent-green);
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-        }
-        .upload-area i { font-size: 40px; color: var(--primary-purple); margin-bottom: 10px; display: block; }
-        .upload-text { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
-        .upload-subtext { font-size: 12px; color: var(--text-sub); }
-        .upload-limit {
-            font-size: 11px; color: var(--primary-purple); font-weight: 600;
-            margin-top: 8px; padding: 4px 12px; background: var(--primary-light);
-            border-radius: var(--radius-full); display: inline-block;
-        }
-
-        .image-preview-grid {
-            display: grid; grid-template-columns: repeat(5, 1fr);
-            gap: 8px; margin-top: 12px;
-        }
-        .image-preview-item {
-            aspect-ratio: 1; border-radius: var(--radius-md); overflow: hidden;
-            position: relative; border: 2px solid var(--border-color);
-            cursor: pointer; transition: all 0.3s ease;
-        }
-        .image-preview-item:hover { transform: scale(1.05); border-color: var(--primary-purple); box-shadow: var(--shadow-md); }
-        .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
-        .image-preview-item .remove-btn {
-            position: absolute; top: 2px; right: 2px;
-            width: 20px; height: 20px; background: var(--accent-red);
-            color: white; border: none; border-radius: var(--radius-full);
-            font-size: 10px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.2s;
-        }
-        .image-preview-item:hover .remove-btn { opacity: 1; }
-
-        .action-buttons {
-            display: flex; gap: 10px; margin-top: 16px;
-            animation: fadeInUp 0.4s ease-out;
-        }
-        .btn-action {
-            flex: 1; padding: 14px; border-radius: var(--radius-lg);
-            font-weight: 800; font-size: 14px; cursor: pointer;
-            transition: all 0.3s ease; border: none;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-action:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-        .btn-action:active { transform: translateY(0); }
-        .btn-action.primary {
-            background: var(--primary-gradient); color: white;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-        }
-        .btn-action.primary:hover { box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
-        .btn-action.secondary {
-            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); color: white;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-        }
-        .btn-action.secondary:hover { box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
-        .btn-action.outline {
-            background: transparent; border: 2px solid var(--primary-purple);
-            color: var(--primary-purple);
-        }
-        .btn-action.outline:hover { background: var(--primary-light); }
-
-        .quiz-types-group {
-            display: flex; flex-direction: column; gap: 10px; margin-top: 16px;
-            animation: fadeInUp 0.4s ease-out;
-        }
-        .quiz-type-btn {
-            background: var(--card-bg); border: 2px solid var(--border-color);
-            padding: 16px; border-radius: var(--radius-xl); font-weight: 700;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; transition: all 0.3s ease;
-        }
-        .quiz-type-btn:hover {
-            border-color: var(--primary-purple); background: var(--primary-lighter);
-            transform: translateX(-4px);
-        }
-        .quiz-type-btn .quiz-info { text-align: right; }
-        .quiz-type-btn .quiz-title { font-size: 15px; color: var(--text-main); margin-bottom: 2px; }
-        .quiz-type-btn .quiz-desc { font-size: 12px; color: var(--text-sub); font-weight: 500; }
-        .quiz-type-btn .quiz-icon {
-            width: 44px; height: 44px; border-radius: var(--radius-full);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; flex-shrink: 0;
-        }
-        .quiz-type-btn .quiz-icon.blue { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
-        .quiz-type-btn .quiz-icon.purple { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); }
-        .quiz-type-btn .quiz-icon.orange { background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); }
-
-        .quiz-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .quiz-timer {
-            display: flex; align-items: center; gap: 6px;
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            padding: 8px 16px; border-radius: var(--radius-full);
-            font-weight: 800; font-size: 14px; color: #92400e;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
-        }
-        .quiz-timer.warning {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            color: #991b1b; animation: pulse 1s ease-in-out infinite;
-        }
-        .quiz-timer i { font-size: 16px; }
-        .progress-bar-bg {
-            height: 8px; background: var(--border-color);
-            border-radius: var(--radius-full); overflow: hidden; margin-bottom: 16px;
-        }
-        .progress-bar-fill {
-            height: 100%; background: var(--primary-gradient);
-            width: 0%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: var(--radius-full);
-        }
-        .quiz-score {
-            text-align: center; font-weight: 700; color: var(--text-sub);
-            margin-bottom: 16px; font-size: 14px; padding: 8px;
-            background: var(--primary-lighter); border-radius: var(--radius-full);
-        }
-        .quiz-score span { color: var(--primary-purple); font-weight: 900; }
-
-        .question-box {
-            background: var(--primary-lighter); border-radius: var(--radius-xl);
-            padding: 20px; margin-bottom: 20px; border: 1px solid var(--primary-light);
-        }
-        .question-number {
-            font-size: 12px; font-weight: 700; color: var(--primary-purple);
-            margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
-        }
-        .question-text { font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.7; }
-
-        .opt-btn {
-            background: var(--card-bg); border: 2px solid var(--border-color);
-            padding: 14px 16px; border-radius: var(--radius-lg); margin-bottom: 10px;
-            cursor: pointer; font-weight: 600; color: var(--text-main);
-            transition: all 0.3s ease;
-            display: flex; align-items: center; gap: 10px; text-align: right;
-        }
-        .opt-btn:hover {
-            border-color: var(--primary-purple); background: var(--primary-lighter);
-            transform: translateX(-4px);
-        }
-        .opt-btn.correct {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border-color: var(--accent-green); color: var(--success-text);
-        }
-        .opt-btn.wrong {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            border-color: var(--accent-red); color: var(--error-text);
-        }
-        .opt-btn.disabled { pointer-events: none; opacity: 0.7; }
-        .opt-letter {
-            width: 32px; height: 32px; border-radius: var(--radius-full);
-            background: var(--primary-light); color: var(--primary-purple);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 14px; flex-shrink: 0;
-        }
-        .opt-btn.correct .opt-letter { background: var(--accent-green); color: white; }
-        .opt-btn.wrong .opt-letter { background: var(--accent-red); color: white; }
-
-        .feedback {
-            padding: 16px; border-radius: var(--radius-lg); text-align: center;
-            font-weight: 700; margin: 16px 0; animation: scaleIn 0.3s ease-out;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .feedback.success {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            color: var(--success-text); border: 1px solid var(--accent-green);
-        }
-        .feedback.error {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            color: var(--error-text); border: 1px solid var(--accent-red);
-        }
-        .feedback i { font-size: 20px; }
-
-        .question-timer {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-bottom: 16px; padding: 10px;
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-radius: var(--radius-full); font-weight: 800; font-size: 16px; color: #92400e;
-        }
-        .question-timer.warning {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            color: #991b1b; animation: pulse 0.5s ease-in-out infinite;
-        }
-        .question-timer i { font-size: 18px; }
-        .question-timer-bar {
-            height: 4px; background: var(--border-color);
-            border-radius: var(--radius-full); margin-bottom: 16px; overflow: hidden;
-        }
-        .question-timer-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-green), var(--accent-yellow), var(--accent-red));
-            width: 100%; transition: width 1s linear; border-radius: var(--radius-full);
-        }
-
-        .chat-container {
-            height: 350px; overflow-y: auto; margin: 16px 0; padding: 12px;
-            background: var(--bg-body); border-radius: var(--radius-xl);
-            border: 1px solid var(--border-color);
-        }
-        .chat-message {
-            margin-bottom: 12px; animation: fadeInUp 0.3s ease-out; max-width: 85%;
-        }
-        .chat-message.user { margin-left: auto; }
-        .chat-message.bot { margin-right: auto; }
-        .chat-bubble {
-            padding: 12px 16px; border-radius: var(--radius-xl);
-            font-size: 14px; line-height: 1.7; word-wrap: break-word;
-        }
-        .chat-message.user .chat-bubble {
-            background: var(--primary-gradient); color: white; border-bottom-left-radius: 4px;
-        }
-        .chat-message.bot .chat-bubble {
-            background: var(--card-bg); color: var(--text-main);
-            border: 1px solid var(--border-color); border-bottom-right-radius: 4px;
-        }
-        .chat-avatar {
-            width: 32px; height: 32px; border-radius: var(--radius-full);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; margin-bottom: 4px;
-        }
-        .chat-message.user .chat-avatar { margin-left: auto; background: var(--primary-light); }
-        .chat-message.bot .chat-avatar { margin-right: auto; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); }
-
-        .setting-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 0; border-bottom: 1px solid var(--border-light);
-        }
-        .setting-item:last-child { border-bottom: none; }
-        .setting-info { text-align: right; }
-        .setting-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
-        .setting-desc { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
-
-        .toggle-switch {
-            position: relative; width: 52px; height: 28px; cursor: pointer;
-        }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--border-color); border-radius: var(--radius-full); transition: 0.3s;
-        }
-        .toggle-slider::before {
-            content: ''; position: absolute; height: 22px; width: 22px;
-            left: 3px; bottom: 3px; background: white; border-radius: 50%;
-            transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .toggle-switch input:checked + .toggle-slider { background: var(--primary-purple); }
-        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(24px); }
-
-        .social-btn {
-            width: 100%; padding: 14px; border-radius: var(--radius-lg);
-            font-weight: 700; font-size: 14px; cursor: pointer;
-            transition: all 0.3s ease; border: 2px solid var(--border-color);
-            background: var(--card-bg); color: var(--text-main);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            margin-bottom: 10px;
-        }
-        .social-btn:hover {
-            border-color: var(--primary-purple); background: var(--primary-lighter);
-            transform: translateY(-2px);
-        }
-        .social-btn i { font-size: 18px; }
-        .social-btn.google i { color: #ea4335; }
-        .social-btn.facebook i { color: #1877f2; }
-        .social-btn.x i { color: var(--text-main); }
-
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-sub); }
-        .empty-state i { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
-        .empty-state p { font-size: 14px; line-height: 1.7; }
-
-        .loading-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 9999; flex-direction: column; gap: 16px;
-        }
-        .loading-spinner {
-            width: 50px; height: 50px;
-            border: 4px solid var(--primary-light);
-            border-top-color: var(--primary-purple); border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        .loading-text { color: white; font-weight: 700; font-size: 16px; }
-
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
-            background: var(--nav-bg); border-top: 1px solid var(--border-color);
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 1000; padding-bottom: env(safe-area-inset-bottom, 0);
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: var(--text-sub); text-decoration: none;
-            font-size: 11px; font-weight: 700; cursor: pointer;
-            padding: 8px 12px; border-radius: var(--radius-lg);
-            transition: all 0.3s ease; position: relative;
-        }
-        .nav-item.active { color: var(--primary-purple); }
-        .nav-item:hover { color: var(--primary-purple); }
-        .nav-icon { font-size: 22px; margin-bottom: 2px; transition: all 0.3s ease; }
-        .nav-item.active .nav-icon { transform: translateY(-2px); }
-        .nav-item.center-btn { margin-top: -30px; }
-        .nav-item.center-btn .nav-icon-wrapper {
-            width: 56px; height: 56px; background: var(--primary-gradient);
-            border-radius: var(--radius-full);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
-            border: 4px solid var(--bg-body); margin-bottom: 4px;
-        }
-        .nav-item.center-btn .nav-icon { font-size: 24px; color: white; margin-bottom: 0; }
-
-        .result-screen { text-align: center; padding: 30px 20px; }
-        .result-emoji { font-size: 80px; margin-bottom: 16px; animation: bounce 1s ease-in-out infinite; }
-        .result-title { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
-        .result-score { font-size: 48px; font-weight: 900; color: var(--primary-purple); margin: 16px 0; }
-        .result-score span { font-size: 20px; color: var(--text-sub); }
-        .result-message { font-size: 14px; color: var(--text-sub); margin-bottom: 24px; }
-        .result-stats {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 12px; margin-bottom: 24px;
-        }
-        .result-stat { background: var(--primary-lighter); padding: 12px; border-radius: var(--radius-lg); }
-        .result-stat-value { font-size: 20px; font-weight: 900; color: var(--primary-purple); }
-        .result-stat-label { font-size: 11px; color: var(--text-sub); font-weight: 600; }
-
-        .summary-card {
-            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-            border-radius: var(--radius-xl); padding: 20px; margin-top: 16px;
-            border: 1px solid rgba(124, 58, 237, 0.2);
-        }
-        .summary-title {
-            font-size: 16px; font-weight: 800; color: var(--primary-purple);
-            margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
-        }
-        .summary-content { font-size: 14px; line-height: 1.8; color: var(--text-main); }
-
-        .hidden { display: none !important; }
-        .input-box { 
-            width: 100%; padding: 12px; border-radius: 10px;
-            border: 1px solid var(--border-color); background: var(--bg-body);
-            color: var(--text-main); margin: 8px 0; font-size: 14px;
-        }
-        .input-box:focus {
-            outline: none; border-color: var(--primary-purple);
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
-
-        @media (max-width: 400px) {
-            .features-grid { gap: 8px; }
-            .feature-card { padding: 12px 8px; }
-            .feature-icon { width: 40px; height: 40px; font-size: 18px; }
-            .feature-title { font-size: 11px; }
-            .feature-desc { font-size: 10px; }
-            .stats-grid { gap: 8px; }
-            .stat-box { padding: 12px; }
-            .stat-number { font-size: 20px; }
-            .hero-title { font-size: 18px; }
-            .hero-image { width: 100px; height: 100px; }
-            .hero-image .brain-emoji { font-size: 70px; }
-        }
-    </style>
-</head>
-<body>
-
-    <div id="loadingOverlay" class="loading-overlay hidden">
-        <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">جاري المعالجة...</div>
-    </div>
-
-    <header class="app-header">
-        <div class="header-left">
-            <div class="notification-btn">
-                <i class="fas fa-bell"></i>
-                <div class="notification-dot"></div>
-            </div>
-        </div>
-        <div class="brand-logo">
-            <span class="logo-text">ذكاء Study</span>
-            <div class="logo-icon">🧠</div>
-        </div>
-        <div class="streak-badge">
-            <i class="fas fa-fire"></i>
-            <span id="streakDays">1</span> أيام
-        </div>
-    </header>
-
-    <div class="container">
-
-        <div id="tab-home" class="tab-content">
-            <div class="hero-banner animate-fade-in-up">
-                <div class="hero-content">
-                    <h2 class="hero-title">مرحبا بك في <span class="highlight">ذكاء Study!</span></h2>
-                    <p class="hero-subtitle">✨ تعلم بذكاء، أفهم أسرع، وتفوق بسهولة</p>
-                    <button class="hero-btn" onclick="scrollToUpload()">
-                        ابدأ رحلتك الذكية <i class="fas fa-rocket"></i>
-                    </button>
-                </div>
-                <div class="hero-image">
-                    <div class="brain-emoji">🧠</div>
-                </div>
-            </div>
-            <div class="carousel-dots">
-                <div class="carousel-dot active"></div>
-                <div class="carousel-dot"></div>
-                <div class="carousel-dot"></div>
-            </div>
-
-            <div class="section-title">
-                <h2>انطلق بذكاء</h2>
-                <div class="badge"><i class="fas fa-bolt"></i></div>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card" onclick="openCamera()">
-                    <div class="feature-icon blue">📷</div>
-                    <div class="feature-title">تصوير كتاب</div>
-                    <div class="feature-desc">افتح الكاميرا والتقط أي كتاب للبدء فورا</div>
-                    <div class="feature-arrow blue"><i class="fas fa-arrow-right"></i></div>
-                </div>
-                <div class="feature-card" onclick="openGallery()">
-                    <div class="feature-icon purple">🖼️</div>
-                    <div class="feature-title">فتح المعرض</div>
-                    <div class="feature-desc">اختر صورة من معرض الصور لبدء التعلم</div>
-                    <div class="feature-arrow purple"><i class="fas fa-arrow-right"></i></div>
-                </div>
-                <div class="feature-card" onclick="switchTab('chat')">
-                    <div class="feature-icon green">📝</div>
-                    <div class="feature-title">تحليل محتوى</div>
-                    <div class="feature-desc">ألصق نص أو محتوى طويل للحصول على شرح ذكي</div>
-                    <div class="feature-arrow green"><i class="fas fa-arrow-right"></i></div>
-                </div>
-            </div>
-
-            <div class="card" id="uploadSection">
-                <div class="card-title">📸 رفع المواد والأوراق</div>
-                <div class="upload-area" id="uploadArea" onclick="triggerFileInput()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <div class="upload-text">اضغط هنا لالتقاط أو رفع صور الدرس</div>
-                    <div class="upload-subtext">يمكنك رفع حتى 5 صور في المرة الواحدة</div>
-                    <div class="upload-limit"><i class="fas fa-image"></i> الحد الأقصى: 5 صور</div>
-                </div>
-                <input type="file" id="imgInput" accept="image/*" multiple capture="environment" class="hidden" onchange="handleFiles(event)">
-                <input type="file" id="galleryInput" accept="image/*" multiple class="hidden" onchange="handleFiles(event)">
-
-                <div id="imagePreviewGrid" class="image-preview-grid hidden"></div>
-
-                <div id="actionButtons" class="action-buttons hidden">
-                    <button class="btn-action secondary" onclick="generateSummary()">
-                        <i class="fas fa-file-alt"></i> تلخيص
-                    </button>
-                    <button class="btn-action primary" onclick="showQuizOptions()">
-                        <i class="fas fa-question-circle"></i> إنشاء أسئلة
-                    </button>
-                </div>
-
-                <div id="quizOptions" class="quiz-types-group hidden">
-                    <div class="quiz-type-btn" onclick="startQuiz('quick')">
-                        <div class="quiz-info">
-                            <div class="quiz-title">⚡ اختبار سريع</div>
-                            <div class="quiz-desc">5 أسئلة سريعة للمراجعة</div>
-                        </div>
-                        <div class="quiz-icon blue">⚡</div>
-                    </div>
-                    <div class="quiz-type-btn" onclick="startQuiz('mcq_only')">
-                        <div class="quiz-info">
-                            <div class="quiz-title">📝 أسئلة اختياري فقط</div>
-                            <div class="quiz-desc">أسئلة اختيار من متعدد فقط</div>
-                        </div>
-                        <div class="quiz-icon purple">📝</div>
-                    </div>
-                    <div class="quiz-type-btn" onclick="startQuiz('full')">
-                        <div class="quiz-info">
-                            <div class="quiz-title">📄 امتحان كامل</div>
-                            <div class="quiz-desc">15 سؤال بكل أنواع واشكال الأسئلة</div>
-                        </div>
-                        <div class="quiz-icon blue">📄</div>
-                    </div>
-                    <div class="quiz-type-btn" onclick="startQuiz('challenge')">
-                        <div class="quiz-info">
-                            <div class="quiz-title">🔥 وضع التحدي</div>
-                            <div class="quiz-desc">كل أنواع الأسئلة مع مؤقت لكل سؤال</div>
-                        </div>
-                        <div class="quiz-icon orange">🔥</div>
-                    </div>
-                </div>
-
-                <div id="summaryResult" class="summary-card hidden">
-                    <div class="summary-title"><i class="fas fa-magic"></i> التلخيص الذكي</div>
-                    <div class="summary-content" id="summaryContent"></div>
-                </div>
-            </div>
-
-            <div class="progress-card animate-fade-in-up">
-                <div class="progress-header">
-                    <h3><i class="fas fa-chart-line"></i> تقدمك في الإجابة الصحيحة</h3>
-                    <div class="week-selector">
-                        <i class="far fa-calendar-alt"></i>
-                        <span>هذا الأسبوع</span>
-                    </div>
-                </div>
-                <p class="progress-subtitle">كلما زادت إجاباتك الصحيحة، يتغير إثر إيجابي للمستوى الأعلى!</p>
-                <div class="emoji-track">
-                    <div class="emoji-step" id="lvl-0">
-                        <div class="emoji-icon">🎉</div>
-                        <div class="emoji-label">100%-81%</div>
-                    </div>
-                    <div class="emoji-step" id="lvl-1">
-                        <div class="emoji-icon">🤩</div>
-                        <div class="emoji-label">80%-61%</div>
-                    </div>
-                    <div class="emoji-step" id="lvl-2">
-                        <div class="emoji-icon">😁</div>
-                        <div class="emoji-label">60%-41%</div>
-                    </div>
-                    <div class="emoji-step" id="lvl-3">
-                        <div class="emoji-icon">🙂</div>
-                        <div class="emoji-label">40%-21%</div>
-                    </div>
-                    <div class="emoji-step active" id="lvl-4">
-                        <div class="emoji-icon">😐</div>
-                        <div class="emoji-label">20%-0%</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-icon purple">🏆</div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="statAcc">0%</div>
-                        <div class="stat-label">نسبة النجاح</div>
-                        <div class="stat-change up" id="statAccChange" style="opacity:0;"><i class="fas fa-arrow-up"></i> --</div>
-                    </div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon green">✅</div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="statCorrect">0</div>
-                        <div class="stat-label">الإجابات الصحيحة</div>
-                        <div class="stat-change up" id="statCorrectChange" style="opacity:0;"><i class="fas fa-arrow-up"></i> --</div>
-                    </div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon orange">📖</div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="statLessons">0</div>
-                        <div class="stat-label">المواد الدراسية</div>
-                        <div class="stat-change fire" id="statLessonsChange" style="opacity:0;"><i class="fas fa-fire"></i> --</div>
-                    </div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon blue">📅</div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="statStreak">1</div>
-                        <div class="stat-label">معدل الحضور اليومي</div>
-                        <div class="stat-change fire" id="statStreakChange" style="opacity:0;"><i class="fas fa-fire"></i> --</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-quiz" class="tab-content hidden">
-            <div class="card">
-                <div class="quiz-header">
-                    <div class="quiz-timer" id="quizTimer">
-                        <i class="fas fa-clock"></i>
-                        <span id="timer">25:00</span>
-                    </div>
-                    <button class="btn-action outline" style="width:auto;padding:8px 16px;font-size:12px;" onclick="quitQuiz()">
-                        <i class="fas fa-times"></i> خروج
-                    </button>
-                </div>
-
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progress"></div>
-                </div>
-
-                <div class="quiz-score">
-                    النتيجة الحالية: <span id="currentScore">0</span> / <span id="totalQuestions">0</span>
-                </div>
-
-                <div id="questionTimerContainer" class="hidden">
-                    <div class="question-timer" id="questionTimer">
-                        <i class="fas fa-hourglass-half"></i>
-                        <span id="questionTimerText">30</span> ثانية
-                    </div>
-                    <div class="question-timer-bar">
-                        <div class="question-timer-fill" id="questionTimerFill"></div>
-                    </div>
-                </div>
-
-                <div class="question-box">
-                    <div class="question-number">
-                        <i class="fas fa-question-circle"></i>
-                        سؤال <span id="qNumber">1</span> من <span id="qTotal">0</span>
-                    </div>
-                    <div class="question-text" id="qTitle">عنوان السؤال</div>
-                </div>
-
-                <div id="mcqBox"></div>
-
-                <div id="textBox" class="hidden">
-                    <input type="text" id="textAns" class="input-box" placeholder="اكتب إجابتك النصية هنا...">
-                    <button class="btn-action primary" onclick="submitTextAnswer()">
-                        <i class="fas fa-check"></i> تحقق من الإجابة
-                    </button>
-                </div>
-
-                <div id="tfBox" class="hidden">
-                    <div class="opt-btn" onclick="checkAnswer('صح', 'صح')">
-                        <div class="opt-letter">ص</div>
-                        <span>صح</span>
-                    </div>
-                    <div class="opt-btn" onclick="checkAnswer('خطأ', 'خطأ')">
-                        <div class="opt-letter">خ</div>
-                        <span>خطأ</span>
-                    </div>
-                </div>
-
-                <div id="feedback" class="feedback hidden"></div>
-
-                <button id="nextBtn" class="btn-action primary hidden" onclick="nextQuestion()">
-                    السؤال التالي <i class="fas fa-arrow-left"></i>
-                </button>
-            </div>
-        </div>
-
-        <div id="tab-result" class="tab-content hidden">
-            <div class="card">
-                <div class="result-screen">
-                    <div class="result-emoji" id="resultEmoji">🎉</div>
-                    <div class="result-title" id="resultTitle">أحسنت!</div>
-                    <div class="result-score">
-                        <span id="resultScore">0</span><span> / </span><span id="resultTotal">0</span>
-                    </div>
-                    <div class="result-message" id="resultMessage">لقد أتممت الاختبار بنجاح!</div>
-                    <div class="result-stats">
-                        <div class="result-stat">
-                            <div class="result-stat-value" id="resultCorrect">0</div>
-                            <div class="result-stat-label">صحيحة</div>
-                        </div>
-                        <div class="result-stat">
-                            <div class="result-stat-value" id="resultWrong">0</div>
-                            <div class="result-stat-label">خاطئة</div>
-                        </div>
-                        <div class="result-stat">
-                            <div class="result-stat-value" id="resultPercent">0%</div>
-                            <div class="result-stat-label">النسبة</div>
-                        </div>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="btn-action outline" onclick="switchTab('home')">
-                            <i class="fas fa-home"></i> الرئيسية
-                        </button>
-                        <button class="btn-action primary" onclick="retryQuiz()">
-                            <i class="fas fa-redo"></i> إعادة الاختبار
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-history" class="tab-content hidden">
-            <div class="card">
-                <div class="card-title">📚 سجل النشاط والمواد المصورة</div>
-                <div class="empty-state" id="historyEmpty">
-                    
-
-
-<!DOCTYPE html>
+part1 = '''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1953,4 +927,1046 @@
                 </div>
             </div>
         </div>
+'''
 
+output_path = '/mnt/agents/output/zeka_study_app.html'
+with open(output_path, 'w', encoding='utf-8') as f:
+    f.write(part1)
+
+print(f"Part 1 written: {len(part1)} chars")
+        
+part2 = '''
+        <div id="tab-quiz" class="tab-content hidden">
+            <div class="card">
+                <div class="quiz-header">
+                    <div class="quiz-timer" id="quizTimer">
+                        <i class="fas fa-clock"></i>
+                        <span id="timer">25:00</span>
+                    </div>
+                    <button class="btn-action outline" style="width:auto;padding:8px 16px;font-size:12px;" onclick="quitQuiz()">
+                        <i class="fas fa-times"></i> خروج
+                    </button>
+                </div>
+                
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress"></div>
+                </div>
+                
+                <div class="quiz-score">
+                    النتيجة الحالية: <span id="currentScore">0</span> / <span id="totalQuestions">0</span>
+                </div>
+
+                <div id="questionTimerContainer" class="hidden">
+                    <div class="question-timer" id="questionTimer">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span id="questionTimerText">30</span> ثانية
+                    </div>
+                    <div class="question-timer-bar">
+                        <div class="question-timer-fill" id="questionTimerFill"></div>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <div class="question-number">
+                        <i class="fas fa-question-circle"></i>
+                        سؤال <span id="qNumber">1</span> من <span id="qTotal">0</span>
+                    </div>
+                    <div class="question-text" id="qTitle">عنوان السؤال</div>
+                </div>
+
+                <div id="mcqBox"></div>
+                
+                <div id="textBox" class="hidden">
+                    <input type="text" id="textAns" class="input-box" placeholder="اكتب إجابتك النصية هنا...">
+                    <button class="btn-action primary" onclick="submitTextAnswer()">
+                        <i class="fas fa-check"></i> تحقق من الإجابة
+                    </button>
+                </div>
+
+                <div id="tfBox" class="hidden">
+                    <div class="opt-btn" onclick="checkAnswer('صح', 'صح')">
+                        <div class="opt-letter">ص</div>
+                        <span>صح</span>
+                    </div>
+                    <div class="opt-btn" onclick="checkAnswer('خطأ', 'خطأ')">
+                        <div class="opt-letter">خ</div>
+                        <span>خطأ</span>
+                    </div>
+                </div>
+
+                <div id="feedback" class="feedback hidden"></div>
+                
+                <button id="nextBtn" class="btn-action primary hidden" onclick="nextQuestion()">
+                    السؤال التالي <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-result" class="tab-content hidden">
+            <div class="card">
+                <div class="result-screen">
+                    <div class="result-emoji" id="resultEmoji">🎉</div>
+                    <div class="result-title" id="resultTitle">أحسنت!</div>
+                    <div class="result-score">
+                        <span id="resultScore">0</span><span> / </span><span id="resultTotal">0</span>
+                    </div>
+                    <div class="result-message" id="resultMessage">لقد أتممت الاختبار بنجاح!</div>
+                    <div class="result-stats">
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="resultCorrect">0</div>
+                            <div class="result-stat-label">صحيحة</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="resultWrong">0</div>
+                            <div class="result-stat-label">خاطئة</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="resultPercent">0%</div>
+                            <div class="result-stat-label">النسبة</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-action outline" onclick="switchTab('home')">
+                            <i class="fas fa-home"></i> الرئيسية
+                        </button>
+                        <button class="btn-action primary" onclick="retryQuiz()">
+                            <i class="fas fa-redo"></i> إعادة الاختبار
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-history" class="tab-content hidden">
+            <div class="card">
+                <div class="card-title">📚 سجل النشاط والمواد المصورة</div>
+                <div class="empty-state" id="historyEmpty">
+                    <i class="fas fa-inbox"></i>
+                    <p>السجل فارغ تماماً، قم بالتقاط صورة أو حل اختبار لتسجيل نشاطك حياً!</p>
+                </div>
+                <div id="historyList"></div>
+            </div>
+        </div>
+
+        <div id="tab-chat" class="tab-content hidden">
+            <div class="card">
+                <div class="card-title">💬 محادثة ذكية حقيقية وذكية جداً مع الموديل</div>
+                <div class="chat-container" id="chatMessages">
+                    <div class="chat-message bot">
+                        <div class="chat-avatar">🤖</div>
+                        <div class="chat-bubble">
+                            مرحباً بك! أنا الموديل الذكي المساعد لك. لقد قمت بتحميل ذاكرتي السياقية وجاهز تماماً لمناقشة كل الصور والكتب التي تقوم بتصويرها الآن بشكل ذكي وعميق. اسألني أي سؤال!
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <div style="width: 44px; height: 44px; background: var(--primary-gradient); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas fa-bolt" style="color: white; font-size: 18px;"></i>
+                    </div>
+                    <input type="text" id="chatInput" class="input-box" placeholder="اكتب سؤالك العلمي هنا..." style="flex: 1; margin: 0;" onkeypress="if(event.key==='Enter') sendChatMessage()">
+                </div>
+                <button class="btn-action primary" style="margin-top: 12px;" onclick="sendChatMessage()">
+                    <i class="fas fa-paper-plane"></i> إرسال
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-reports" class="tab-content hidden">
+            <div class="card">
+                <div class="card-title">📊 التقارير ومؤشرات الأداء اللحظية</div>
+                <div class="empty-state" id="reportEmpty">
+                    <i class="fas fa-chart-bar"></i>
+                    <p>لم يتم رصد تفاعلات كافية حتى الآن لإنشاء تقرير إحصائي مفصل.</p>
+                </div>
+                <div id="reportContent" class="hidden">
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-icon purple">📊</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="reportTotal">0</div>
+                                <div class="stat-label">إجمالي الأسئلة</div>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon green">🎯</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="reportAccuracy">0%</div>
+                                <div class="stat-label">نسبة الدقة</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-card" style="margin-top: 12px;">
+                        <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">📈 تطور الأداء</h4>
+                        <div style="height: 150px; background: var(--bg-body); border-radius: var(--radius-lg); display: flex; align-items: flex-end; justify-content: space-around; padding: 10px; gap: 8px;" id="performanceChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-settings" class="tab-content hidden">
+            <div class="card">
+                <div class="card-title">⚙️ الإعدادات وملف المستخدم</div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">المظهر والوضع</div>
+                        <div class="setting-desc">تفعيل الوضع المظلم (Dark Mode)</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" onchange="toggleDarkMode(this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">ربط الحساب وحفظ التقدم</div>
+                        <div class="setting-desc">سجل دخولك للحفاظ على بياناتك</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px;">
+                    <button class="social-btn google">
+                        <i class="fab fa-google"></i>
+                        الدخول بواسطة Google 🌐
+                    </button>
+                    <button class="social-btn facebook">
+                        <i class="fab fa-facebook"></i>
+                        الدخول بواسطة Facebook 🔵
+                    </button>
+                    <button class="social-btn x">
+                        <i class="fab fa-x-twitter"></i>
+                        الدخول بواسطة حساب X (تويتر) ⚫
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <span class="nav-icon">🏠</span>
+            <span>الرئيسية</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('reports', this)">
+            <span class="nav-icon">📊</span>
+            <span>التقارير</span>
+        </div>
+        <div class="nav-item center-btn" onclick="switchTab('chat', this)">
+            <div class="nav-icon-wrapper">
+                <span class="nav-icon">🧠</span>
+            </div>
+            <span style="color: var(--primary-purple);">المحادثة</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('history', this)">
+            <span class="nav-icon">📚</span>
+            <span>السجل</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('settings', this)">
+            <span class="nav-icon">⚙️</span>
+            <span>الإعدادات</span>
+        </div>
+    </nav>
+
+<script>
+    const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
+    const MODEL_NAME = "meta-llama/llama-4-scout-17b-16e-instruct";
+    const MAX_IMAGES = 5;
+    const QUESTION_TIMER_SECONDS = 30;
+
+    let stats = { docs: 0, lessons: 0, correct: 0, totalAnswered: 0, streak: 1 };
+    let uploadedImages = [];
+    let currentQuiz = null;
+    let qIndex = 0;
+    let score = 0;
+    let timerInterval = null;
+    let questionTimerInterval = null;
+    let secondsLeft = 25 * 60;
+    let quizType = '';
+    let usedQuestions = new Set();
+    let quizHistory = [];
+
+    function switchTab(tabName, el) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        const targetTab = document.getElementById('tab-' + tabName);
+        if (targetTab) {
+            targetTab.classList.remove('hidden');
+            targetTab.classList.add('animate-fade-in');
+        }
+        
+        if (el) {
+            el.classList.add('active');
+        } else {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const onclick = item.getAttribute('onclick');
+                if (onclick && onclick.includes("'" + tabName + "'")) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        if (tabName === 'reports') updateReports();
+    }
+
+    function scrollToUpload() {
+        document.getElementById('uploadSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function toggleDarkMode(isDark) {
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'true');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'false');
+        }
+    }
+
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        const toggle = document.querySelector('.toggle-switch input');
+        if (toggle) toggle.checked = true;
+    }
+
+    function openCamera() {
+        document.getElementById('imgInput').click();
+    }
+
+    function openGallery() {
+        document.getElementById('galleryInput').click();
+    }
+
+    function triggerFileInput() {
+        const choice = confirm('اضغط "موافق" للكاميرا أو "إلغاء" للمعرض');
+        if (choice) openCamera();
+        else openGallery();
+    }
+
+    async function handleFiles(e) {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+        
+        const remainingSlots = MAX_IMAGES - uploadedImages.length;
+        if (remainingSlots <= 0) {
+            showToast('لقد وصلت للحد الأقصى من الصور (5 صور)', 'error');
+            return;
+        }
+        
+        const filesToProcess = files.slice(0, remainingSlots);
+        showLoading('جاري معالجة الصور...');
+        
+        for (const file of filesToProcess) {
+            try {
+                const base64 = await fileToBase64(file);
+                uploadedImages.push(base64);
+                stats.docs++;
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+        
+        hideLoading();
+        updateImagePreview();
+        updateStatsUI();
+        
+        if (uploadedImages.length > 0) {
+            document.getElementById('actionButtons').classList.remove('hidden');
+            document.getElementById('uploadArea').classList.add('has-images');
+            showToast('تم رفع ' + uploadedImages.length + ' صورة بنجاح!', 'success');
+        }
+        
+        e.target.value = '';
+    }
+
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (evt) => resolve(evt.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function updateImagePreview() {
+        const grid = document.getElementById('imagePreviewGrid');
+        grid.innerHTML = '';
+        
+        if (uploadedImages.length === 0) {
+            grid.classList.add('hidden');
+            return;
+        }
+        
+        grid.classList.remove('hidden');
+        
+        uploadedImages.forEach((img, index) => {
+            const item = document.createElement('div');
+            item.className = 'image-preview-item animate-scale-in';
+            item.innerHTML = '<img src="' + img + '" alt="صورة ' + (index + 1) + '"><button class="remove-btn" onclick="removeImage(' + index + ')">×</button>';
+            grid.appendChild(item);
+        });
+    }
+
+    function removeImage(index) {
+        uploadedImages.splice(index, 1);
+        updateImagePreview();
+        
+        if (uploadedImages.length === 0) {
+            document.getElementById('actionButtons').classList.add('hidden');
+            document.getElementById('uploadArea').classList.remove('has-images');
+            document.getElementById('quizOptions').classList.add('hidden');
+            document.getElementById('summaryResult').classList.add('hidden');
+        }
+    }
+
+    async function generateSummary() {
+        if (uploadedImages.length === 0) {
+            showToast('من فضلك قم برفع صور أولاً!', 'error');
+            return;
+        }
+        
+        showLoading('جاري إنشاء التلخيص الذكي...');
+        
+        try {
+            const content = buildImageContent(uploadedImages, 
+                "قم بتلخيص محتوى هذه الصور الدراسية بشكل شامل ومفيد. اكتب التلخيص باللغة العربية.");
+            
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: MODEL_NAME,
+                    messages: [{ role: "user", content: content }]
+                })
+            });
+            
+            const data = await res.json();
+            const summary = data.choices[0].message.content;
+            
+            document.getElementById('summaryContent').innerHTML = summary.replace(/\\n/g, '<br>');
+            document.getElementById('summaryResult').classList.remove('hidden');
+            document.getElementById('summaryResult').scrollIntoView({ behavior: 'smooth' });
+            
+            showToast('تم إنشاء التلخيص بنجاح!', 'success');
+        } catch (err) {
+            console.error(err);
+            showToast('حدث خطأ أثناء إنشاء التلخيص', 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function showQuizOptions() {
+        if (uploadedImages.length === 0) {
+            showToast('من فضلك قم برفع صور الدرس أولاً!', 'error');
+            return;
+        }
+        document.getElementById('quizOptions').classList.remove('hidden');
+        document.getElementById('quizOptions').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function startQuiz(type) {
+        quizType = type;
+        document.getElementById('quizOptions').classList.add('hidden');
+        showLoading('جاري إنشاء الأسئلة...');
+        
+        try {
+            let prompt = '';
+            
+            switch(type) {
+                case 'quick':
+                    prompt = 'أنشئ 5 أسئلة اختيار من متعدد فقط (MCQ) بناءً على محتوى هذه الصور. كل سؤال يجب أن يحتوي على 4 خيارات وإجابة واحدة صحيحة. اجعل الأسئلة مختصرة وواضحة. رد بصيغة JSON فقط: {"questions": [{"type": "mcq", "question": "...", "options": ["...", "...", "...", "..."], "correctAnswer": "..."}]}';
+                    break;
+                case 'mcq_only':
+                    prompt = 'أنشئ 10 أسئلة اختيار من متعدد فقط (MCQ) بناءً على محتوى هذه الصور. كل سؤال يجب أن يحتوي على 4 خيارات وإجابة واحدة صحيحة. رد بصيغة JSON فقط: {"questions": [{"type": "mcq", "question": "...", "options": ["...", "...", "...", "..."], "correctAnswer": "..."}]}';
+                    break;
+                case 'full':
+                    prompt = 'أنشئ 15 سؤالاً متنوعاً بناءً على محتوى هذه الصور. يجب أن تشمل: أسئلة اختيار من متعدد (MCQ)، أسئلة صح/خطأ (TF)، أسئلة مقالية قصيرة (TEXT). رد بصيغة JSON فقط: {"questions": [{"type": "mcq", "question": "...", "options": ["...", "...", "...", "..."], "correctAnswer": "..."}, {"type": "tf", "question": "...", "correctAnswer": "صح"}, {"type": "text", "question": "...", "correctAnswer": "..."}]}';
+                    break;
+                case 'challenge':
+                    prompt = 'أنشئ 20 سؤالاً تحدياً صعباً بناءً على محتوى هذه الصور. يجب أن تشمل جميع أنواع الأسئلة: اختيار من متعدد، صح/خطأ، ومقالية. اجعل الأسئلة تحديّة وعميقة. رد بصيغة JSON فقط: {"questions": [{"type": "mcq", "question": "...", "options": ["...", "...", "...", "..."], "correctAnswer": "..."}, {"type": "tf", "question": "...", "correctAnswer": "صح"}, {"type": "text", "question": "...", "correctAnswer": "..."}]}';
+                    break;
+            }
+            
+            const content = buildImageContent(uploadedImages, prompt);
+            
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: MODEL_NAME,
+                    messages: [{ role: "user", content: content }]
+                })
+            });
+            
+            const data = await res.json();
+            let rawContent = data.choices[0].message.content;
+            
+            let parsedData;
+            try {
+                const jsonMatch = rawContent.match(/\\{[\\s\\S]*\\}/);
+                if (jsonMatch) {
+                    parsedData = JSON.parse(jsonMatch[0]);
+                } else {
+                    parsedData = JSON.parse(rawContent);
+                }
+            } catch (e) {
+                parsedData = generateFallbackQuestions(type);
+            }
+            
+            currentQuiz = parsedData.questions || parsedData;
+            currentQuiz = currentQuiz.filter(q => {
+                if (usedQuestions.has(q.question)) return false;
+                return true;
+            });
+            
+            if (currentQuiz.length === 0) {
+                currentQuiz = generateFallbackQuestions(type);
+            }
+            
+            currentQuiz.forEach(q => usedQuestions.add(q.question));
+            
+            qIndex = 0;
+            score = 0;
+            stats.lessons++;
+            
+            secondsLeft = type === 'challenge' ? 20 * 60 : 25 * 60;
+            
+            hideLoading();
+            
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById('tab-quiz').classList.remove('hidden');
+            
+            document.getElementById('totalQuestions').innerText = currentQuiz.length;
+            startTimer();
+            renderQuestion();
+            
+        } catch (err) {
+            console.error(err);
+            hideLoading();
+            showToast('حدث خطأ، جاري استخدام أسئلة افتراضية...', 'warning');
+            
+            currentQuiz = generateFallbackQuestions(type);
+            qIndex = 0;
+            score = 0;
+            
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById('tab-quiz').classList.remove('hidden');
+            
+            document.getElementById('totalQuestions').innerText = currentQuiz.length;
+            startTimer();
+            renderQuestion();
+        }
+    }
+
+    function buildImageContent(images, textPrompt) {
+        const content = [];
+        content.push({ type: "text", text: textPrompt });
+        images.forEach(img => {
+            content.push({ type: "image_url", image_url: { url: img } });
+        });
+        return content;
+    }
+
+    function generateFallbackQuestions(type) {
+        const mcq = [
+            { type: "mcq", question: "ما هو الهدف الرئيسي من دراسة هذا الموضوع؟", options: ["فهم المفاهيم الأساسية", "حفظ المعلومات فقط", "تجاوز الامتحان", "لا شيء مما سبق"], correctAnswer: "فهم المفاهيم الأساسية" },
+            { type: "mcq", question: "أي من التالي يعتبر أهم عنصر في العملية التعليمية؟", options: ["الممارسة العملية", "القراءة فقط", "الحفظ", "الاستماع"], correctAnswer: "الممارسة العملية" },
+            { type: "mcq", question: "ما هي أفضل طريقة للمراجعة الفعالة؟", options: ["المراجعة الدورية", "المراجعة قبل الامتحان", "عدم المراجعة", "الاعتماد على الحظ"], correctAnswer: "المراجعة الدورية" },
+            { type: "mcq", question: "لماذا يعتبر التعلم الذكي مفيداً؟", options: ["يوفر الوقت والجهد", "يزيد من التوتر", "يقلل الفهم", "لا فائدة منه"], correctAnswer: "يوفر الوقت والجهد" },
+            { type: "mcq", question: "ما هو دور التكنولوجيا في التعليم الحديث؟", options: ["تسهيل الوصول للمعرفة", "إلهاء الطلاب", "استبدال المعلمين", "لا دور لها"], correctAnswer: "تسهيل الوصول للمعرفة" }
+        ];
+        const tf = [
+            { type: "tf", question: "التعلم المستمر ضروري للنجاح في الحياة.", correctAnswer: "صح" },
+            { type: "tf", question: "الحفظ بدون فهم يكفي للتفوق الدراسي.", correctAnswer: "خطأ" },
+            { type: "tf", question: "التخطيط الجيد يساعد في إدارة الوقت.", correctAnswer: "صح" }
+        ];
+        const text = [
+            { type: "text", question: "اذكر أهمية التعلم المستمر في حياة الفرد.", correctAnswer: "التعلم المستمر" },
+            { type: "text", question: "ما هي أفضل استراتيجية للمذاكرة الفعالة؟", correctAnswer: "المراجعة الدورية" }
+        ];
+        
+        switch(type) {
+            case 'quick': case 'mcq_only': return [...mcq];
+            case 'full': return [...mcq.slice(0, 3), ...tf.slice(0, 2), ...text];
+            case 'challenge': return [...mcq, ...tf, ...text];
+            default: return mcq;
+        }
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (secondsLeft <= 0) {
+                clearInterval(timerInterval);
+                clearInterval(questionTimerInterval);
+                finishQuiz();
+                return;
+            }
+            secondsLeft--;
+            const m = Math.floor(secondsLeft / 60);
+            const s = secondsLeft % 60;
+            const timerEl = document.getElementById('timer');
+            if (timerEl) timerEl.innerText = m + ':' + (s < 10 ? '0' : '') + s;
+            
+            const timerContainer = document.getElementById('quizTimer');
+            if (secondsLeft < 120 && timerContainer) timerContainer.classList.add('warning');
+        }, 1000);
+    }
+
+    function startQuestionTimer() {
+        clearInterval(questionTimerInterval);
+        if (quizType !== 'challenge') return;
+        
+        const container = document.getElementById('questionTimerContainer');
+        const textEl = document.getElementById('questionTimerText');
+        const fillEl = document.getElementById('questionTimerFill');
+        const timerEl = document.getElementById('questionTimer');
+        
+        if (container) container.classList.remove('hidden');
+        
+        let qSeconds = QUESTION_TIMER_SECONDS;
+        
+        questionTimerInterval = setInterval(() => {
+            qSeconds--;
+            if (textEl) textEl.innerText = qSeconds;
+            if (fillEl) fillEl.style.width = ((qSeconds / QUESTION_TIMER_SECONDS) * 100) + '%';
+            if (qSeconds <= 10 && timerEl) timerEl.classList.add('warning');
+            
+            if (qSeconds <= 0) {
+                clearInterval(questionTimerInterval);
+                showFeedback(false, "⏰ انتهى الوقت! الإجابة الصحيحة هي: " + currentQuiz[qIndex].correctAnswer);
+                stats.totalAnswered++;
+                updateStatsUI();
+            }
+        }, 1000);
+    }
+
+    function renderQuestion() {
+        if (!currentQuiz || qIndex >= currentQuiz.length) {
+            finishQuiz();
+            return;
+        }
+        
+        const q = currentQuiz[qIndex];
+        
+        document.getElementById('qNumber').innerText = qIndex + 1;
+        document.getElementById('qTotal').innerText = currentQuiz.length;
+        document.getElementById('qTitle').innerText = q.question;
+        document.getElementById('currentScore').innerText = score;
+        document.getElementById('feedback').classList.add('hidden');
+        document.getElementById('nextBtn').classList.add('hidden');
+        
+        const mcqBox = document.getElementById('mcqBox');
+        const textBox = document.getElementById('textBox');
+        const tfBox = document.getElementById('tfBox');
+        
+        mcqBox.innerHTML = '';
+        mcqBox.classList.add('hidden');
+        textBox.classList.add('hidden');
+        tfBox.classList.add('hidden');
+        document.getElementById('textAns').value = '';
+        
+        const pct = ((qIndex) / currentQuiz.length) * 100;
+        document.getElementById('progress').style.width = pct + '%';
+        
+        clearInterval(questionTimerInterval);
+        const timerContainer = document.getElementById('questionTimerContainer');
+        if (timerContainer) timerContainer.classList.add('hidden');
+        const timerEl = document.getElementById('questionTimer');
+        if (timerEl) timerEl.classList.remove('warning');
+        
+        if (q.type === 'mcq') {
+            mcqBox.classList.remove('hidden');
+            const letters = ['أ', 'ب', 'ج', 'د'];
+            q.options.forEach((opt, idx) => {
+                const b = document.createElement('div');
+                b.className = 'opt-btn animate-fade-in-up';
+                b.style.animationDelay = (idx * 0.1) + 's';
+                b.innerHTML = '<div class="opt-letter">' + letters[idx] + '</div><span>' + opt + '</span>';
+                b.onclick = () => checkAnswer(opt, q.correctAnswer);
+                mcqBox.appendChild(b);
+            });
+        } else if (q.type === 'tf') {
+            tfBox.classList.remove('hidden');
+        } else {
+            textBox.classList.remove('hidden');
+        }
+        
+        if (quizType === 'challenge') startQuestionTimer();
+    }
+
+    function checkAnswer(userAns, correctAns) {
+        clearInterval(questionTimerInterval);
+        
+        stats.totalAnswered++;
+        const isRight = userAns.trim() === correctAns.trim();
+        
+        if (isRight) {
+            score++;
+            stats.correct++;
+        }
+        
+        updateStatsUI();
+        
+        document.querySelectorAll('.opt-btn').forEach(btn => {
+            btn.classList.add('disabled');
+            const btnText = btn.querySelector('span') ? btn.querySelector('span').innerText : btn.innerText;
+            if (btnText.trim() === correctAns.trim()) {
+                btn.classList.add('correct');
+            } else if (btnText.trim() === userAns.trim() && !isRight) {
+                btn.classList.add('wrong');
+            }
+        });
+        
+        showFeedback(isRight, 
+            isRight ? "✅ إجابة صحيحة! أحسنت!" : "❌ إجابة خاطئة! الإجابة الصحيحة هي: " + correctAns
+        );
+    }
+
+    async function submitTextAnswer() {
+        clearInterval(questionTimerInterval);
+        
+        const userAns = document.getElementById('textAns').value.trim();
+        if (!userAns) {
+            showToast('من فضلك اكتب إجابة أولاً', 'warning');
+            return;
+        }
+        
+        const q = currentQuiz[qIndex];
+        stats.totalAnswered++;
+        
+        showLoading('جاري تقييم الإجابة...');
+        
+        try {
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: MODEL_NAME,
+                    messages: [
+                        {
+                            role: "system",
+                            content: "أنت مصحح إجابات ذكي. قارن بين إجابة الطالب والإجابة الصحيحة وحدد ما إذا كانت الإجابة صحيحة أو خاطئة. رد بصيغة JSON: {\"isCorrect\": true/false}"
+                        },
+                        {
+                            role: "user",
+                            content: "السؤال: " + q.question + "\\nالإجابة الصحيحة: " + q.correctAnswer + "\\nإجابة الطالب: " + userAns
+                        }
+                    ]
+                })
+            });
+            
+            const data = await res.json();
+            let result;
+            try {
+                const content = data.choices[0].message.content;
+                const jsonMatch = content.match(/\\{[\\s\\S]*\\}/);
+                result = jsonMatch ? JSON.parse(jsonMatch[0]) : { isCorrect: false };
+            } catch (e) {
+                result = {
+                    isCorrect: userAns.toLowerCase().includes(q.correctAnswer.toLowerCase()) || 
+                               q.correctAnswer.toLowerCase().includes(userAns.toLowerCase())
+                };
+            }
+            
+            if (result.isCorrect) {
+                score++;
+                stats.correct++;
+            }
+            
+            updateStatsUI();
+            showFeedback(result.isCorrect, 
+                result.isCorrect ? "✅ إجابة صحيحة!" : "❌ إجابة خاطئة! الإجابة: " + q.correctAnswer
+            );
+            
+        } catch (e) {
+            const isCorrect = userAns.toLowerCase().includes(q.correctAnswer.toLowerCase()) || 
+                             q.correctAnswer.toLowerCase().includes(userAns.toLowerCase());
+            
+            if (isCorrect) {
+                score++;
+                stats.correct++;
+            }
+            
+            updateStatsUI();
+            showFeedback(isCorrect, 
+                isCorrect ? "✅ إجابة صحيحة!" : "❌ إجابة خاطئة! الإجابة: " + q.correctAnswer
+            );
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function showFeedback(isRight, text) {
+        const fb = document.getElementById('feedback');
+        fb.innerHTML = '<i class="fas fa-' + (isRight ? 'check-circle' : 'times-circle') + '"></i> ' + text;
+        fb.className = 'feedback ' + (isRight ? 'success' : 'error');
+        fb.classList.remove('hidden');
+        document.getElementById('nextBtn').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+        qIndex++;
+        if (qIndex < currentQuiz.length) {
+            renderQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function finishQuiz() {
+        clearInterval(timerInterval);
+        clearInterval(questionTimerInterval);
+        
+        const percent = currentQuiz.length > 0 ? Math.round((score / currentQuiz.length) * 100) : 0;
+        
+        quizHistory.push({
+            date: new Date().toLocaleDateString('ar-EG'),
+            score: score,
+            total: currentQuiz.length,
+            percent: percent,
+            type: quizType
+        });
+        
+        document.getElementById('resultScore').innerText = score;
+        document.getElementById('resultTotal').innerText = currentQuiz.length;
+        document.getElementById('resultCorrect').innerText = score;
+        document.getElementById('resultWrong').innerText = currentQuiz.length - score;
+        document.getElementById('resultPercent').innerText = percent + '%';
+        
+        let emoji, title, message;
+        if (percent >= 90) {
+            emoji = '🏆'; title = 'ممتاز! أنت عبقري!'; message = 'أداء رائع جداً! استمر على هذا المستوى!';
+        } else if (percent >= 70) {
+            emoji = '🌟'; title = 'أحسنت!'; message = 'أداء ممتاز! أنت في الطريق الصحيح!';
+        } else if (percent >= 50) {
+            emoji = '👍'; title = 'جيد!'; message = 'أداء جيد، يمكنك التحسن أكثر بالمذاكرة!';
+        } else {
+            emoji = '💪'; title = 'حاول مرة أخرى!'; message = 'لا تيأس! الممارسة تجعلك أفضل!';
+        }
+        
+        document.getElementById('resultEmoji').innerText = emoji;
+        document.getElementById('resultTitle').innerText = title;
+        document.getElementById('resultMessage').innerText = message;
+        
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        document.getElementById('tab-result').classList.remove('hidden');
+        
+        updateHistory();
+        updateReports();
+    }
+
+    function retryQuiz() {
+        startQuiz(quizType);
+    }
+
+    function quitQuiz() {
+        if (confirm('هل أنت متأكد من الخروج من الاختبار؟')) {
+            clearInterval(timerInterval);
+            clearInterval(questionTimerInterval);
+            switchTab('home');
+        }
+    }
+
+    function updateStatsUI() {
+        document.getElementById('statLessons').innerText = stats.lessons;
+        document.getElementById('statCorrect').innerText = stats.correct;
+        document.getElementById('statStreak').innerText = stats.streak;
+        
+        const acc = stats.totalAnswered > 0 ? Math.round((stats.correct / stats.totalAnswered) * 100) : 0;
+        document.getElementById('statAcc').innerText = acc + '%';
+        
+        document.querySelectorAll('.emoji-step').forEach(s => s.classList.remove('active'));
+        if (acc >= 81) document.getElementById('lvl-0').classList.add('active');
+        else if (acc >= 61) document.getElementById('lvl-1').classList.add('active');
+        else if (acc >= 41) document.getElementById('lvl-2').classList.add('active');
+        else if (acc >= 21) document.getElementById('lvl-3').classList.add('active');
+        else document.getElementById('lvl-4').classList.add('active');
+        
+        if (stats.totalAnswered > 0) {
+            document.getElementById('historyEmpty').classList.add('hidden');
+        }
+    }
+
+    function updateHistory() {
+        const list = document.getElementById('historyList');
+        if (quizHistory.length === 0) return;
+        
+        list.innerHTML = quizHistory.map((q, i) => {
+            return '<div class="stat-box" style="margin-bottom: 8px; text-align: right;">' +
+                '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                '<div>' +
+                '<div style="font-weight: 800; color: var(--text-main);">' + getQuizTypeName(q.type) + '</div>' +
+                '<div style="font-size: 12px; color: var(--text-sub);">' + q.date + '</div>' +
+                '</div>' +
+                '<div style="text-align: center;">' +
+                '<div style="font-size: 20px; font-weight: 900; color: var(--primary-purple);">' + q.percent + '%</div>' +
+                '<div style="font-size: 11px; color: var(--text-sub);">' + q.score + '/' + q.total + '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+        }).join('');
+    }
+
+    function getQuizTypeName(type) {
+        const names = {
+            'quick': '⚡ اختبار سريع',
+            'mcq_only': '📝 أسئلة اختياري',
+            'full': '📄 امتحان كامل',
+            'challenge': '🔥 وضع التحدي'
+        };
+        return names[type] || type;
+    }
+
+    function updateReports() {
+        if (quizHistory.length === 0) return;
+        
+        document.getElementById('reportEmpty').classList.add('hidden');
+        document.getElementById('reportContent').classList.remove('hidden');
+        
+        const totalQuestions = quizHistory.reduce((sum, q) => sum + q.total, 0);
+        const totalCorrect = quizHistory.reduce((sum, q) => sum + q.score, 0);
+        const avgAccuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+        
+        document.getElementById('reportTotal').innerText = totalQuestions;
+        document.getElementById('reportAccuracy').innerText = avgAccuracy + '%';
+        
+        const chart = document.getElementById('performanceChart');
+        chart.innerHTML = quizHistory.slice(-7).map((q, i) => {
+            const height = Math.max(20, q.percent);
+            const color = q.percent >= 70 ? 'var(--accent-green)' : q.percent >= 50 ? 'var(--accent-yellow)' : 'var(--accent-red)';
+            return '<div style="display: flex; flex-direction: column; align-items: center; flex: 1;">' +
+                '<div style="width: 100%; height: ' + height + '%; background: ' + color + '; border-radius: 4px 4px 0 0; min-height: 20px; transition: height 0.5s ease;"></div>' +
+                '<div style="font-size: 10px; color: var(--text-sub); margin-top: 4px;">' + q.percent + '%</div>' +
+                '</div>';
+        }).join('');
+    }
+
+    async function sendChatMessage() {
+        const input = document.getElementById('chatInput');
+        const msg = input.value.trim();
+        if (!msg) return;
+        
+        const box = document.getElementById('chatMessages');
+        
+        box.innerHTML += '<div class="chat-message user animate-fade-in-up"><div class="chat-avatar">🙋‍♂️</div><div class="chat-bubble">' + escapeHtml(msg) + '</div></div>';
+        
+        input.value = '';
+        box.scrollTop = box.scrollHeight;
+        
+        const typingId = 'typing-' + Date.now();
+        box.innerHTML += '<div class="chat-message bot" id="' + typingId + '"><div class="chat-avatar">🤖</div><div class="chat-bubble"><i class="fas fa-spinner fa-spin"></i> جاري التحليل...</div></div>';
+        box.scrollTop = box.scrollHeight;
+        
+        try {
+            let messages = [{
+                role: "system",
+                content: "أنت مساعد تعليمي ذكي متخصص في مساعدة الطلاب. أجب باللغة العربية دائماً."
+            }];
+            
+            if (uploadedImages.length > 0) {
+                const content = buildImageContent(uploadedImages, msg);
+                messages.push({ role: "user", content: content });
+            } else {
+                messages.push({ role: "user", content: msg });
+            }
+            
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: MODEL_NAME,
+                    messages: messages
+                })
+            });
+            
+            const data = await res.json();
+            const reply = data.choices[0].message.content;
+            
+            const typingEl = document.getElementById(typingId);
+            if (typingEl) typingEl.remove();
+            
+            box.innerHTML += '<div class="chat-message bot animate-fade-in-up"><div class="chat-avatar">🤖</div><div class="chat-bubble">' + escapeHtml(reply).replace(/\\n/g, '<br>') + '</div></div>';
+            
+        } catch (err) {
+            const typingEl = document.getElementById(typingId);
+            if (typingEl) typingEl.remove();
+            box.innerHTML += '<div class="chat-message bot animate-fade-in-up"><div class="chat-avatar">🤖</div><div class="chat-bubble" style="color: var(--accent-red);">عذراً، حدث خطأ في الاتصال. حاول مرة أخرى.</div></div>';
+        }
+        
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function showLoading(text) {
+        document.getElementById('loadingText').innerText = text || 'جاري المعالجة...';
+        document.getElementById('loadingOverlay').classList.remove('hidden');
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+    }
+
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        const colors = {
+            success: 'linear-gradient(135deg, #10b981, #34d399)',
+            error: 'linear-gradient(135deg, #ef4444, #f87171)',
+            warning: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+            info: 'linear-gradient(135deg, #3b82f6, #60a5fa)'
+        };
+        const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+        
+        toast.style.cssText = 'position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: ' + (colors[type] || colors.info) + '; color: white; padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 14px; z-index: 10000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; max-width: 90%; text-align: center;';
+        toast.innerHTML = (icons[type] || 'ℹ️') + ' ' + message;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'fadeIn 0.3s ease-out reverse';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedStats = localStorage.getItem('studyStats');
+        if (savedStats) {
+            stats = JSON.parse(savedStats);
+            updateStatsUI();
+        }
+        
+        setInterval(() => {
+            localStorage.setItem('studyStats', JSON.stringify(stats));
+        }, 5000);
+        
+        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+        
+        document.getElementById('textAns')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') submitTextAnswer();
+        });
+    });
+</script>
+</body>
+</html>
+'''
+
+# Append part 2
+with open(output_path, 'a', encoding='utf-8') as f:
+    f.write(part2)
+
+# Verify the file
+import os
+file_size = os.path.getsize(output_path)
+print(f"✅ Complete file saved successfully!")
+print(f"📄 Total size: {file_size:,} bytes ({file_size/1024:.1f} KB)")
+print(f"📍 Location: {output_path}")
