@@ -44,7 +44,8 @@
         .grade-btn .grade-icon { font-size:32px; display:block; }
         .grade-btn .grade-name { color:#fff; font-size:15px; font-weight:800; }
         .grade-btn .grade-desc { color:rgba(255,255,255,0.6); font-size:11px; }
-        .reset-grade-btn { margin-top:20px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; padding:10px 24px; border-radius:var(--radius-full); font-weight:700; font-size:13px; cursor:pointer; }
+        .reset-grade-btn { margin-top:20px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; padding:10px 24px; border-radius:var(--radius-full); font-weight:700; font-size:13px; cursor:pointer; transition:all 0.3s; }
+        .reset-grade-btn:hover { background:rgba(255,255,255,0.25); }
         
         /* App Header */
         .app-header { display:flex; justify-content:space-between; align-items:center; padding:12px 20px; background:var(--card-bg); border-bottom:1px solid var(--border-color); position:sticky; top:0; z-index:100; }
@@ -112,11 +113,13 @@
         .quiz-type-btn .quiz-icon.purple { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); }
         .quiz-type-btn .quiz-icon.orange { background:linear-gradient(135deg,#ffedd5,#fed7aa); }
         
-        /* Search */
+        /* Search - White Text */
         .search-box { display:flex; gap:10px; margin-bottom:16px; }
-        .search-box input { flex:1; padding:14px 16px; border-radius:16px; border:2px solid var(--border-color); background:var(--bg-body); font-size:14px; font-weight:600; }
+        .search-box input { flex:1; padding:14px 16px; border-radius:16px; border:2px solid var(--border-color); background:var(--bg-body); font-size:14px; font-weight:600; color:#000; }
         .search-box input:focus { outline:none; border-color:var(--primary-purple); }
+        .search-box input::placeholder { color:#6b7280; }
         .search-box button { padding:14px 20px; border-radius:16px; background:var(--primary-gradient); color:#fff; border:none; font-weight:800; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px; }
+        .search-box button:hover { transform:translateY(-2px); }
         
         /* Progress */
         .progress-card { background:var(--card-bg); border-radius:var(--radius-2xl); padding:20px; margin-bottom:16px; border:1px solid var(--border-color); }
@@ -125,10 +128,11 @@
         .month-selector { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--text-sub); background:var(--border-light); padding:6px 12px; border-radius:var(--radius-full); }
         .emoji-track { display:flex; justify-content:space-between; align-items:center; position:relative; padding:0 5px; }
         .emoji-track::before { content:''; position:absolute; top:22px; left:8%; right:8%; height:3px; background:linear-gradient(90deg,#ec4899,#8b5cf6,#3b82f6,#f59e0b,#ef4444); border-radius:var(--radius-full); z-index:1; }
-        .emoji-step { position:relative; z-index:2; text-align:center; flex:1; }
+        .emoji-step { position:relative; z-index:2; text-align:center; flex:1; cursor:pointer; }
         .emoji-icon { width:44px; height:44px; background:var(--card-bg); border:2px solid var(--border-color); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; margin:0 auto 6px; transition:all 0.3s; }
         .emoji-step.active .emoji-icon { border-color:var(--primary-purple); box-shadow:0 0 15px rgba(124,58,237,0.3); transform:scale(1.15); }
         .emoji-label { font-size:10px; font-weight:700; color:var(--text-sub); }
+        .emoji-step.active .emoji-label { color:var(--primary-purple); }
         
         /* Stats */
         .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
@@ -194,6 +198,9 @@
         .toggle-slider::before { content:''; position:absolute; height:22px; width:22px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.3s; }
         .toggle-switch input:checked + .toggle-slider { background:var(--primary-purple); }
         .toggle-switch input:checked + .toggle-slider::before { transform:translateX(24px); }
+        .reset-grade-settings { margin-top:16px; padding:16px; background:var(--primary-lighter); border-radius:var(--radius-xl); border:1px solid var(--border-color); }
+        .reset-grade-settings button { width:100%; padding:14px; border-radius:16px; background:linear-gradient(135deg,#ef4444,#f87171); color:#fff; border:none; font-weight:800; font-size:14px; cursor:pointer; transition:all 0.3s; }
+        .reset-grade-settings button:hover { transform:translateY(-2px); }
         
         /* Bottom Nav */
         .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:75px; background:var(--card-bg); border-top:1px solid var(--border-color); display:flex; justify-content:space-around; align-items:center; z-index:1000; }
@@ -303,11 +310,11 @@
             </div>
         </div>
 
-        <!-- SEARCH LESSON SECTION -->
+        <!-- SEARCH LESSON SECTION - White Text -->
         <div class="card" id="searchSection" style="display:none;">
-            <div class="card-title">🔍 بحث عن الدرس</div>
+            <div class="card-title" style="color:#000;">🔍 بحث عن الدرس</div>
             <div class="search-box">
-                <input type="text" id="lessonSearchInput" placeholder="اكتب اسم الدرس أو الموضوع..." onkeypress="if(event.key==='Enter') searchLesson()">
+                <input type="text" id="lessonSearchInput" placeholder="اكتب اسم الدرس أو الموضوع..." style="color:#000;background:#fff;" onkeypress="if(event.key==='Enter') searchLesson()">
                 <button onclick="searchLesson()"><i class="fas fa-search"></i> بحث</button>
             </div>
             <div id="searchResults"></div>
@@ -446,6 +453,11 @@
             <div class="setting-item">
                 <div><div class="setting-title">ربط الحساب</div><div class="setting-desc">سجل دخولك للحفاظ على بياناتك</div></div>
             </div>
+            <!-- Reset Grade Button in Settings -->
+            <div class="reset-grade-settings">
+                <button onclick="resetGrade()"><i class="fas fa-undo"></i> إعادة تعيين المستوى الدراسي</button>
+                <p style="font-size:11px;color:var(--text-sub);margin-top:8px;">سيتم حذف المستوى الحالي ويمكنك اختيار مستوى جديد</p>
+            </div>
             <div style="margin-top:16px;">
                 <button class="social-btn" style="width:100%;padding:14px;border-radius:16px;font-weight:700;border:2px solid var(--border-color);background:var(--card-bg);display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;cursor:pointer;"><i class="fab fa-google"></i> Google</button>
                 <button class="social-btn" style="width:100%;padding:14px;border-radius:16px;font-weight:700;border:2px solid var(--border-color);background:var(--card-bg);display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;cursor:pointer;"><i class="fab fa-facebook"></i> Facebook</button>
@@ -461,8 +473,7 @@
     <div class="nav-item center-btn" onclick="switchTab('chat', this)"><div class="nav-icon-wrapper"><span class="nav-icon">🧠</span></div><span style="color:var(--primary-purple);">المحادثة</span></div>
     <div class="nav-item" onclick="switchTab('history', this)"><span class="nav-icon">📚</span><span>السجل</span></div>
     <div class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>الإعدادات</span></div>
-</nav>
-<script>
+</nav><script>
 // ========== CONFIG ==========
 const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
 const MODEL_NAME = "meta-llama/llama-4-scout-17b-16e-instruct";
@@ -503,7 +514,7 @@ function hideLoading(){document.getElementById('loadingOverlay').classList.add('
 function showToast(msg,type){
     const t=document.createElement('div');
     const colors={success:'#10b981',error:'#ef4444',warning:'#f59e0b',info:'#3b82f6'};
-    t.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:'+(colors[type]||colors.info)+';color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;z-index:10000;';
+    t.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:'+(colors[type]||colors.info)+';color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;z-index:10000;max-width:90%;text-align:center;';
     t.innerText=msg;
     document.body.appendChild(t);
     setTimeout(()=>{t.remove();},3000);
@@ -531,7 +542,14 @@ function selectGrade(g){
     updateStatsUI();updateMonthLabel();
 }
 
-function resetGrade(){if(confirm('هل أنت متأكد؟')){localStorage.removeItem('userGrade');currentGrade=null;document.getElementById('gradeScreen').classList.remove('hidden');}}
+function resetGrade(){
+    if(confirm('هل أنت متأكد من إعادة تعيين المستوى الدراسي؟ سيتم حذف جميع البيانات المتعلقة بالمستوى الحالي.')){
+        localStorage.removeItem('userGrade');
+        currentGrade=null;
+        document.getElementById('gradeScreen').classList.remove('hidden');
+        showToast('تم إعادة تعيين المستوى', 'info');
+    }
+}
 
 // ========== TAB NAVIGATION ==========
 function switchTab(tabName,el){
@@ -556,21 +574,24 @@ function openSearchLesson(){
     else s.style.display='none';
 }
 
-// ========== SEARCH LESSON ==========
+// ========== SEARCH LESSON (AI Powered) ==========
 async function searchLesson(){
     const q=document.getElementById('lessonSearchInput').value.trim();
     if(!q){showToast('اكتب اسم الدرس','warning');return;}
     if(!currentGrade){showToast('اختر مستواك أولاً','warning');return;}
-    showLoading('جاري البحث...');
+    showLoading('جاري البحث في الذكاء الاصطناعي...');
     try{
         const gradeText=gradeNames[currentGrade]||currentGrade;
-        const prompt='أنت مساعد تعليمي ذكي. الطالب في '+gradeText+' يسأل عن: "'+q+'"\n\nقدم له:\n1. شرح مبسط ومفيد\n2. النقاط الرئيسية\n3. أمثلة\n4. أسئلة للمراجعة\n\nباللغة العربية.';
+        const prompt='أنت مساعد تعليمي ذكي متخصص. الطالب في '+gradeText+' يسأل عن: "'+q+'"\n\nقدم له:\n1. شرح مبسط ومفيد جداً للموضوع\n2. النقاط الرئيسية والأساسية\n3. أمثلة توضيحية واقعية\n4. أسئلة ذكية للمراجعة والتفكير\n5. نصائح لحفظ وفهم الموضوع بشكل أسرع\n\nاكتب باللغة العربية الفصحى وبأسلوب شيق ومشوق.';
         const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL_NAME,messages:[{role:"user",content:prompt}]})});
         const data=await res.json();
         const result=data.choices[0].message.content;
-        document.getElementById('searchResults').innerHTML='<div class="summary-card" style="margin-top:0;"><div class="summary-title"><i class="fas fa-search"></i> نتائج: '+escapeHtml(q)+'</div><div class="summary-content">'+escapeHtml(result).replace(/\\n/g,'<br>')+'</div></div>';
-        showToast('تم العثور على نتائج!','success');
-    }catch(err){showToast('حدث خطأ','error');}
+        document.getElementById('searchResults').innerHTML='<div class="summary-card" style="margin-top:0;"><div class="summary-title"><i class="fas fa-search"></i> 📚 نتائج البحث عن: "'+escapeHtml(q)+'"</div><div class="summary-content">'+escapeHtml(result).replace(/\\n/g,'<br>')+'</div></div>';
+        showToast('✅ تم العثور على نتائج ذكية!','success');
+    }catch(err){
+        console.error(err);
+        showToast('❌ حدث خطأ في البحث، حاول مرة أخرى','error');
+    }
     finally{hideLoading();}
 }
 
@@ -581,7 +602,7 @@ async function handleFiles(e){
     const remainingSlots=MAX_IMAGES-uploadedImages.length;
     if(remainingSlots<=0){showToast('حد أقصى 5 صور','error');return;}
     const filesToProcess=files.slice(0,remainingSlots);
-    showLoading('جاري المعالجة...');
+    showLoading('جاري معالجة الصور...');
     for(const file of filesToProcess){
         try{const base64=await fileToBase64(file);uploadedImages.push(base64);stats.docs++;}
         catch(err){console.error(err);}
@@ -604,19 +625,19 @@ function updateImagePreview(){
 
 function removeImage(index){uploadedImages.splice(index,1);updateImagePreview();if(uploadedImages.length===0){document.getElementById('actionButtons').classList.add('hidden');document.getElementById('uploadArea').classList.remove('has-images');document.getElementById('quizOptions').classList.add('hidden');document.getElementById('summaryResult').classList.add('hidden');}}
 
-// ========== SUMMARY ==========
+// ========== SUMMARY (AI Powered) ==========
 async function generateSummary(){
     if(uploadedImages.length===0){showToast('ارفع صور أولاً','error');return;}
-    showLoading('جاري التلخيص...');
+    showLoading('جاري التلخيص الذكي...');
     try{
-        const content=buildImageContent(uploadedImages,"قم بتلخيص محتوى هذه الصور بشكل شامل. باللغة العربية.");
+        const content=buildImageContent(uploadedImages,"قم بتلخيص محتوى هذه الصور بشكل شامل ودقيق. استخرج أهم النقاط والمفاهيم الأساسية. اكتب باللغة العربية الفصحى وبأسلوب منظم وسهل الفهم.");
         const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL_NAME,messages:[{role:"user",content:content}]})});
         const data=await res.json();
         const summary=data.choices[0].message.content;
         document.getElementById('summaryContent').innerHTML=escapeHtml(summary).replace(/\\n/g,'<br>');
         document.getElementById('summaryResult').classList.remove('hidden');
-        showToast('تم التلخيص!','success');
-    }catch(err){showToast('حدث خطأ','error');}
+        showToast('✅ تم التلخيص بنجاح!','success');
+    }catch(err){showToast('❌ حدث خطأ في التلخيص','error');}
     finally{hideLoading();}
 }
 
@@ -626,7 +647,7 @@ function buildImageContent(images,textPrompt){
     return content;
 }
 
-// ========== QUIZ ==========
+// ========== QUIZ (AI Generated) ==========
 function showQuizOptions(){
     if(uploadedImages.length===0){showToast('ارفع صور أولاً','error');return;}
     document.getElementById('quizOptions').classList.toggle('hidden');
@@ -636,26 +657,29 @@ function generateFallbackQuestions(type){
     const mcq=[
         {type:"mcq",question:"ما هو الهدف الرئيسي من دراسة هذا الموضوع؟",options:["فهم المفاهيم الأساسية","حفظ المعلومات فقط","تجاوز الامتحان","لا شيء مما سبق"],correctAnswer:"فهم المفاهيم الأساسية"},
         {type:"mcq",question:"أي من التالي يعتبر أهم عنصر في العملية التعليمية؟",options:["الممارسة العملية","القراءة فقط","الحفظ","الاستماع"],correctAnswer:"الممارسة العملية"},
-        {type:"mcq",question:"ما هي أفضل طريقة للمراجعة الفعالة؟",options:["المراجعة الدورية","المراجعة قبل الامتحان","عدم المراجعة","الاعتماد على الحظ"],correctAnswer:"المراجعة الدورية"}
+        {type:"mcq",question:"ما هي أفضل طريقة للمراجعة الفعالة؟",options:["المراجعة الدورية","المراجعة قبل الامتحان","عدم المراجعة","الاعتماد على الحظ"],correctAnswer:"المراجعة الدورية"},
+        {type:"mcq",question:"لماذا يعتبر التعلم الذكي مفيداً؟",options:["يوفر الوقت والجهد","يزيد من التوتر","يقلل الفهم","لا فائدة منه"],correctAnswer:"يوفر الوقت والجهد"},
+        {type:"mcq",question:"ما هو دور التكنولوجيا في التعليم الحديث؟",options:["تسهيل الوصول للمعرفة","إلهاء الطلاب","استبدال المعلمين","لا دور لها"],correctAnswer:"تسهيل الوصول للمعرفة"}
     ];
-    const tf=[{type:"tf",question:"التعلم المستمر ضروري للنجاح.",correctAnswer:"صح"},{type:"tf",question:"الحفظ بدون فهم يكفي للتفوق.",correctAnswer:"خطأ"}];
-    const text=[{type:"text",question:"اذكر أهمية التعلم المستمر.",correctAnswer:"التعلم المستمر"}];
-    if(type==='quick'||type==='mcq_only')return mcq;
-    if(type==='full')return [...mcq.slice(0,2),...tf,...text];
+    const tf=[{type:"tf",question:"التعلم المستمر ضروري للنجاح في الحياة.",correctAnswer:"صح"},{type:"tf",question:"الحفظ بدون فهم يكفي للتفوق الدراسي.",correctAnswer:"خطأ"},{type:"tf",question:"التخطيط الجيد يساعد في إدارة الوقت.",correctAnswer:"صح"}];
+    const text=[{type:"text",question:"اذكر أهمية التعلم المستمر في حياة الفرد.",correctAnswer:"التعلم المستمر"},{type:"text",question:"ما هي أفضل استراتيجية للمذاكرة الفعالة؟",correctAnswer:"المراجعة الدورية"}];
+    if(type==='quick'||type==='mcq_only')return mcq.slice(0,5);
+    if(type==='full')return [...mcq.slice(0,3),...tf.slice(0,2),...text];
     return [...mcq,...tf,...text];
 }
 
 async function startQuiz(type){
     quizType=type;
     document.getElementById('quizOptions').classList.add('hidden');
-    showLoading('جاري إنشاء الأسئلة...');
+    showLoading('جاري إنشاء الأسئلة الذكية...');
     try{
         let prompt='';
+        const gradeText=currentGrade?gradeNames[currentGrade]||'المرحلة الدراسية':'المرحلة الدراسية';
         switch(type){
-            case 'quick':prompt='أنشئ 5 أسئلة MCQ بناءً على هذه الصور. رد بـ JSON فقط: {"questions":[{"type":"mcq","question":"...","options":["...","...","...","..."],"correctAnswer":"..."}]}';break;
-            case 'mcq_only':prompt='أنشئ 10 أسئلة MCQ. رد بـ JSON فقط: {"questions":[{"type":"mcq","question":"...","options":["...","...","...","..."],"correctAnswer":"..."}]}';break;
-            case 'full':prompt='أنشئ 15 سؤالاً متنوعاً (MCQ, TF, TEXT). رد بـ JSON فقط: {"questions":[{"type":"mcq","question":"...","options":["...","...","...","..."],"correctAnswer":"..."},{"type":"tf","question":"...","correctAnswer":"صح"},{"type":"text","question":"...","correctAnswer":"..."}]}';break;
-            case 'challenge':prompt='أنشئ 20 سؤالاً تحدياً (MCQ, TF, TEXT). رد بـ JSON فقط: {"questions":[{"type":"mcq","question":"...","options":["...","...","...","..."],"correctAnswer":"..."},{"type":"tf","question":"...","correctAnswer":"صح"},{"type":"text","question":"...","correctAnswer":"..."}]}';break;
+            case 'quick':prompt='أنشئ 5 أسئلة اختيار من متعدد (MCQ) فقط بناءً على محتوى هذه الصور. مستوى الأسئلة مناسب لـ '+gradeText+'. كل سؤال يجب أن يحتوي على 4 خيارات وإجابة واحدة صحيحة. اجعل الأسئلة واضحة ومتنوعة. رد بصيغة JSON فقط: {"questions":[{"type":"mcq","question":"...","options":["...","...","...","..."],"correctAnswer":"..."}]}';break;
+            case 'mcq_only':prompt='أنشئ 10 أسئلة اختيار من متعدد (MCQ) فقط بناءً على محتوى هذه الصور. مستوى الأسئلة مناسب لـ '+gradeText+'. كل سؤال يجب أن يحتوي على 4 خيارات وإجابة واحدة صحيحة. رد بصيغة JSON فقط: {"questions":[{"type":"mcq","question":"...","options":["...","...","...","..."],"correctAnswer":"..."}]}';break;
+            case 'full':prompt='أنشئ 15 سؤالاً متنوعاً بناءً على محتوى هذه الصور. مستوى الأسئلة مناسب لـ '+gradeText+'. يجب أن تشمل: أسئلة اختيار من متعدد (MCQ)، أسئلة صح/خطأ (TF)، أسئلة مقالية قصيرة (TEXT). رد بصيغة JSON فقط: {"questions":[{"type":"mcq","question":"...","options":["...","...","...","..."],"correctAnswer":"..."},{"type":"tf","question":"...","correctAnswer":"صح"},{"type":"text","question":"...","correctAnswer":"..."}]}';break;
+            case 'challenge':prompt='أنشئ 20 سؤالاً تحدياً صعباً ومتقدماً بناءً على محتوى هذه الصور. مستوى الأسئلة مناسب لـ '+gradeText+'. يجب أن تشمل جميع أنواع الأسئلة: اختيار من متعدد، صح/خطأ، ومقالية. اجعل الأسئلة تحديّة وعميقة وتحتاج إلى تفكير. رد بصيغة JSON فقط: {"questions":[{"type":"mcq","question":"...","options":["...","...","...","..."],"correctAnswer":"..."},{"type":"tf","question":"...","correctAnswer":"صح"},{"type":"text","question":"...","correctAnswer":"..."}]}';break;
         }
         const content=buildImageContent(uploadedImages,prompt);
         const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL_NAME,messages:[{role:"user",content:content}]})});
@@ -671,7 +695,7 @@ async function startQuiz(type){
         startQuizUI();
     }catch(err){
         hideLoading();
-        showToast('استخدام أسئلة افتراضية','warning');
+        showToast('استخدام أسئلة افتراضية ذكية','warning');
         currentQuiz=generateFallbackQuestions(type);
         startQuizUI();
     }
@@ -757,7 +781,7 @@ function checkAnswer(userAns,correctAns){
         if(txt.trim()===correctAns.trim())btn.classList.add('correct');
         else if(txt.trim()===userAns.trim()&&!isRight)btn.classList.add('wrong');
     });
-    showFeedback(isRight,isRight?"✅ صحيحة!":"❌ خاطئة! الإجابة: "+correctAns);
+    showFeedback(isRight,isRight?"✅ صحيحة! أحسنت!":"❌ خاطئة! الإجابة الصحيحة: "+correctAns);
 }
 
 async function submitTextAnswer(){
@@ -766,9 +790,9 @@ async function submitTextAnswer(){
     if(!userAns){showToast('اكتب إجابة','warning');return;}
     const q=currentQuiz[qIndex];
     stats.totalAnswered++;
-    showLoading('جاري التقييم...');
+    showLoading('جاري تقييم الإجابة الذكي...');
     try{
-        const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL_NAME,messages:[{role:"system",content:"قارن الإجابات وحدد صح/خطأ. رد بـ JSON: {\\\"isCorrect\\\": true/false}"},{role:"user",content:"السؤال: "+q.question+"\\nالصحيح: "+q.correctAnswer+"\\nالطالب: "+userAns}]})});
+        const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL_NAME,messages:[{role:"system",content:"أنت مصحح إجابات ذكي. قارن بين إجابة الطالب والإجابة الصحيحة وحدد ما إذا كانت الإجابة صحيحة أو خاطئة. كن عادلاً ودقيقاً. رد بصيغة JSON: {\\\"isCorrect\\\": true/false}"},{role:"user",content:"السؤال: "+q.question+"\\nالإجابة الصحيحة: "+q.correctAnswer+"\\nإجابة الطالب: "+userAns}]})});
         const data=await res.json();
         let result;
         try{const match=data.choices[0].message.content.match(/\\{[\\s\\S]*\\}/);result=match?JSON.parse(match[0]):{isCorrect:false};}
@@ -776,13 +800,13 @@ async function submitTextAnswer(){
         if(result.isCorrect){score++;stats.correct++;}
         updateMonthlyStats(result.isCorrect);
         updateStatsUI();
-        showFeedback(result.isCorrect,result.isCorrect?"✅ صحيحة!":"❌ خاطئة! الإجابة: "+q.correctAnswer);
+        showFeedback(result.isCorrect,result.isCorrect?"✅ إجابة صحيحة! ممتاز!":"❌ إجابة خاطئة! الإجابة الصحيحة: "+q.correctAnswer);
     }catch(e){
         const isCorrect=userAns.toLowerCase().includes(q.correctAnswer.toLowerCase());
         if(isCorrect){score++;stats.correct++;}
         updateMonthlyStats(isCorrect);
         updateStatsUI();
-        showFeedback(isCorrect,isCorrect?"✅ صحيحة!":"❌ خاطئة! الإجابة: "+q.correctAnswer);
+        showFeedback(isCorrect,isCorrect?"✅ إجابة صحيحة!":"❌ إجابة خاطئة! الإجابة: "+q.correctAnswer);
     }
     finally{hideLoading();}
 }
@@ -815,10 +839,11 @@ function finishQuiz(){
     document.getElementById('resultWrong').innerText=currentQuiz.length-score;
     document.getElementById('resultPercent').innerText=percent+'%';
     let emoji,title,msg;
-    if(percent>=90){emoji='🏆';title='ممتاز!';msg='أداء رائع!';}
-    else if(percent>=70){emoji='🌟';title='أحسنت!';msg='أداء ممتاز!';}
-    else if(percent>=50){emoji='👍';title='جيد!';msg='يمكنك التحسن!';}
-    else{emoji='💪';title='حاول مرة أخرى!';msg='الممارسة تجعلك أفضل!';}
+    if(percent>=90){emoji='🏆';title='ممتاز! عبقري!';msg='أداء رائع جداً! أنت متميز!';}
+    else if(percent>=70){emoji='🌟';title='أحسنت!';msg='أداء ممتاز! استمر على هذا المستوى!';}
+    else if(percent>=50){emoji='👍';title='جيد!';msg='أداء جيد، يمكنك التحسن أكثر!';}
+    else if(percent>=30){emoji='📖';title='حاول أكثر!';msg='الممارسة المستمرة تصنع الفرق!';}
+    else{emoji='💪';title='لا تيأس!';msg='كلنا نبدأ من الصفر، استمر في التعلم!';}
     document.getElementById('resultEmoji').innerText=emoji;
     document.getElementById('resultTitle').innerText=title;
     document.getElementById('resultMessage').innerText=msg;
@@ -830,7 +855,7 @@ function finishQuiz(){
 }
 
 function retryQuiz(){startQuiz(quizType);}
-function quitQuiz(){if(confirm('هل أنت متأكد؟')){clearInterval(timerInterval);clearInterval(questionTimerInterval);switchTab('home');}}
+function quitQuiz(){if(confirm('هل أنت متأكد من الخروج من الاختبار؟')){clearInterval(timerInterval);clearInterval(questionTimerInterval);switchTab('home');}}
 
 // ========== STATS UI ==========
 function updateStatsUI(){
@@ -842,18 +867,24 @@ function updateStatsUI(){
     const acc=mStats.totalAnswered>0?Math.round((mStats.correct/mStats.totalAnswered)*100):0;
     document.getElementById('statAcc').innerText=acc+'%';
     document.getElementById('monthProgressText').innerText=acc+'%';
+    
+    // Update Emoji based on REAL progress (monthly)
     document.querySelectorAll('.emoji-step').forEach(s=>s.classList.remove('active'));
-    if(acc>=81)document.getElementById('lvl-0').classList.add('active');
-    else if(acc>=61)document.getElementById('lvl-1').classList.add('active');
-    else if(acc>=41)document.getElementById('lvl-2').classList.add('active');
-    else if(acc>=21)document.getElementById('lvl-3').classList.add('active');
-    else document.getElementById('lvl-4').classList.add('active');
+    if(acc>=81)document.getElementById('lvl-4').classList.add('active'); // خبير
+    else if(acc>=61)document.getElementById('lvl-3').classList.add('active'); // متميز
+    else if(acc>=41)document.getElementById('lvl-2').classList.add('active'); // ذكي
+    else if(acc>=21)document.getElementById('lvl-1').classList.add('active'); // متعلم
+    else document.getElementById('lvl-0').classList.add('active'); // مبتدئ
+    
+    // Update Streak
+    if(stats.streak>1)document.getElementById('streakDays').innerText=stats.streak;
 }
 
 function updateHistory(){
     const list=document.getElementById('historyList');
     if(quizHistory.length===0)return;
-    list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><div><div style="font-weight:800;">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total+'</div></div></div></div>').join('');
+    document.getElementById('historyEmpty').classList.add('hidden');
+    list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total+'</div></div></div></div>').join('');
 }
 
 function getQuizTypeName(type){const n={'quick':'⚡ سريع','mcq_only':'📝 اختياري','full':'📄 كامل','challenge':'🔥 تحدي'};return n[type]||type;}
@@ -868,10 +899,10 @@ function updateReports(){
     document.getElementById('reportTotal').innerText=total;
     document.getElementById('reportAccuracy').innerText=acc+'%';
     const chart=document.getElementById('performanceChart');
-    chart.innerHTML=quizHistory.slice(-7).map(q=>{const h=Math.max(20,q.percent);const c=q.percent>=70?'var(--accent-green)':q.percent>=50?'var(--accent-yellow)':'var(--accent-red)';return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div style="width:100%;height:'+h+'%;background:'+c+';border-radius:4px 4px 0 0;min-height:20px;"></div><div style="font-size:10px;color:var(--text-sub);">'+q.percent+'%</div></div>';}).join('');
+    chart.innerHTML=quizHistory.slice(-7).map(q=>{const h=Math.max(20,q.percent);const c=q.percent>=70?'var(--accent-green)':q.percent>=50?'var(--accent-yellow)':'var(--accent-red)';return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div style="width:100%;height:'+h+'%;background:'+c+';border-radius:4px 4px 0 0;min-height:20px;transition:height 0.5s ease;"></div><div style="font-size:10px;color:var(--text-sub);margin-top:4px;">'+q.percent+'%</div></div>';}).join('');
 }
 
-// ========== CHAT ==========
+// ========== CHAT (AI Powered) ==========
 async function sendChatMessage(){
     const input=document.getElementById('chatInput');
     const msg=input.value.trim();
@@ -881,10 +912,10 @@ async function sendChatMessage(){
     input.value='';
     box.scrollTop=box.scrollHeight;
     const typingId='typing-'+Date.now();
-    box.innerHTML+='<div class="chat-message bot" id="'+typingId+'"><div class="chat-avatar">🤖</div><div class="chat-bubble"><i class="fas fa-spinner fa-spin"></i> جاري...</div></div>';
+    box.innerHTML+='<div class="chat-message bot" id="'+typingId+'"><div class="chat-avatar">🤖</div><div class="chat-bubble"><i class="fas fa-spinner fa-spin"></i> جاري التفكير...</div></div>';
     box.scrollTop=box.scrollHeight;
     try{
-        let messages=[{role:"system",content:"أنت مساعد تعليمي ذكي. أجب بالعربية."}];
+        let messages=[{role:"system",content:"أنت مساعد تعليمي ذكي جداً ومتخصص. لديك معرفة عميقة في جميع المواد الدراسية. أجب باللغة العربية الفصحى وبأسلوب واضح ومفيد. قدم إجابات شاملة ومفصلة مع أمثلة حيثما أمكن."}];
         if(uploadedImages.length>0){const content=buildImageContent(uploadedImages,msg);messages.push({role:"user",content:content});}
         else{messages.push({role:"user",content:msg});}
         const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL_NAME,messages})});
@@ -894,7 +925,7 @@ async function sendChatMessage(){
         box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">'+escapeHtml(reply).replace(/\\n/g,'<br>')+'</div></div>';
     }catch(err){
         document.getElementById(typingId).remove();
-        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble" style="color:var(--accent-red);">عذراً، حدث خطأ.</div></div>';
+        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble" style="color:var(--accent-red);">❌ عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي. حاول مرة أخرى.</div></div>';
     }
     box.scrollTop=box.scrollHeight;
 }
