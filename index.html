@@ -1,8 +1,11 @@
 
-# Build the complete HTML file with the requested fixes
-# Fix 1: Remove all white text/code that appears on screen (Python code comments)
-# Fix 2: "Next Question" button should be bright (primary gradient), not gray
-# Fix 3: Stats should start realistic (all zeros, not fake data)
+# Build the complete HTML file with all requested fixes
+# Fix 1: Remove all white text/code from screen
+# Fix 2: Progress indicators are MONTHLY not weekly, start at zero, realistic
+# Fix 3: Replace "تحليل محتوى" with "بحث عن الدرس" 
+# Fix 4: Add grade level selection screen on first open
+# Fix 5: Fix image upload + summary/quiz generation errors
+# Fix 6: Keep all existing working features intact
 
 part1 = '''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -169,6 +172,60 @@ part1 = '''<!DOCTYPE html>
         .streak-badge i { color: #f59e0b; }
         .container { max-width: 500px; margin: 0 auto; padding: 15px; }
 
+        /* Grade Selection Screen */
+        .grade-screen {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #1a0a3e 0%, #2d1b69 50%, #4c1d95 100%);
+            z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 20px;
+            overflow-y: auto;
+        }
+        .grade-screen.hidden { display: none !important; }
+        .grade-screen .brain-emoji {
+            font-size: 80px; margin-bottom: 10px;
+            filter: drop-shadow(0 0 30px rgba(124, 58, 237, 0.5));
+            animation: float 3s ease-in-out infinite;
+        }
+        .grade-screen h1 {
+            color: white; font-size: 26px; font-weight: 900;
+            margin-bottom: 8px; text-align: center;
+        }
+        .grade-screen p {
+            color: rgba(255,255,255,0.7); font-size: 14px;
+            margin-bottom: 30px; text-align: center; line-height: 1.6;
+        }
+        .grade-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; width: 100%; max-width: 400px;
+        }
+        .grade-btn {
+            background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2);
+            border-radius: var(--radius-xl); padding: 20px 16px;
+            text-align: center; cursor: pointer; transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .grade-btn:hover {
+            background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5);
+            transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .grade-btn .grade-icon {
+            font-size: 32px; margin-bottom: 8px; display: block;
+        }
+        .grade-btn .grade-name {
+            color: white; font-size: 15px; font-weight: 800;
+        }
+        .grade-btn .grade-desc {
+            color: rgba(255,255,255,0.6); font-size: 11px; margin-top: 4px;
+        }
+        .reset-grade-btn {
+            margin-top: 20px; background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3); color: white;
+            padding: 10px 24px; border-radius: var(--radius-full);
+            font-weight: 700; font-size: 13px; cursor: pointer;
+            transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;
+        }
+        .reset-grade-btn:hover { background: rgba(255,255,255,0.25); }
+
         .hero-banner {
             background: linear-gradient(135deg, #1a0a3e 0%, #2d1b69 50%, #4c1d95 100%);
             border-radius: var(--radius-2xl); padding: 24px; margin-bottom: 20px;
@@ -288,7 +345,7 @@ part1 = '''<!DOCTYPE html>
             font-size: 15px; font-weight: 800; color: var(--text-main);
             display: flex; align-items: center; gap: 6px;
         }
-        .week-selector {
+        .month-selector {
             display: flex; align-items: center; gap: 6px;
             font-size: 12px; font-weight: 600; color: var(--text-sub);
             background: var(--border-light); padding: 6px 12px;
@@ -704,6 +761,31 @@ part1 = '''<!DOCTYPE html>
         }
         .summary-content { font-size: 14px; line-height: 1.8; color: var(--text-main); }
 
+        .search-lesson-box {
+            display: flex; gap: 10px; margin-bottom: 16px;
+        }
+        .search-lesson-box input {
+            flex: 1; padding: 14px 16px; border-radius: var(--radius-lg);
+            border: 2px solid var(--border-color); background: var(--bg-body);
+            color: var(--text-main); font-size: 14px; font-weight: 600;
+            font-family: 'Cairo', sans-serif;
+        }
+        .search-lesson-box input:focus {
+            outline: none; border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        .search-lesson-box button {
+            padding: 14px 20px; border-radius: var(--radius-lg);
+            background: var(--primary-gradient); color: white;
+            border: none; font-weight: 800; font-size: 14px;
+            cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 8px;
+            white-space: nowrap;
+        }
+        .search-lesson-box button:hover {
+            transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        }
+
         .hidden { display: none !important; }
         .input-box { 
             width: 100%; padding: 12px; border-radius: 10px;
@@ -727,10 +809,80 @@ part1 = '''<!DOCTYPE html>
             .hero-title { font-size: 18px; }
             .hero-image { width: 100px; height: 100px; }
             .hero-image .brain-emoji { font-size: 70px; }
+            .grade-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+
+    <!-- Grade Selection Screen -->
+    <div id="gradeScreen" class="grade-screen">
+        <div class="brain-emoji">🧠</div>
+        <h1>أهلاً بك في ذكاء Study!</h1>
+        <p>اختر مستواك الدراسي لنبدأ رحلتك التعليمية الذكية</p>
+        <div class="grade-grid">
+            <div class="grade-btn" onclick="selectGrade('first-primary')">
+                <span class="grade-icon">🎒</span>
+                <div class="grade-name">الصف الأول الابتدائي</div>
+                <div class="grade-desc">المرحلة الابتدائية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('second-primary')">
+                <span class="grade-icon">📚</span>
+                <div class="grade-name">الصف الثاني الابتدائي</div>
+                <div class="grade-desc">المرحلة الابتدائية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('third-primary')">
+                <span class="grade-icon">✏️</span>
+                <div class="grade-name">الصف الثالث الابتدائي</div>
+                <div class="grade-desc">المرحلة الابتدائية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('fourth-primary')">
+                <span class="grade-icon">📝</span>
+                <div class="grade-name">الصف الرابع الابتدائي</div>
+                <div class="grade-desc">المرحلة الابتدائية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('fifth-primary')">
+                <span class="grade-icon">📖</span>
+                <div class="grade-name">الصف الخامس الابتدائي</div>
+                <div class="grade-desc">المرحلة الابتدائية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('sixth-primary')">
+                <span class="grade-icon">🎓</span>
+                <div class="grade-name">الصف السادس الابتدائي</div>
+                <div class="grade-desc">المرحلة الابتدائية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('first-prep')">
+                <span class="grade-icon">🔬</span>
+                <div class="grade-name">الصف الأول الإعدادي</div>
+                <div class="grade-desc">المرحلة الإعدادية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('second-prep')">
+                <span class="grade-icon">⚗️</span>
+                <div class="grade-name">الصف الثاني الإعدادي</div>
+                <div class="grade-desc">المرحلة الإعدادية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('third-prep')">
+                <span class="grade-icon">🧪</span>
+                <div class="grade-name">الصف الثالث الإعدادي</div>
+                <div class="grade-desc">المرحلة الإعدادية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('first-secondary')">
+                <span class="grade-icon">🔭</span>
+                <div class="grade-name">الصف الأول الثانوي</div>
+                <div class="grade-desc">المرحلة الثانوية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('second-secondary')">
+                <span class="grade-icon">🧬</span>
+                <div class="grade-name">الصف الثاني الثانوي</div>
+                <div class="grade-desc">المرحلة الثانوية</div>
+            </div>
+            <div class="grade-btn" onclick="selectGrade('third-secondary')">
+                <span class="grade-icon">🚀</span>
+                <div class="grade-name">الصف الثالث الثانوي</div>
+                <div class="grade-desc">المرحلة الثانوية</div>
+            </div>
+        </div>
+    </div>
 
     <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="loading-spinner"></div>
@@ -792,10 +944,10 @@ part1 = '''<!DOCTYPE html>
                     <div class="feature-desc">اختر صورة من معرض الصور لبدء التعلم</div>
                     <div class="feature-arrow purple"><i class="fas fa-arrow-right"></i></div>
                 </div>
-                <div class="feature-card" onclick="switchTab('chat')">
-                    <div class="feature-icon green">📝</div>
-                    <div class="feature-title">تحليل محتوى</div>
-                    <div class="feature-desc">ألصق نص أو محتوى طويل للحصول على شرح ذكي</div>
+                <div class="feature-card" onclick="openSearchLesson()">
+                    <div class="feature-icon green">🔍</div>
+                    <div class="feature-title">بحث عن الدرس</div>
+                    <div class="feature-desc">ابحث عن أي درس بدون تصوير كتاب</div>
                     <div class="feature-arrow green"><i class="fas fa-arrow-right"></i></div>
                 </div>
             </div>
@@ -859,82 +1011,23 @@ part1 = '''<!DOCTYPE html>
                 </div>
             </div>
 
+            <!-- Search Lesson Section -->
+            <div class="card" id="searchSection" style="display:none;">
+                <div class="card-title">🔍 بحث عن الدرس</div>
+                <div class="search-lesson-box">
+                    <input type="text" id="lessonSearchInput" placeholder="اكتب اسم الدرس أو الموضوع..." onkeypress="if(event.key==='Enter') searchLesson()">
+                    <button onclick="searchLesson()">
+                        <i class="fas fa-search"></i> بحث
+                    </button>
+                </div>
+                <div id="searchResults" style="margin-top: 12px;"></div>
+            </div>
+
             <div class="progress-card animate-fade-in-up">
                 <div class="progress-header">
                     <h3><i class="fas fa-chart-line"></i> تقدمك في الإجابة الصحيحة</h3>
-                    <div class="week-selector">
-                        <i class="far fa-calendar-alt"></i>
-                        <span>هذا الأسبوع</span>
-                    </div>
-                </div>
-                <p class="progress-subtitle">كلما زادت إجاباتك الصحيحة، يتغير إثر إيجابي للمستوى الأعلى!</p>
-                <div class="emoji-track">
-                    <div class="emoji-step" id="lvl-0">
-                        <div class="emoji-icon">🎉</div>
-                        <div class="emoji-label">100%-81%</div>
-                    </div>
-                    <div class="emoji-step" id="lvl-1">
-                        <div class="emoji-icon">🤩</div>
-                        <div class="emoji-label">80%-61%</div>
-                    </div>
-                    <div class="emoji-step" id="lvl-2">
-                        <div class="emoji-icon">😁</div>
-                        <div class="emoji-label">60%-41%</div>
-                    </div>
-                    <div class="emoji-step" id="lvl-3">
-                        <div class="emoji-icon">🙂</div>
-                        <div class="emoji-label">40%-21%</div>
-                    </div>
-                    <div class="emoji-step active" id="lvl-4">
-                        <div class="emoji-icon">😐</div>
-                        <div class="emoji-label">20%-0%</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-icon purple">🏆</div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="statAcc">0%</div>
-                        <div class="stat-label">نسبة النجاح</div>
-                        <div class="stat-change up" id="statAccChange" style="opacity:0;"><i class="fas fa-arrow-up"></i> --</div>
-                    </div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon green">✅</div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="statCorrect">0</div>
-                        <div class="stat-label">الإجابات الصحيحة</div>
-                        <div class="stat-change up" id="statCorrectChange" style="opacity:0;"><i class="fas fa-arrow-up"></i> --</div>
-                    </div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon orange">📖</div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="statLessons">0</div>
-                        <div class="stat-label">المواد الدراسية</div>
-                        <div class="stat-change fire" id="statLessonsChange" style="opacity:0;"><i class="fas fa-fire"></i> --</div>
-                    </div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon blue">📅</div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="statStreak">1</div>
-                        <div class="stat-label">معدل الحضور اليومي</div>
-                        <div class="stat-change fire" id="statStreakChange" style="opacity:0;"><i class="fas fa-fire"></i> --</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-'''
-
-output_path = '/mnt/agents/output/zeka_study_app.html'
-with open(output_path, 'w', encoding='utf-8') as f:
-    f.write(part1)
-
-print(f"Part 1 written: {len(part1)} chars")
-        
+                    <div class="month-selector">
+           
 part2 = '''
         <div id="tab-quiz" class="tab-content hidden">
             <div class="card">
@@ -1186,6 +1279,93 @@ part2 = '''
     let quizType = '';
     let usedQuestions = new Set();
     let quizHistory = [];
+    let currentGrade = null;
+    let currentMonth = new Date().getMonth();
+    let monthlyStats = {};
+
+    // Grade names mapping
+    const gradeNames = {
+        'first-primary': 'الصف الأول الابتدائي',
+        'second-primary': 'الصف الثاني الابتدائي',
+        'third-primary': 'الصف الثالث الابتدائي',
+        'fourth-primary': 'الصف الرابع الابتدائي',
+        'fifth-primary': 'الصف الخامس الابتدائي',
+        'sixth-primary': 'الصف السادس الابتدائي',
+        'first-prep': 'الصف الأول الإعدادي',
+        'second-prep': 'الصف الثاني الإعدادي',
+        'third-prep': 'الصف الثالث الإعدادي',
+        'first-secondary': 'الصف الأول الثانوي',
+        'second-secondary': 'الصف الثاني الثانوي',
+        'third-secondary': 'الصف الثالث الثانوي'
+    };
+
+    // Month names in Arabic
+    const monthNames = [
+        'يناير', 'فبراير', 'مارس', 'إبريل', 'مايو', 'يونيو',
+        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+    ];
+
+    function initApp() {
+        const savedGrade = localStorage.getItem('userGrade');
+        const savedStats = localStorage.getItem('studyStats');
+        const savedMonthly = localStorage.getItem('monthlyStats');
+        
+        if (savedStats) {
+            stats = JSON.parse(savedStats);
+        }
+        
+        if (savedMonthly) {
+            monthlyStats = JSON.parse(savedMonthly);
+        }
+        
+        // Initialize current month stats if not exists
+        const monthKey = getMonthKey();
+        if (!monthlyStats[monthKey]) {
+            monthlyStats[monthKey] = { correct: 0, totalAnswered: 0, lessons: 0 };
+        }
+        
+        if (savedGrade) {
+            currentGrade = savedGrade;
+            document.getElementById('gradeScreen').classList.add('hidden');
+            updateStatsUI();
+            updateMonthLabel();
+        }
+    }
+
+    function getMonthKey() {
+        const now = new Date();
+        return now.getFullYear() + '-' + (now.getMonth() + 1);
+    }
+
+    function updateMonthLabel() {
+        const now = new Date();
+        const label = monthNames[now.getMonth()] + ' ' + now.getFullYear();
+        document.getElementById('currentMonthLabel').innerText = label;
+    }
+
+    function selectGrade(grade) {
+        currentGrade = grade;
+        localStorage.setItem('userGrade', grade);
+        
+        // Initialize monthly stats for this month
+        const monthKey = getMonthKey();
+        if (!monthlyStats[monthKey]) {
+            monthlyStats[monthKey] = { correct: 0, totalAnswered: 0, lessons: 0 };
+        }
+        
+        document.getElementById('gradeScreen').classList.add('hidden');
+        showToast('تم اختيار ' + gradeNames[grade], 'success');
+        updateStatsUI();
+        updateMonthLabel();
+    }
+
+    function resetGrade() {
+        if (confirm('هل أنت متأكد من إعادة تعيين المستوى الدراسي؟')) {
+            localStorage.removeItem('userGrade');
+            currentGrade = null;
+            document.getElementById('gradeScreen').classList.remove('hidden');
+        }
+    }
 
     function switchTab(tabName, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
@@ -1243,6 +1423,61 @@ part2 = '''
         const choice = confirm('اضغط "موافق" للكاميرا أو "إلغاء" للمعرض');
         if (choice) openCamera();
         else openGallery();
+    }
+
+    function openSearchLesson() {
+        const searchSection = document.getElementById('searchSection');
+        if (searchSection.style.display === 'none') {
+            searchSection.style.display = 'block';
+            searchSection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            searchSection.style.display = 'none';
+        }
+    }
+
+    async function searchLesson() {
+        const query = document.getElementById('lessonSearchInput').value.trim();
+        if (!query) {
+            showToast('من فضلك اكتب اسم الدرس أولاً', 'warning');
+            return;
+        }
+        
+        if (!currentGrade) {
+            showToast('من فضلك اختر مستواك الدراسي أولاً', 'warning');
+            return;
+        }
+        
+        showLoading('جاري البحث عن الدرس...');
+        
+        try {
+            const gradeText = gradeNames[currentGrade] || currentGrade;
+            const prompt = 'أنت مساعد تعليمي ذكي. الطالب في ' + gradeText + ' يسأل عن: "' + query + '"\n\nقدم له:\n1. شرح مبسط ومفيد للموضوع\n2. النقاط الرئيسية\n3. أمثلة توضيحية\n4. أسئلة للمراجعة\n\nاكتب باللغة العربية.';
+            
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: MODEL_NAME,
+                    messages: [{ role: "user", content: prompt }]
+                })
+            });
+            
+            const data = await res.json();
+            const result = data.choices[0].message.content;
+            
+            document.getElementById('searchResults').innerHTML = 
+                '<div class="summary-card" style="margin-top:0;">' +
+                '<div class="summary-title"><i class="fas fa-search"></i> نتائج البحث: ' + escapeHtml(query) + '</div>' +
+                '<div class="summary-content">' + escapeHtml(result).replace(/\\n/g, '<br>') + '</div>' +
+                '</div>';
+            
+            showToast('تم العثور على نتائج!', 'success');
+        } catch (err) {
+            console.error(err);
+            showToast('حدث خطأ في البحث، حاول مرة أخرى', 'error');
+        } finally {
+            hideLoading();
+        }
     }
 
     async function handleFiles(e) {
@@ -1345,7 +1580,7 @@ part2 = '''
             const data = await res.json();
             const summary = data.choices[0].message.content;
             
-            document.getElementById('summaryContent').innerHTML = summary.replace(/\\n/g, '<br>');
+            document.getElementById('summaryContent').innerHTML = escapeHtml(summary).replace(/\\n/g, '<br>');
             document.getElementById('summaryResult').classList.remove('hidden');
             document.getElementById('summaryResult').scrollIntoView({ behavior: 'smooth' });
             
@@ -1431,6 +1666,13 @@ part2 = '''
             qIndex = 0;
             score = 0;
             stats.lessons++;
+            
+            // Update monthly stats
+            const monthKey = getMonthKey();
+            if (!monthlyStats[monthKey]) {
+                monthlyStats[monthKey] = { correct: 0, totalAnswered: 0, lessons: 0 };
+            }
+            monthlyStats[monthKey].lessons++;
             
             secondsLeft = type === 'challenge' ? 20 * 60 : 25 * 60;
             
@@ -1539,6 +1781,7 @@ part2 = '''
                 clearInterval(questionTimerInterval);
                 showFeedback(false, "⏰ انتهى الوقت! الإجابة الصحيحة هي: " + currentQuiz[qIndex].correctAnswer);
                 stats.totalAnswered++;
+                updateMonthlyStats(false);
                 updateStatsUI();
             }
         }, 1000);
@@ -1609,6 +1852,7 @@ part2 = '''
             stats.correct++;
         }
         
+        updateMonthlyStats(isRight);
         updateStatsUI();
         
         document.querySelectorAll('.opt-btn').forEach(btn => {
@@ -1649,7 +1893,7 @@ part2 = '''
                     messages: [
                         {
                             role: "system",
-                            content: "أنت مصحح إجابات ذكي. قارن بين إجابة الطالب والإجابة الصحيحة وحدد ما إذا كانت الإجابة صحيحة أو خاطئة. رد بصيغة JSON: {\"isCorrect\": true/false}"
+                            content: "أنت مصحح إجابات ذكي. قارن بين إجابة الطالب والإجابة الصحيحة وحدد ما إذا كانت الإجابة صحيحة أو خاطئة. رد بصيغة JSON: {\\"isCorrect\\": true/false}"
                         },
                         {
                             role: "user",
@@ -1677,6 +1921,7 @@ part2 = '''
                 stats.correct++;
             }
             
+            updateMonthlyStats(result.isCorrect);
             updateStatsUI();
             showFeedback(result.isCorrect, 
                 result.isCorrect ? "✅ إجابة صحيحة!" : "❌ إجابة خاطئة! الإجابة: " + q.correctAnswer
@@ -1691,6 +1936,7 @@ part2 = '''
                 stats.correct++;
             }
             
+            updateMonthlyStats(isCorrect);
             updateStatsUI();
             showFeedback(isCorrect, 
                 isCorrect ? "✅ إجابة صحيحة!" : "❌ إجابة خاطئة! الإجابة: " + q.correctAnswer
@@ -1698,6 +1944,18 @@ part2 = '''
         } finally {
             hideLoading();
         }
+    }
+
+    function updateMonthlyStats(isCorrect) {
+        const monthKey = getMonthKey();
+        if (!monthlyStats[monthKey]) {
+            monthlyStats[monthKey] = { correct: 0, totalAnswered: 0, lessons: 0 };
+        }
+        monthlyStats[monthKey].totalAnswered++;
+        if (isCorrect) {
+            monthlyStats[monthKey].correct++;
+        }
+        localStorage.setItem('monthlyStats', JSON.stringify(monthlyStats));
     }
 
     function showFeedback(isRight, text) {
@@ -1772,11 +2030,14 @@ part2 = '''
     }
 
     function updateStatsUI() {
-        document.getElementById('statLessons').innerText = stats.lessons;
-        document.getElementById('statCorrect').innerText = stats.correct;
+        const monthKey = getMonthKey();
+        const mStats = monthlyStats[monthKey] || { correct: 0, totalAnswered: 0, lessons: 0 };
+        
+        document.getElementById('statLessons').innerText = mStats.lessons;
+        document.getElementById('statCorrect').innerText = mStats.correct;
         document.getElementById('statStreak').innerText = stats.streak;
         
-        const acc = stats.totalAnswered > 0 ? Math.round((stats.correct / stats.totalAnswered) * 100) : 0;
+        const acc = mStats.totalAnswered > 0 ? Math.round((mStats.correct / mStats.totalAnswered) * 100) : 0;
         document.getElementById('statAcc').innerText = acc + '%';
         
         document.querySelectorAll('.emoji-step').forEach(s => s.classList.remove('active'));
@@ -1786,7 +2047,7 @@ part2 = '''
         else if (acc >= 21) document.getElementById('lvl-3').classList.add('active');
         else document.getElementById('lvl-4').classList.add('active');
         
-        if (stats.totalAnswered > 0) {
+        if (mStats.totalAnswered > 0) {
             document.getElementById('historyEmpty').classList.add('hidden');
         }
     }
@@ -1932,41 +2193,4 @@ part2 = '''
         
         setTimeout(() => {
             toast.style.animation = 'fadeIn 0.3s ease-out reverse';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const savedStats = localStorage.getItem('studyStats');
-        if (savedStats) {
-            stats = JSON.parse(savedStats);
-            updateStatsUI();
-        }
-        
-        setInterval(() => {
-            localStorage.setItem('studyStats', JSON.stringify(stats));
-        }, 5000);
-        
-        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendChatMessage();
-        });
-        
-        document.getElementById('textAns')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') submitTextAnswer();
-        });
-    });
-</script>
-</body>
-</html>
-'''
-
-# Append part 2
-with open(output_path, 'a', encoding='utf-8') as f:
-    f.write(part2)
-
-# Verify the file
-import os
-file_size = os.path.getsize(output_path)
-print(f"✅ Complete file saved successfully!")
-print(f"📄 Total size: {file_size:,} bytes ({file_size/1024:.1f} KB)")
-print(f"📍 Location: {output_path}")
+            setTimeout(() => 
