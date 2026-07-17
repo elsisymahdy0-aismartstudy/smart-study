@@ -31,6 +31,7 @@
         @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
         @keyframes spin { to { transform:rotate(360deg); } }
+        @keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
         
         /* Grade Selection */
         .grade-screen { position:fixed; top:0; left:0; right:0; bottom:0; background:linear-gradient(135deg,#1a0a3e,#2d1b69,#4c1d95); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; overflow-y:auto; }
@@ -61,30 +62,31 @@
         .hero-title { font-size:22px; font-weight:900; color:#fff; }
         .hero-title .highlight { background:linear-gradient(90deg,#c084fc,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
         .hero-subtitle { font-size:13px; color:rgba(255,255,255,0.7); margin-bottom:16px; }
-        .hero-btn { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:12px 24px; border-radius:16px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+        .hero-btn { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:12px 24px; border-radius:16px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:all 0.3s; }
+        .hero-btn:hover { transform:translateY(-2px); box-shadow:0 4px 15px rgba(124,58,237,0.4); }
         .hero-image { position:absolute; left:10px; top:50%; transform:translateY(-50%); }
         .hero-image .brain-emoji { font-size:100px; animation:float 3s ease-in-out infinite; }
         
         /* Features */
         .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
         .feature-card { background:var(--card-bg); border-radius:var(--radius-xl); padding:16px 12px; text-align:center; border:1px solid var(--border-color); cursor:pointer; transition:all 0.3s; }
-        .feature-card:hover { transform:translateY(-4px); border-color:var(--primary-purple); }
+        .feature-card:hover { transform:translateY(-4px); border-color:var(--primary-purple); box-shadow:0 4px 12px rgba(124,58,237,0.1); }
         .feature-icon { width:50px; height:50px; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; font-size:22px; margin:0 auto 10px; }
         .feature-icon.blue { background:linear-gradient(135deg,#dbeafe,#bfdbfe); }
         .feature-icon.purple { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); }
         .feature-icon.green { background:linear-gradient(135deg,#d1fae5,#a7f3d0); }
-        .feature-title { font-size:13px; font-weight:700; }
+        .feature-title { font-size:13px; font-weight:700; color:var(--text-main); }
         .feature-desc { font-size:11px; color:var(--text-sub); }
         
         /* Cards */
-        .card { background:var(--card-bg); border-radius:var(--radius-2xl); padding:20px; margin-bottom:16px; border:1px solid var(--border-color); }
-        .card-title { font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+        .card { background:var(--card-bg); border-radius:var(--radius-2xl); padding:20px; margin-bottom:16px; border:1px solid var(--border-color); box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+        .card-title { font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px; color:var(--text-main); }
         
         /* Upload */
         .upload-area { border:2px dashed var(--primary-purple); padding:30px; text-align:center; border-radius:var(--radius-xl); cursor:pointer; background:var(--primary-lighter); transition:all 0.3s; }
-        .upload-area:hover { background:var(--primary-light); }
+        .upload-area:hover { background:var(--primary-light); transform:scale(1.01); }
         .upload-area i { font-size:40px; color:var(--primary-purple); margin-bottom:10px; display:block; }
-        .upload-text { font-size:14px; font-weight:700; }
+        .upload-text { font-size:14px; font-weight:700; color:var(--text-main); }
         .upload-subtext { font-size:12px; color:var(--text-sub); }
         .upload-limit { font-size:11px; color:var(--primary-purple); font-weight:600; margin-top:8px; padding:4px 12px; background:var(--primary-light); border-radius:var(--radius-full); display:inline-block; }
         
@@ -92,39 +94,41 @@
         .image-preview-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:12px; }
         .image-preview-item { aspect-ratio:1; border-radius:12px; overflow:hidden; position:relative; border:2px solid var(--border-color); }
         .image-preview-item img { width:100%; height:100%; object-fit:cover; }
-        .image-preview-item .remove-btn { position:absolute; top:2px; right:2px; width:20px; height:20px; background:var(--accent-red); color:#fff; border:none; border-radius:var(--radius-full); font-size:10px; cursor:pointer; }
+        .image-preview-item .remove-btn { position:absolute; top:2px; right:2px; width:20px; height:20px; background:var(--accent-red); color:#fff; border:none; border-radius:var(--radius-full); font-size:10px; cursor:pointer; transition:all 0.2s; }
+        .image-preview-item .remove-btn:hover { transform:scale(1.2); }
         
         /* Buttons */
         .action-buttons { display:flex; gap:10px; margin-top:16px; }
-        .btn-action { flex:1; padding:14px; border-radius:16px; font-weight:800; font-size:14px; cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.3s; }
-        .btn-action:hover { transform:translateY(-2px); }
-        .btn-action.primary { background:var(--primary-gradient); color:#fff; }
-        .btn-action.secondary { background:linear-gradient(135deg,#f59e0b,#fbbf24); color:#fff; }
+        .btn-action { flex:1; padding:14px; border-radius:16px; font-weight:800; font-size:14px; cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.3s; color:#fff; }
+        .btn-action:hover { transform:translateY(-2px); box-shadow:0 4px 15px rgba(0,0,0,0.15); }
+        .btn-action.primary { background:var(--primary-gradient); }
+        .btn-action.secondary { background:linear-gradient(135deg,#f59e0b,#fbbf24); }
         .btn-action.outline { background:transparent; border:2px solid var(--primary-purple); color:var(--primary-purple); }
+        .btn-action.outline:hover { background:var(--primary-light); }
         
         /* Quiz Types */
         .quiz-types-group { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
         .quiz-type-btn { background:var(--card-bg); border:2px solid var(--border-color); padding:16px; border-radius:var(--radius-xl); display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:all 0.3s; }
-        .quiz-type-btn:hover { border-color:var(--primary-purple); background:var(--primary-lighter); }
-        .quiz-type-btn .quiz-title { font-size:15px; font-weight:700; }
+        .quiz-type-btn:hover { border-color:var(--primary-purple); background:var(--primary-lighter); transform:translateX(-4px); }
+        .quiz-type-btn .quiz-title { font-size:15px; font-weight:700; color:var(--text-main); }
         .quiz-type-btn .quiz-desc { font-size:12px; color:var(--text-sub); }
         .quiz-type-btn .quiz-icon { width:44px; height:44px; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; font-size:20px; }
         .quiz-type-btn .quiz-icon.blue { background:linear-gradient(135deg,#dbeafe,#bfdbfe); }
         .quiz-type-btn .quiz-icon.purple { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); }
         .quiz-type-btn .quiz-icon.orange { background:linear-gradient(135deg,#ffedd5,#fed7aa); }
         
-        /* Search - White Text */
+        /* Search */
         .search-box { display:flex; gap:10px; margin-bottom:16px; }
-        .search-box input { flex:1; padding:14px 16px; border-radius:16px; border:2px solid var(--border-color); background:var(--bg-body); font-size:14px; font-weight:600; color:#000; }
-        .search-box input:focus { outline:none; border-color:var(--primary-purple); }
-        .search-box input::placeholder { color:#6b7280; }
-        .search-box button { padding:14px 20px; border-radius:16px; background:var(--primary-gradient); color:#fff; border:none; font-weight:800; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px; }
-        .search-box button:hover { transform:translateY(-2px); }
+        .search-box input { flex:1; padding:14px 16px; border-radius:16px; border:2px solid var(--border-color); background:var(--bg-body); font-size:14px; font-weight:600; color:var(--text-main); transition:all 0.3s; }
+        .search-box input:focus { outline:none; border-color:var(--primary-purple); box-shadow:0 0 0 3px var(--primary-light); }
+        .search-box input::placeholder { color:var(--text-sub); }
+        .search-box button { padding:14px 20px; border-radius:16px; background:var(--primary-gradient); color:#fff; border:none; font-weight:800; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:all 0.3s; }
+        .search-box button:hover { transform:translateY(-2px); box-shadow:0 4px 15px rgba(124,58,237,0.3); }
         
         /* Progress */
         .progress-card { background:var(--card-bg); border-radius:var(--radius-2xl); padding:20px; margin-bottom:16px; border:1px solid var(--border-color); }
         .progress-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
-        .progress-header h3 { font-size:15px; font-weight:800; display:flex; align-items:center; gap:6px; }
+        .progress-header h3 { font-size:15px; font-weight:800; display:flex; align-items:center; gap:6px; color:var(--text-main); }
         .month-selector { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--text-sub); background:var(--border-light); padding:6px 12px; border-radius:var(--radius-full); }
         .emoji-track { display:flex; justify-content:space-between; align-items:center; position:relative; padding:0 5px; }
         .emoji-track::before { content:''; position:absolute; top:22px; left:8%; right:8%; height:3px; background:linear-gradient(90deg,#ec4899,#8b5cf6,#3b82f6,#f59e0b,#ef4444); border-radius:var(--radius-full); z-index:1; }
@@ -136,13 +140,14 @@
         
         /* Stats */
         .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
-        .stat-box { background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-xl); padding:16px; display:flex; align-items:center; gap:12px; }
+        .stat-box { background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-xl); padding:16px; display:flex; align-items:center; gap:12px; transition:all 0.3s; }
+        .stat-box:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.06); }
         .stat-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
         .stat-icon.purple { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); }
         .stat-icon.green { background:linear-gradient(135deg,#d1fae5,#a7f3d0); }
         .stat-icon.orange { background:linear-gradient(135deg,#ffedd5,#fed7aa); }
         .stat-icon.blue { background:linear-gradient(135deg,#dbeafe,#bfdbfe); }
-        .stat-number { font-size:24px; font-weight:900; line-height:1.2; }
+        .stat-number { font-size:24px; font-weight:900; line-height:1.2; color:var(--text-main); }
         .stat-label { font-size:12px; color:var(--text-sub); font-weight:600; }
         
         /* Quiz */
@@ -150,17 +155,19 @@
         .quiz-timer { display:flex; align-items:center; gap:6px; background:linear-gradient(135deg,#fef3c7,#fde68a); padding:8px 16px; border-radius:var(--radius-full); font-weight:800; font-size:14px; color:#92400e; }
         .quiz-timer.warning { background:linear-gradient(135deg,#fee2e2,#fecaca); color:#991b1b; animation:pulse 1s infinite; }
         .progress-bar-bg { height:8px; background:var(--border-color); border-radius:var(--radius-full); overflow:hidden; margin-bottom:16px; }
-        .progress-bar-fill { height:100%; background:var(--primary-gradient); width:0%; transition:width 0.5s; border-radius:var(--radius-full); }
+        .progress-bar-fill { height:100%; background:var(--primary-gradient); width:0%; transition:width 0.5s cubic-bezier(0.4,0,0.2,1); border-radius:var(--radius-full); }
         .question-box { background:var(--primary-lighter); border-radius:var(--radius-xl); padding:20px; margin-bottom:20px; border:1px solid var(--primary-light); }
         .question-number { font-size:12px; font-weight:700; color:var(--primary-purple); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
-        .question-text { font-size:16px; font-weight:700; line-height:1.7; }
-        .opt-btn { background:var(--card-bg); border:2px solid var(--border-color); padding:14px 16px; border-radius:16px; margin-bottom:10px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:10px; transition:all 0.3s; }
-        .opt-btn:hover { border-color:var(--primary-purple); background:var(--primary-lighter); }
-        .opt-btn.correct { background:linear-gradient(135deg,#d1fae5,#a7f3d0); border-color:var(--accent-green); }
-        .opt-btn.wrong { background:linear-gradient(135deg,#fee2e2,#fecaca); border-color:var(--accent-red); }
+        .question-text { font-size:16px; font-weight:700; line-height:1.7; color:var(--text-main); }
+        .opt-btn { background:var(--card-bg); border:2px solid var(--border-color); padding:14px 16px; border-radius:16px; margin-bottom:10px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:10px; transition:all 0.3s; color:var(--text-main); }
+        .opt-btn:hover { border-color:var(--primary-purple); background:var(--primary-lighter); transform:translateX(-4px); }
+        .opt-btn.correct { background:linear-gradient(135deg,#d1fae5,#a7f3d0); border-color:var(--accent-green); color:#065f46; }
+        .opt-btn.wrong { background:linear-gradient(135deg,#fee2e2,#fecaca); border-color:var(--accent-red); color:#991b1b; }
         .opt-btn.disabled { pointer-events:none; opacity:0.7; }
         .opt-letter { width:32px; height:32px; border-radius:var(--radius-full); background:var(--primary-light); color:var(--primary-purple); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex-shrink:0; }
-        .feedback { padding:16px; border-radius:16px; text-align:center; font-weight:700; margin:16px 0; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .opt-btn.correct .opt-letter { background:var(--accent-green); color:#fff; }
+        .opt-btn.wrong .opt-letter { background:var(--accent-red); color:#fff; }
+        .feedback { padding:16px; border-radius:16px; text-align:center; font-weight:700; margin:16px 0; display:flex; align-items:center; justify-content:center; gap:8px; animation:fadeInUp 0.3s ease-out; }
         .feedback.success { background:linear-gradient(135deg,#d1fae5,#a7f3d0); color:#065f46; border:1px solid var(--accent-green); }
         .feedback.error { background:linear-gradient(135deg,#fee2e2,#fecaca); color:#991b1b; border:1px solid var(--accent-red); }
         .question-timer { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:16px; padding:10px; background:linear-gradient(135deg,#fef3c7,#fde68a); border-radius:var(--radius-full); font-weight:800; font-size:16px; color:#92400e; }
@@ -170,9 +177,12 @@
         
         /* Result */
         .result-screen { text-align:center; padding:30px 20px; }
-        .result-emoji { font-size:80px; margin-bottom:16px; }
-        .result-title { font-size:24px; font-weight:900; }
+        .result-emoji { font-size:80px; margin-bottom:16px; animation:bounce 1s ease-in-out infinite; }
+        @keyframes bounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
+        .result-title { font-size:24px; font-weight:900; color:var(--text-main); }
         .result-score { font-size:48px; font-weight:900; color:var(--primary-purple); margin:16px 0; }
+        .result-score span { font-size:20px; color:var(--text-sub); }
+        .result-message { font-size:14px; color:var(--text-sub); margin-bottom:24px; }
         .result-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px; }
         .result-stat { background:var(--primary-lighter); padding:12px; border-radius:16px; }
         .result-stat-value { font-size:20px; font-weight:900; color:var(--primary-purple); }
@@ -180,48 +190,56 @@
         
         /* Chat */
         .chat-container { height:350px; overflow-y:auto; margin:16px 0; padding:12px; background:var(--bg-body); border-radius:var(--radius-xl); border:1px solid var(--border-color); }
-        .chat-message { margin-bottom:12px; max-width:85%; }
+        .chat-container::-webkit-scrollbar { width:4px; }
+        .chat-container::-webkit-scrollbar-thumb { background:var(--primary-purple); border-radius:var(--radius-full); }
+        .chat-message { margin-bottom:12px; max-width:85%; animation:fadeInUp 0.3s ease-out; }
         .chat-message.user { margin-left:auto; }
         .chat-message.bot { margin-right:auto; }
-        .chat-bubble { padding:12px 16px; border-radius:var(--radius-xl); font-size:14px; line-height:1.7; }
+        .chat-bubble { padding:12px 16px; border-radius:var(--radius-xl); font-size:14px; line-height:1.7; color:var(--text-main); }
         .chat-message.user .chat-bubble { background:var(--primary-gradient); color:#fff; border-bottom-left-radius:4px; }
         .chat-message.bot .chat-bubble { background:var(--card-bg); border:1px solid var(--border-color); border-bottom-right-radius:4px; }
         .chat-avatar { width:32px; height:32px; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; font-size:16px; margin-bottom:4px; }
         
         /* Settings */
         .setting-item { display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-bottom:1px solid var(--border-light); }
-        .setting-title { font-size:15px; font-weight:700; }
+        .setting-title { font-size:15px; font-weight:700; color:var(--text-main); }
         .setting-desc { font-size:12px; color:var(--text-sub); }
         .toggle-switch { position:relative; width:52px; height:28px; cursor:pointer; }
         .toggle-switch input { opacity:0; width:0; height:0; }
         .toggle-slider { position:absolute; top:0; left:0; right:0; bottom:0; background:var(--border-color); border-radius:var(--radius-full); transition:0.3s; }
-        .toggle-slider::before { content:''; position:absolute; height:22px; width:22px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.3s; }
+        .toggle-slider::before { content:''; position:absolute; height:22px; width:22px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.3s; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
         .toggle-switch input:checked + .toggle-slider { background:var(--primary-purple); }
         .toggle-switch input:checked + .toggle-slider::before { transform:translateX(24px); }
         .reset-grade-settings { margin-top:16px; padding:16px; background:var(--primary-lighter); border-radius:var(--radius-xl); border:1px solid var(--border-color); }
         .reset-grade-settings button { width:100%; padding:14px; border-radius:16px; background:linear-gradient(135deg,#ef4444,#f87171); color:#fff; border:none; font-weight:800; font-size:14px; cursor:pointer; transition:all 0.3s; }
-        .reset-grade-settings button:hover { transform:translateY(-2px); }
+        .reset-grade-settings button:hover { transform:translateY(-2px); box-shadow:0 4px 15px rgba(239,68,68,0.3); }
         
         /* Bottom Nav */
-        .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:75px; background:var(--card-bg); border-top:1px solid var(--border-color); display:flex; justify-content:space-around; align-items:center; z-index:1000; }
-        .nav-item { display:flex; flex-direction:column; align-items:center; color:var(--text-sub); font-size:11px; font-weight:700; cursor:pointer; padding:8px 12px; transition:all 0.3s; }
+        .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:75px; background:var(--card-bg); border-top:1px solid var(--border-color); display:flex; justify-content:space-around; align-items:center; z-index:1000; box-shadow:0 -4px 20px rgba(0,0,0,0.05); }
+        .nav-item { display:flex; flex-direction:column; align-items:center; color:var(--text-sub); font-size:11px; font-weight:700; cursor:pointer; padding:8px 12px; transition:all 0.3s; border-radius:12px; }
         .nav-item.active { color:var(--primary-purple); }
-        .nav-icon { font-size:22px; margin-bottom:2px; }
+        .nav-item:hover { color:var(--primary-purple); }
+        .nav-icon { font-size:22px; margin-bottom:2px; transition:all 0.3s; }
+        .nav-item.active .nav-icon { transform:translateY(-2px); }
         .nav-item.center-btn { margin-top:-30px; }
-        .nav-item.center-btn .nav-icon-wrapper { width:56px; height:56px; background:var(--primary-gradient); border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(124,58,237,0.4); border:4px solid var(--bg-body); }
+        .nav-item.center-btn .nav-icon-wrapper { width:56px; height:56px; background:var(--primary-gradient); border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(124,58,237,0.4); border:4px solid var(--bg-body); transition:all 0.3s; }
+        .nav-item.center-btn .nav-icon-wrapper:hover { transform:scale(1.05); }
         .nav-item.center-btn .nav-icon { color:#fff; margin-bottom:0; }
         
         .empty-state { text-align:center; padding:40px 20px; color:var(--text-sub); }
         .empty-state i { font-size:48px; margin-bottom:12px; opacity:0.5; }
-        .input-box { width:100%; padding:12px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-body); font-size:14px; margin:8px 0; }
-        .input-box:focus { outline:none; border-color:var(--primary-purple); }
+        .input-box { width:100%; padding:12px; border-radius:12px; border:2px solid var(--border-color); background:var(--bg-body); font-size:14px; margin:8px 0; color:var(--text-main); transition:all 0.3s; }
+        .input-box:focus { outline:none; border-color:var(--primary-purple); box-shadow:0 0 0 3px var(--primary-light); }
+        .input-box::placeholder { color:var(--text-sub); }
         .summary-card { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); border-radius:var(--radius-xl); padding:20px; margin-top:16px; border:1px solid rgba(124,58,237,0.2); }
         .summary-title { font-size:16px; font-weight:800; color:var(--primary-purple); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
-        .summary-content { font-size:14px; line-height:1.8; }
+        .summary-content { font-size:14px; line-height:1.8; color:var(--text-main); }
         .loading-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:9999; flex-direction:column; gap:16px; }
         .loading-spinner { width:50px; height:50px; border:4px solid var(--primary-light); border-top-color:var(--primary-purple); border-radius:50%; animation:spin 0.8s linear infinite; }
         .loading-text { color:#fff; font-weight:700; font-size:16px; }
-        @media(max-width:400px){ .grade-grid{grid-template-columns:1fr;} .features-grid{gap:8px;} .feature-card{padding:12px 8px;} }
+        .social-btn { width:100%; padding:14px; border-radius:16px; font-weight:700; border:2px solid var(--border-color); background:var(--card-bg); color:var(--text-main); display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px; cursor:pointer; transition:all 0.3s; }
+        .social-btn:hover { border-color:var(--primary-purple); background:var(--primary-lighter); transform:translateY(-2px); }
+        @media(max-width:400px){ .grade-grid{grid-template-columns:1fr;} .features-grid{gap:8px;} .feature-card{padding:12px 8px;} .stat-box{padding:12px;} .stat-number{font-size:20px;} }
     </style>
 </head>
 <body>
@@ -256,7 +274,7 @@
 
 <!-- HEADER -->
 <header class="app-header">
-    <div><div style="width:42px;height:42px;border-radius:var(--radius-full);background:var(--primary-lighter);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;"><i class="fas fa-bell" style="color:var(--text-sub);"></i></div></div>
+    <div><div style="width:42px;height:42px;border-radius:var(--radius-full);background:var(--primary-lighter);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="fas fa-bell" style="color:var(--text-sub);"></i></div></div>
     <div class="brand-logo"><span class="logo-text">ذكاء Study</span><div class="logo-icon">🧠</div></div>
     <div class="streak-badge"><i class="fas fa-fire"></i><span id="streakDays">1</span> أيام</div>
 </header>
@@ -275,7 +293,7 @@
             <div class="hero-image"><div class="brain-emoji">🧠</div></div>
         </div>
 
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-size:18px;font-weight:800;">انطلق بذكاء</h2></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-size:18px;font-weight:800;color:var(--text-main);">انطلق بذكاء</h2></div>
         <div class="features-grid">
             <div class="feature-card" onclick="openCamera()"><div class="feature-icon blue">📷</div><div class="feature-title">تصوير كتاب</div><div class="feature-desc">افتح الكاميرا والتقط أي كتاب</div></div>
             <div class="feature-card" onclick="openGallery()"><div class="feature-icon purple">🖼️</div><div class="feature-title">فتح المعرض</div><div class="feature-desc">اختر صورة من معرض الصور</div></div>
@@ -310,11 +328,11 @@
             </div>
         </div>
 
-        <!-- SEARCH LESSON SECTION - White Text -->
+        <!-- SEARCH LESSON SECTION -->
         <div class="card" id="searchSection" style="display:none;">
-            <div class="card-title" style="color:#000;">🔍 بحث عن الدرس</div>
+            <div class="card-title">🔍 بحث عن الدرس</div>
             <div class="search-box">
-                <input type="text" id="lessonSearchInput" placeholder="اكتب اسم الدرس أو الموضوع..." style="color:#000;background:#fff;" onkeypress="if(event.key==='Enter') searchLesson()">
+                <input type="text" id="lessonSearchInput" placeholder="اكتب اسم الدرس أو الموضوع..." onkeypress="if(event.key==='Enter') searchLesson()">
                 <button onclick="searchLesson()"><i class="fas fa-search"></i> بحث</button>
             </div>
             <div id="searchResults"></div>
@@ -435,7 +453,7 @@
                     <div class="stat-box"><div class="stat-icon green">🎯</div><div><div class="stat-number" id="reportAccuracy">0%</div><div class="stat-label">نسبة الدقة</div></div></div>
                 </div>
                 <div class="progress-card" style="margin-top:12px;">
-                    <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;">📈 تطور الأداء</h4>
+                    <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-main);">📈 تطور الأداء</h4>
                     <div style="height:150px;background:var(--bg-body);border-radius:16px;display:flex;align-items:flex-end;justify-content:space-around;padding:10px;gap:8px;" id="performanceChart"></div>
                 </div>
             </div>
@@ -459,8 +477,8 @@
                 <p style="font-size:11px;color:var(--text-sub);margin-top:8px;">سيتم حذف المستوى الحالي ويمكنك اختيار مستوى جديد</p>
             </div>
             <div style="margin-top:16px;">
-                <button class="social-btn" style="width:100%;padding:14px;border-radius:16px;font-weight:700;border:2px solid var(--border-color);background:var(--card-bg);display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;cursor:pointer;"><i class="fab fa-google"></i> Google</button>
-                <button class="social-btn" style="width:100%;padding:14px;border-radius:16px;font-weight:700;border:2px solid var(--border-color);background:var(--card-bg);display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;cursor:pointer;"><i class="fab fa-facebook"></i> Facebook</button>
+                <button class="social-btn"><i class="fab fa-google"></i> Google</button>
+                <button class="social-btn"><i class="fab fa-facebook"></i> Facebook</button>
             </div>
         </div>
     </div>
@@ -473,7 +491,8 @@
     <div class="nav-item center-btn" onclick="switchTab('chat', this)"><div class="nav-icon-wrapper"><span class="nav-icon">🧠</span></div><span style="color:var(--primary-purple);">المحادثة</span></div>
     <div class="nav-item" onclick="switchTab('history', this)"><span class="nav-icon">📚</span><span>السجل</span></div>
     <div class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>الإعدادات</span></div>
-</nav><script>
+</nav>
+<script>
 // ========== CONFIG ==========
 const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
 const MODEL_NAME = "meta-llama/llama-4-scout-17b-16e-instruct";
@@ -514,7 +533,7 @@ function hideLoading(){document.getElementById('loadingOverlay').classList.add('
 function showToast(msg,type){
     const t=document.createElement('div');
     const colors={success:'#10b981',error:'#ef4444',warning:'#f59e0b',info:'#3b82f6'};
-    t.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:'+(colors[type]||colors.info)+';color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;z-index:10000;max-width:90%;text-align:center;';
+    t.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:'+(colors[type]||colors.info)+';color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;z-index:10000;max-width:90%;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,0.2);';
     t.innerText=msg;
     document.body.appendChild(t);
     setTimeout(()=>{t.remove();},3000);
@@ -538,16 +557,16 @@ function selectGrade(g){
     const mk=getMonthKey();
     if(!monthlyStats[mk]) monthlyStats[mk]={correct:0,totalAnswered:0,lessons:0};
     document.getElementById('gradeScreen').classList.add('hidden');
-    showToast('تم اختيار '+gradeNames[g],'success');
+    showToast('✅ تم اختيار '+gradeNames[g],'success');
     updateStatsUI();updateMonthLabel();
 }
 
 function resetGrade(){
-    if(confirm('هل أنت متأكد من إعادة تعيين المستوى الدراسي؟ سيتم حذف جميع البيانات المتعلقة بالمستوى الحالي.')){
+    if(confirm('⚠️ هل أنت متأكد من إعادة تعيين المستوى الدراسي؟ سيتم حذف جميع البيانات المتعلقة بالمستوى الحالي.')){
         localStorage.removeItem('userGrade');
         currentGrade=null;
         document.getElementById('gradeScreen').classList.remove('hidden');
-        showToast('تم إعادة تعيين المستوى', 'info');
+        showToast('🔄 تم إعادة تعيين المستوى', 'info');
     }
 }
 
@@ -566,7 +585,7 @@ function scrollToUpload(){document.getElementById('uploadSection').scrollIntoVie
 function toggleDarkMode(isDark){if(isDark){document.body.classList.add('dark-mode');localStorage.setItem('darkMode','true');}else{document.body.classList.remove('dark-mode');localStorage.setItem('darkMode','false');}}
 function openCamera(){document.getElementById('imgInput').click();}
 function openGallery(){document.getElementById('galleryInput').click();}
-function triggerFileInput(){const c=confirm('اضغط "موافق" للكاميرا أو "إلغاء" للمعرض');if(c)openCamera();else openGallery();}
+function triggerFileInput(){const c=confirm('📷 اضغط "موافق" للكاميرا أو "إلغاء" للمعرض');if(c)openCamera();else openGallery();}
 
 function openSearchLesson(){
     const s=document.getElementById('searchSection');
@@ -577,9 +596,9 @@ function openSearchLesson(){
 // ========== SEARCH LESSON (AI Powered) ==========
 async function searchLesson(){
     const q=document.getElementById('lessonSearchInput').value.trim();
-    if(!q){showToast('اكتب اسم الدرس','warning');return;}
-    if(!currentGrade){showToast('اختر مستواك أولاً','warning');return;}
-    showLoading('جاري البحث في الذكاء الاصطناعي...');
+    if(!q){showToast('✏️ اكتب اسم الدرس','warning');return;}
+    if(!currentGrade){showToast('⚠️ اختر مستواك أولاً','warning');return;}
+    showLoading('🔍 جاري البحث في الذكاء الاصطناعي...');
     try{
         const gradeText=gradeNames[currentGrade]||currentGrade;
         const prompt='أنت مساعد تعليمي ذكي متخصص. الطالب في '+gradeText+' يسأل عن: "'+q+'"\n\nقدم له:\n1. شرح مبسط ومفيد جداً للموضوع\n2. النقاط الرئيسية والأساسية\n3. أمثلة توضيحية واقعية\n4. أسئلة ذكية للمراجعة والتفكير\n5. نصائح لحفظ وفهم الموضوع بشكل أسرع\n\nاكتب باللغة العربية الفصحى وبأسلوب شيق ومشوق.';
@@ -600,9 +619,9 @@ async function handleFiles(e){
     const files=Array.from(e.target.files);
     if(files.length===0)return;
     const remainingSlots=MAX_IMAGES-uploadedImages.length;
-    if(remainingSlots<=0){showToast('حد أقصى 5 صور','error');return;}
+    if(remainingSlots<=0){showToast('⚠️ حد أقصى 5 صور','error');return;}
     const filesToProcess=files.slice(0,remainingSlots);
-    showLoading('جاري معالجة الصور...');
+    showLoading('📤 جاري معالجة الصور...');
     for(const file of filesToProcess){
         try{const base64=await fileToBase64(file);uploadedImages.push(base64);stats.docs++;}
         catch(err){console.error(err);}
@@ -610,7 +629,7 @@ async function handleFiles(e){
     hideLoading();
     updateImagePreview();
     updateStatsUI();
-    if(uploadedImages.length>0){document.getElementById('actionButtons').classList.remove('hidden');document.getElementById('uploadArea').classList.add('has-images');showToast('تم رفع '+uploadedImages.length+' صور','success');}
+    if(uploadedImages.length>0){document.getElementById('actionButtons').classList.remove('hidden');document.getElementById('uploadArea').classList.add('has-images');showToast('✅ تم رفع '+uploadedImages.length+' صور','success');}
     e.target.value='';
 }
 
@@ -627,8 +646,8 @@ function removeImage(index){uploadedImages.splice(index,1);updateImagePreview();
 
 // ========== SUMMARY (AI Powered) ==========
 async function generateSummary(){
-    if(uploadedImages.length===0){showToast('ارفع صور أولاً','error');return;}
-    showLoading('جاري التلخيص الذكي...');
+    if(uploadedImages.length===0){showToast('⚠️ ارفع صور أولاً','error');return;}
+    showLoading('📝 جاري التلخيص الذكي...');
     try{
         const content=buildImageContent(uploadedImages,"قم بتلخيص محتوى هذه الصور بشكل شامل ودقيق. استخرج أهم النقاط والمفاهيم الأساسية. اكتب باللغة العربية الفصحى وبأسلوب منظم وسهل الفهم.");
         const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL_NAME,messages:[{role:"user",content:content}]})});
@@ -637,7 +656,10 @@ async function generateSummary(){
         document.getElementById('summaryContent').innerHTML=escapeHtml(summary).replace(/\\n/g,'<br>');
         document.getElementById('summaryResult').classList.remove('hidden');
         showToast('✅ تم التلخيص بنجاح!','success');
-    }catch(err){showToast('❌ حدث خطأ في التلخيص','error');}
+    }catch(err){
+        console.error(err);
+        showToast('❌ حدث خطأ في التلخيص، حاول مرة أخرى','error');
+    }
     finally{hideLoading();}
 }
 
@@ -649,7 +671,7 @@ function buildImageContent(images,textPrompt){
 
 // ========== QUIZ (AI Generated) ==========
 function showQuizOptions(){
-    if(uploadedImages.length===0){showToast('ارفع صور أولاً','error');return;}
+    if(uploadedImages.length===0){showToast('⚠️ ارفع صور أولاً','error');return;}
     document.getElementById('quizOptions').classList.toggle('hidden');
 }
 
@@ -671,7 +693,7 @@ function generateFallbackQuestions(type){
 async function startQuiz(type){
     quizType=type;
     document.getElementById('quizOptions').classList.add('hidden');
-    showLoading('جاري إنشاء الأسئلة الذكية...');
+    showLoading('🧠 جاري إنشاء الأسئلة الذكية...');
     try{
         let prompt='';
         const gradeText=currentGrade?gradeNames[currentGrade]||'المرحلة الدراسية':'المرحلة الدراسية';
@@ -695,7 +717,7 @@ async function startQuiz(type){
         startQuizUI();
     }catch(err){
         hideLoading();
-        showToast('استخدام أسئلة افتراضية ذكية','warning');
+        showToast('📝 استخدام أسئلة افتراضية ذكية','warning');
         currentQuiz=generateFallbackQuestions(type);
         startQuizUI();
     }
@@ -712,8 +734,6 @@ function startQuizUI(){
     document.getElementById('tab-quiz').classList.remove('hidden');
     document.getElementById('totalQuestions').innerText=currentQuiz.length;
     document.getElementById('currentScore').innerText=0;
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    document.querySelectorAll('.nav-item')[0].classList.add('active');
     startTimer();
     renderQuestion();
 }
@@ -787,10 +807,10 @@ function checkAnswer(userAns,correctAns){
 async function submitTextAnswer(){
     clearInterval(questionTimerInterval);
     const userAns=document.getElementById('textAns').value.trim();
-    if(!userAns){showToast('اكتب إجابة','warning');return;}
+    if(!userAns){showToast('✏️ اكتب إجابة','warning');return;}
     const q=currentQuiz[qIndex];
     stats.totalAnswered++;
-    showLoading('جاري تقييم الإجابة الذكي...');
+    showLoading('🧠 جاري تقييم الإجابة الذكي...');
     try{
         const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL_NAME,messages:[{role:"system",content:"أنت مصحح إجابات ذكي. قارن بين إجابة الطالب والإجابة الصحيحة وحدد ما إذا كانت الإجابة صحيحة أو خاطئة. كن عادلاً ودقيقاً. رد بصيغة JSON: {\\\"isCorrect\\\": true/false}"},{role:"user",content:"السؤال: "+q.question+"\\nالإجابة الصحيحة: "+q.correctAnswer+"\\nإجابة الطالب: "+userAns}]})});
         const data=await res.json();
@@ -849,13 +869,11 @@ function finishQuiz(){
     document.getElementById('resultMessage').innerText=msg;
     document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
     document.getElementById('tab-result').classList.remove('hidden');
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    document.querySelectorAll('.nav-item')[2].classList.add('active');
     updateHistory();updateReports();
 }
 
 function retryQuiz(){startQuiz(quizType);}
-function quitQuiz(){if(confirm('هل أنت متأكد من الخروج من الاختبار؟')){clearInterval(timerInterval);clearInterval(questionTimerInterval);switchTab('home');}}
+function quitQuiz(){if(confirm('⚠️ هل أنت متأكد من الخروج من الاختبار؟')){clearInterval(timerInterval);clearInterval(questionTimerInterval);switchTab('home');}}
 
 // ========== STATS UI ==========
 function updateStatsUI(){
@@ -884,7 +902,7 @@ function updateHistory(){
     const list=document.getElementById('historyList');
     if(quizHistory.length===0)return;
     document.getElementById('historyEmpty').classList.add('hidden');
-    list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total+'</div></div></div></div>').join('');
+    list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;color:var(--text-main);">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total+'</div></div></div></div>').join('');
 }
 
 function getQuizTypeName(type){const n={'quick':'⚡ سريع','mcq_only':'📝 اختياري','full':'📄 كامل','challenge':'🔥 تحدي'};return n[type]||type;}
