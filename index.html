@@ -397,7 +397,7 @@
                 <div class="opt-btn" onclick="checkAnswer('خطأ','خطأ')"><div class="opt-letter">خ</div><span>خطأ</span></div>
             </div>
             <div id="feedback" class="feedback hidden"></div>
-            <button id="nextBtn" class="btn-action primary hidden" onclick="nextQuestion()">التالي <i class="fas fa-arrow-left"></i></button>
+            <button id="nextBtn" class="btn-action primary hidden" onclick="nextQuestion()" style="font-size:18px;padding:16px 24px;">السؤال التالي <i class="fas fa-arrow-left"></i></button>
         </div>
     </div>
 
@@ -497,8 +497,7 @@
     <div class="nav-item center-btn" onclick="switchTab('chat', this)"><div class="nav-icon-wrapper"><span class="nav-icon">🧠</span></div><span style="color:var(--primary-purple);">المحادثة</span></div>
     <div class="nav-item" onclick="switchTab('history', this)"><span class="nav-icon">📚</span><span>السجل</span></div>
     <div class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>الإعدادات</span></div>
-    </nav>
-    <script>
+                </nav><script>
 // ========== CONFIG ==========
 const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
 const MAX_IMAGES = 5;
@@ -738,6 +737,7 @@ function removeImage(index){uploadedImages.splice(index,1);updateImagePreview();
 async function generateSummary(){
     if(uploadedImages.length===0){showToast('⚠️ ارفع صور أولاً','error');return;}
     showLoading('📝 جاري التلخيص...');
+    console.log('📤 الصورة:', uploadedImages[0].substring(0, 100));
     try{
         const response=await fetch(WORKER_URL,{
             method:'POST',
@@ -750,10 +750,22 @@ async function generateSummary(){
             })
         });
         const data=await response.json();
-        document.getElementById('summaryContent').innerHTML=(data.executiveSummary||data.summary||data.rawResponse||'تم التلخيص').replace(/\n/g,'<br>');
+        console.log('📥 رد التلخيص:', data);
+        if(data.error){
+            showToast('❌ '+data.error, 'error');
+            document.getElementById('summaryContent').innerHTML = '❌ '+data.error;
+            document.getElementById('summaryResult').classList.remove('hidden');
+            hideLoading();
+            return;
+        }
+        let summaryText = data.executiveSummary || data.summary || data.rawResponse || 'لا يوجد ملخص';
+        document.getElementById('summaryContent').innerHTML = summaryText.replace(/\n/g, '<br>');
         document.getElementById('summaryResult').classList.remove('hidden');
         showToast('✅ تم التلخيص!','success');
-    }catch(err){showToast('❌ حدث خطأ','error');}
+    }catch(err){
+        console.error('❌ خطأ:', err);
+        showToast('❌ حدث خطأ: '+err.message, 'error');
+    }
     finally{hideLoading();}
 }
 
@@ -763,22 +775,15 @@ function showQuizOptions(){
 }
 
 // ========== QUIZ ==========
-function generateFallbackQuestions(type){
-    const mcq=[
-        {type:"mcq",question:"ما هو الهدف الرئيسي من دراسة هذا الموضوع؟",options:["فهم المفاهيم الأساسية","حفظ المعلومات فقط","تجاوز الامتحان","لا شيء مما سبق"],correctAnswer:"فهم المفاهيم الأساسية"},
-        {type:"mcq",question:"أي من التالي يعتبر أهم عنصر في العملية التعليمية؟",options:["الممارسة العملية","القراءة فقط","الحفظ","الاستماع"],correctAnswer:"الممارسة العملية"},
-        {type:"mcq",question:"ما هي أفضل طريقة للمراجعة الفعالة؟",options:["المراجعة الدورية","المراجعة قبل الامتحان","عدم المراجعة","الاعتماد على الحظ"],correctAnswer:"المراجعة الدورية"}
-    ];
-    const tf=[{type:"tf",question:"التعلم المستمر ضروري للنجاح.",correctAnswer:"صح"},{type:"tf",question:"الحفظ بدون فهم يكفي للتفوق.",correctAnswer:"خطأ"}];
-    const text=[{type:"text",question:"اذكر أهمية التعلم المستمر.",correctAnswer:"التعلم المستمر"}];
-    if(type==='quick'||type==='mcq_only')return mcq;
-    return [...mcq,...tf,...text];
-}
-
 async function startQuiz(type){
     quizType=type;
     document.getElementById('quizOptions').classList.add('hidden');
-    showLoading('🧠 جاري إنشاء الأسئلة...');
+    if(uploadedImages.length===0){
+        showToast('⚠️ ارفع صورة أولاً','error');
+        hideLoading();
+        return;
+    }
+    showLoading('🧠 جاري إنشاء الأسئلة الذكية...');
     try{
         const response=await fetch(WORKER_URL,{
             method:'POST',
@@ -792,12 +797,23 @@ async function startQuiz(type){
             })
         });
         const data=await response.json();
-        currentQuiz=data.questions||generateFallbackQuestions(type);
-        if(currentQuiz.length===0)currentQuiz=generateFallbackQuestions(type);
+        console.log('📥 الأسئلة:', data);
+        if(data.error){
+            showToast('❌ '+data.error, 'error');
+            hideLoading();
+            return;
+        }
+        if(!data.questions || data.questions.length===0){
+            showToast('❌ لم يتم إنشاء أسئلة', 'error');
+            hideLoading();
+            return;
+        }
+        currentQuiz = data.questions;
         startQuizUI();
     }catch(err){
-        currentQuiz=generateFallbackQuestions(type);
-        startQuizUI();
+        console.error('❌ خطأ:', err);
+        showToast('❌ حدث خطأ: '+err.message, 'error');
+        hideLoading();
     }
 }
 
@@ -879,7 +895,7 @@ function checkAnswer(userAns,correctAns){
         if(txt.trim()===correctAns.trim())btn.classList.add('correct');
         else if(txt.trim()===userAns.trim()&&!isRight)btn.classList.add('wrong');
     });
-    showFeedback(isRight,isRight?"✅ صحيحة!":"❌ خاطئة! الإجابة: "+correctAns);
+    showFeedback(isRight,isRight?"✅ صحيحة! أحسنت!":"❌ خاطئة! الإجابة الصحيحة: "+correctAns);
 }
 
 async function submitTextAnswer(){
@@ -888,7 +904,7 @@ async function submitTextAnswer(){
     if(!userAns){showToast('✏️ اكتب إجابة','warning');return;}
     const q=currentQuiz[qIndex];
     stats.totalAnswered++;
-    showLoading('🧠 جاري التقييم...');
+    showLoading('🧠 جاري تقييم الإجابة...');
     try{
         const response=await fetch(WORKER_URL,{
             method:'POST',
@@ -903,10 +919,11 @@ async function submitTextAnswer(){
             })
         });
         const data=await response.json();
+        console.log('📥 التقييم:', data);
         if(data.isCorrect){score++;stats.correct++;}
         updateMonthlyStats(data.isCorrect);
         updateStatsUI();
-        showFeedback(data.isCorrect,data.isCorrect?"✅ صحيحة!":"❌ خاطئة! الإجابة: "+q.correctAnswer);
+        showFeedback(data.isCorrect,data.isCorrect?"✅ صحيحة! ممتاز!":"❌ خاطئة! الإجابة الصحيحة: "+q.correctAnswer);
     }catch(err){
         const isCorrect=userAns.toLowerCase().includes(q.correctAnswer.toLowerCase());
         if(isCorrect){score++;stats.correct++;}
@@ -999,10 +1016,11 @@ function updateReports(){
     chart.innerHTML=quizHistory.slice(-7).map(q=>{const h=Math.max(20,q.percent);const c=q.percent>=70?'var(--accent-green)':q.percent>=50?'var(--accent-yellow)':'var(--accent-red)';return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div style="width:100%;height:'+h+'%;background:'+c+';border-radius:4px 4px 0 0;min-height:20px;transition:height 0.5s ease;"></div><div style="font-size:10px;color:var(--text-sub);margin-top:4px;">'+q.percent+'%</div></div>';}).join('');
 }
 
+// ========== CHAT ==========
 async function sendChatMessage(){
     const input=document.getElementById('chatInput');
     const msg=input.value.trim();
-    if(!msg)return;
+    if(!msg){showToast('✏️ اكتب سؤالك أولاً','warning');return;}
     const box=document.getElementById('chatMessages');
     box.innerHTML+='<div class="chat-message user"><div class="chat-avatar">🙋</div><div class="chat-bubble">'+escapeHtml(msg)+'</div></div>';
     input.value='';
@@ -1022,11 +1040,15 @@ async function sendChatMessage(){
             })
         });
         const data=await response.json();
+        console.log('📥 رد الشات:', data);
         document.getElementById(typingId).remove();
-        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">'+escapeHtml(data.answer||data.rawResponse||'تم الرد').replace(/\n/g,'<br>')+'</div></div>';
+        let reply = data.answer || data.rawResponse || 'عذراً، لم أستطع فهم سؤالك.';
+        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">'+escapeHtml(reply).replace(/\n/g,'<br>')+'</div></div>';
     }catch(err){
+        console.error('❌ خطأ:', err);
         document.getElementById(typingId).remove();
         box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble" style="color:var(--accent-red);">❌ عذراً، حدث خطأ. حاول مرة أخرى.</div></div>';
+        showToast('❌ حدث خطأ في الشات', 'error');
     }
     box.scrollTop=box.scrollHeight;
 }
