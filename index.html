@@ -1707,3 +1707,447 @@ document.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
 </html>
+// ========== APP INIT ==========
+function initApp(){
+    const savedGrade=localStorage.getItem('userGrade');
+    const savedLevel=localStorage.getItem('studyLevel');
+    const savedMinutes=localStorage.getItem('studyMinutes');
+    const savedStats=localStorage.getItem('studyStats');
+    const savedMonthly=localStorage.getItem('monthlyStats');
+    const savedAch=localStorage.getItem('achievements');
+    const savedAchCounts=localStorage.getItem('achievementCounts');
+    const savedDays=localStorage.getItem('studyDays');
+    const savedNotif=localStorage.getItem('notifTime');
+    const savedFreeze=localStorage.getItem('streakFreezeUsed');
+    const savedSounds=localStorage.getItem('soundsEnabled');
+    
+    if(savedStats) stats=JSON.parse(savedStats);
+    if(savedMonthly) monthlyStats=JSON.parse(savedMonthly);
+    if(savedAch) achievements=JSON.parse(savedAch);
+    if(savedAchCounts) achievementCounts=JSON.parse(savedAchCounts);
+    if(savedDays) studyDays=JSON.parse(savedDays);
+    if(savedNotif){notificationTime=savedNotif;document.getElementById('notifTimeInput').value=savedNotif;}
+    if(savedFreeze){streakFreezeUsed=savedFreeze==='true';document.getElementById('freezeCount').innerText=streakFreezeUsed?'0':'1';}
+    if(savedSounds!==null){soundsEnabled=savedSounds==='true';document.getElementById('soundToggle').checked=soundsEnabled;}
+    
+    const mk=getMonthKey();
+    if(!monthlyStats[mk]) monthlyStats[mk]={correct:0,totalAnswered:0,lessons:0};
+    
+    if(savedGrade){
+        currentGrade=savedGrade;
+        document.getElementById('gradeScreen').classList.add('hidden');
+        if(savedLevel){
+            studyLevel=savedLevel;
+            studyMinutes=parseInt(savedMinutes)||30;
+            studyTotalSeconds=studyMinutes*60;
+            studySecondsLeft=studyTotalSeconds;
+            document.getElementById('levelScreen').classList.add('hidden');
+            updateLevelBadge();
+            updateStudyTimerDisplay();
+        }else{document.getElementById('levelScreen').classList.remove('hidden');}
+        updateStatsUI();updateMonthLabel();updateHeatmap();updateAchievementsUI();
+    }
+    if(localStorage.getItem('darkMode')==='true'){document.body.classList.add('dark-mode');const t=document.querySelector('.toggle-switch input');if(t)t.checked=true;}
+    // تشغيل صوت الترحيب عند فتح التطبيق
+    setTimeout(()=>{if(!focusSilentMode) playSound('welcome');},500);
+    scheduleDailyNotification();
+    checkAchievements();
+}
+
+function resetGrade(){
+    if(confirm('⚠️ هل أنت متأكد من إعادة تعيين المستوى الدراسي؟')){
+        localStorage.removeItem('userGrade');localStorage.removeItem('studyLevel');localStorage.removeItem('studyMinutes');
+        currentGrade=null;studyLevel=null;
+        document.getElementById('gradeScreen').classList.remove('hidden');
+        document.getElementById('levelScreen').classList.add('hidden');
+        showToast('🔄 تم إعادة تعيين المستوى', 'info');
+    }
+}
+
+function clearAll(){
+    if(confirm('⚠️ هل تريد مسح جميع الصور والـ PDF؟')){
+        uploadedImages=[];pdfText='';
+        document.getElementById('imagePreviewGrid').innerHTML='';
+        document.getElementById('imagePreviewGrid').classList.add('hidden');
+        document.getElementById('pdfPreview').style.display='none';
+        document.getElementById('actionButtons').classList.add('hidden');
+        document.getElementById('quizOptions').classList.add('hidden');
+        document.getElementById('summaryResult').classList.add('hidden');
+        document.getElementById('uploadArea').classList.remove('has-images');
+        showToast('🗑️ تم مسح جميع الملفات', 'info');
+    }
+}
+
+function switchTab(tabName,el){
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    const target=document.getElementById('tab-'+tabName);
+    if(target){target.classList.remove('hidden');}
+    if(el)el.classList.add('active');
+    else document.querySelectorAll('.nav-item').forEach(item=>{const oc=item.getAttribute('onclick');if(oc&&oc.includes("'"+tabName+"'"))item.classList.add('active');});
+    if(tabName==='reports') updateReports();
+    if(tabName==='achievements') updateAchievementsUI();
+}
+
+function scrollToUpload(){document.getElementById('uploadSection').scrollIntoView({behavior:'smooth'});}
+function toggleDarkMode(isDark){if(isDark){document.body.classList.add('dark-mode');localStorage.setItem('darkMode','true');}else{document.body.classList.remove('dark-mode');localStorage.setItem('darkMode','false');}}
+function openCamera(){document.getElementById('imgInput').click();}
+function openGallery(){document.getElementById('galleryInput').click();}
+function triggerFileInput(){const c=confirm('📷 اضغط "موافق" للكاميرا أو "إلغاء" للمعرض');if(c)openCamera();else openGallery();}
+function openSearchLesson(){const s=document.getElementById('searchSection');if(s.style.display==='none'){s.style.display='block';s.scrollIntoView({behavior:'smooth'});}else s.style.display='none';}
+
+// ========== PDF HANDLING ==========
+async function handlePDF(event){
+    const file=event.target.files[0];
+    if(!file) return;
+    showLoading('📖 جاري قراءة الـ PDF...');
+    try{
+        const arrayBuffer=await file.arrayBuffer();
+        const pdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+        let fullText='';
+        for(let i=1;i<=pdf.numPages;i++){const page=await pdf.getPage(i);const content=await page.getTextContent();fullText+=content.items.map(item=>item.str).join(' ')+'\n';}
+        pdfText=fullText.trim();
+        document.getElementById('pdfPreview').style.display='block';
+        document.getElementById('pdfPreview').innerHTML='<div style="display:flex;align-items:center;gap:10px;"><i class="fas fa-file-pdf" style="color:var(--accent-orange);font-size:24px;"></i><div><div style="font-weight:700;color:var(--text-main);">'+file.name+'</div><div style="font-size:12px;color:var(--text-sub);">'+pdf.numPages+' صفحات - '+fullText.length+' حرف</div></div><button onclick="clearPDF()" style="margin-right:auto;background:var(--accent-red);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;">×</button></div><div style="font-size:12px;color:var(--text-sub);margin-top:8px;max-height:80px;overflow-y:auto;background:var(--bg-body);padding:8px;border-radius:8px;">'+fullText.substring(0,300)+'...</div>';
+        document.getElementById('actionButtons').classList.remove('hidden');
+        showToast('✅ تم قراءة الـ PDF بنجاح!', 'success');
+        checkAchievements();
+    }catch(error){showToast('❌ حدث خطأ في قراءة الـ PDF', 'error');}
+    hideLoading();
+    event.target.value='';
+}
+function clearPDF(){pdfText='';document.getElementById('pdfPreview').style.display='none';showToast('🗑️ تم مسح الـ PDF','info');}
+
+async function summarizePDF(){
+    if(!pdfText||pdfText.length<10){showToast('⚠️ ارفع ملف PDF أولاً','warning');return;}
+    showLoading('📝 جاري تلخيص الـ PDF...');
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'summarizeText',text:pdfText,grade:currentGrade||'عام',subject:'عام'})});
+        const data=await response.json();
+        if(data.error){showToast('❌ '+data.error,'error');hideLoading();return;}
+        let summaryText=data.executiveSummary||data.detailedExplanation||data.quickSummary||data.rawResponse||'تم التلخيص';
+        document.getElementById('summaryContent').innerHTML=escapeHtml(summaryText).replace(/\n/g,'<br>');
+        document.getElementById('summaryResult').classList.remove('hidden');
+        showToast('✅ تم تلخيص الـ PDF!', 'success');
+        playSound('achievement');
+        checkAchievements();
+    }catch(error){showToast('❌ حدث خطأ في التلخيص', 'error');}
+    hideLoading();
+}
+
+// ========== SEARCH LESSON ==========
+async function searchLesson(){
+    const q=document.getElementById('lessonSearchInput').value.trim();
+    const subject=document.getElementById('subjectSelect').value;
+    if(!q){showToast('✏️ اكتب اسم الدرس','warning');return;}
+    if(!currentGrade){showToast('⚠️ اختر مستواك أولاً','warning');return;}
+    showLoading('🔍 جاري البحث...');
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'searchLesson',grade:gradeNames[currentGrade]||currentGrade,subject:subject||'عام',lessonName:q})});
+        const data=await response.json();
+        if(data.error){showToast('❌ '+data.error,'error');hideLoading();return;}
+        let html='<div class="summary-card" style="margin-top:0;"><div class="summary-title"><i class="fas fa-search"></i> 📚 نتائج البحث عن: "'+escapeHtml(q)+'"</div><div class="summary-content">';
+        if(data.title) html+='<h3 style="color:var(--primary-purple);margin-bottom:10px;">'+escapeHtml(data.title)+'</h3>';
+        if(data.fullExplanation) html+='<p style="margin-bottom:12px;">'+escapeHtml(data.fullExplanation).replace(/\n/g,'<br>')+'</p>';
+        if(data.keyPoints&&data.keyPoints.length){html+='<h4 style="margin:10px 0 6px;">🔑 النقاط المهمة:</h4><ul style="margin-right:16px;margin-bottom:12px;">';data.keyPoints.forEach(p=>html+='<li>'+escapeHtml(p)+'</li>');html+='</ul>';}
+        if(data.examples&&data.examples.length){html+='<h4 style="margin:10px 0 6px;">💡 أمثلة:</h4><ul style="margin-right:16px;margin-bottom:12px;">';data.examples.forEach(e=>html+='<li>'+escapeHtml(e)+'</li>');html+='</ul>';}
+        if(data.questions&&data.questions.length){html+='<h4 style="margin:10px 0 6px;">❓ أسئلة للتفكير:</h4><ul style="margin-right:16px;margin-bottom:12px;">';data.questions.forEach(qs=>html+='<li>'+escapeHtml(qs)+'</li>');html+='</ul>';}
+        if(data.relatedLessons&&data.relatedLessons.length){html+='<h4 style="margin:10px 0 6px;">📎 دروس مرتبطة:</h4><ul style="margin-right:16px;">';data.relatedLessons.forEach(r=>html+='<li>'+escapeHtml(r)+'</li>');html+='</ul>';}
+        html+='</div></div>';
+        document.getElementById('searchResults').innerHTML=html;
+        showToast('✅ تم العثور على نتائج!','success');
+        playSound('achievement');
+        checkAchievements();
+    }catch(err){showToast('❌ حدث خطأ: '+err.message,'error');}
+    finally{hideLoading();}
+}
+
+// ========== IMAGE UPLOAD ==========
+async function handleFiles(e){
+    const files=Array.from(e.target.files);
+    if(files.length===0)return;
+    const remainingSlots=MAX_IMAGES-uploadedImages.length;
+    if(remainingSlots<=0){showToast('⚠️ حد أقصى 5 صور','error');return;}
+    const filesToProcess=files.slice(0,remainingSlots);
+    showLoading('📤 جاري معالجة الصور...');
+    for(const file of filesToProcess){try{const base64=await fileToBase64(file);uploadedImages.push(base64);stats.docs++;}catch(err){console.error(err);}}
+    hideLoading();
+    updateImagePreview();
+    updateStatsUI();
+    if(uploadedImages.length>0){document.getElementById('actionButtons').classList.remove('hidden');document.getElementById('uploadArea').classList.add('has-images');showToast('✅ تم رفع '+uploadedImages.length+' صور','success');}
+    e.target.value='';
+}
+
+function fileToBase64(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=(evt)=>resolve(evt.target.result);reader.onerror=reject;reader.readAsDataURL(file);});}
+
+function updateImagePreview(){
+    const grid=document.getElementById('imagePreviewGrid');grid.innerHTML='';
+    if(uploadedImages.length===0){grid.classList.add('hidden');return;}
+    grid.classList.remove('hidden');
+    uploadedImages.forEach((img,idx)=>{const item=document.createElement('div');item.className='image-preview-item';item.innerHTML='<img src="'+img+'"><button class="remove-btn" onclick="removeImage('+idx+')">×</button>';grid.appendChild(item);});
+}
+function removeImage(index){uploadedImages.splice(index,1);updateImagePreview();if(uploadedImages.length===0){document.getElementById('actionButtons').classList.add('hidden');document.getElementById('uploadArea').classList.remove('has-images');document.getElementById('quizOptions').classList.add('hidden');document.getElementById('summaryResult').classList.add('hidden');}}
+
+// ========== SUMMARY ==========
+async function generateSummary(){
+    if(uploadedImages.length===0){showToast('⚠️ ارفع صور أولاً','error');return;}
+    showLoading('📝 جاري التلخيص...');
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'summarize',image:uploadedImages[0],grade:currentGrade||'عام',subject:'عام'})});
+        const data=await response.json();
+        if(data.error){showToast('❌ '+data.error,'error');document.getElementById('summaryContent').innerHTML='❌ '+escapeHtml(data.error);document.getElementById('summaryResult').classList.remove('hidden');hideLoading();return;}
+        let summaryText=data.executiveSummary||data.detailedExplanation||data.quickSummary||data.rawResponse||'لا يوجد ملخص';
+        document.getElementById('summaryContent').innerHTML=escapeHtml(summaryText).replace(/\n/g,'<br>');
+        document.getElementById('summaryResult').classList.remove('hidden');
+        showToast('✅ تم التلخيص!','success');
+        playSound('achievement');
+        checkAchievements();
+    }catch(err){showToast('❌ حدث خطأ: '+err.message,'error');}
+    finally{hideLoading();}
+}
+
+function showQuizOptions(){
+    if(uploadedImages.length===0){showToast('⚠️ ارفع صور أولاً','error');return;}
+    document.getElementById('quizOptions').classList.toggle('hidden');
+}
+
+// ========== QUIZ ==========
+async function startQuiz(type){
+    quizType=type;
+    document.getElementById('quizOptions').classList.add('hidden');
+    if(uploadedImages.length===0){showToast('⚠️ ارفع صورة أولاً','error');hideLoading();return;}
+    showLoading('🧠 جاري إنشاء الأسئلة الذكية...');
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'generateQuestions',image:uploadedImages[0],quizType:type,grade:currentGrade||'عام',subject:'عام'})});
+        const data=await response.json();
+        if(data.error){showToast('❌ '+data.error,'error');hideLoading();return;}
+        if(!data.questions||data.questions.length===0){showToast('❌ لم يتم إنشاء أسئلة','error');hideLoading();return;}
+        currentQuiz=data.questions;
+        startQuizUI();
+    }catch(err){showToast('❌ حدث خطأ: '+err.message,'error');hideLoading();}
+}
+
+function startQuizUI(){
+    qIndex=0;score=0;stats.lessons++;
+    const mk=getMonthKey();
+    if(!monthlyStats[mk])monthlyStats[mk]={correct:0,totalAnswered:0,lessons:0};
+    monthlyStats[mk].lessons++;
+    secondsLeft=quizType==='challenge'?20*60:25*60;
+    hideLoading();
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
+    document.getElementById('tab-quiz').classList.remove('hidden');
+    document.getElementById('totalQuestions').innerText=currentQuiz.length;
+    document.getElementById('currentScore').innerText=0;
+    if(!focusSilentMode) playSound('start');
+    startTimer();
+    renderQuestion();
+}
+
+function startTimer(){
+    clearInterval(timerInterval);
+    timerInterval=setInterval(()=>{
+        if(secondsLeft<=0){clearInterval(timerInterval);clearInterval(questionTimerInterval);finishQuiz();return;}
+        secondsLeft--;
+        const m=Math.floor(secondsLeft/60),s=secondsLeft%60;
+        document.getElementById('timer').innerText=m+':'+(s<10?'0':'')+s;
+        if(secondsLeft<120)document.getElementById('quizTimer').classList.add('warning');
+    },1000);
+}
+
+function startQuestionTimer(){
+    clearInterval(questionTimerInterval);
+    if(quizType!=='challenge')return;
+    document.getElementById('questionTimerContainer').classList.remove('hidden');
+    let qs=QUESTION_TIMER_SECONDS;
+    document.getElementById('questionTimerText').innerText=qs;
+    document.getElementById('questionTimerFill').style.width='100%';
+    questionTimerInterval=setInterval(()=>{
+        qs--;
+        document.getElementById('questionTimerText').innerText=qs;
+        document.getElementById('questionTimerFill').style.width=((qs/QUESTION_TIMER_SECONDS)*100)+'%';
+        if(qs<=10)document.getElementById('questionTimer').classList.add('warning');
+        if(qs<=0){clearInterval(questionTimerInterval);showFeedback(false,"⏰ انتهى الوقت! الإجابة: "+currentQuiz[qIndex].correctAnswer);stats.totalAnswered++;updateMonthlyStats(false);updateStatsUI();}
+    },1000);
+}
+
+function renderQuestion(){
+    if(!currentQuiz||qIndex>=currentQuiz.length){finishQuiz();return;}
+    const q=currentQuiz[qIndex];
+    document.getElementById('qNumber').innerText=qIndex+1;
+    document.getElementById('qTotal').innerText=currentQuiz.length;
+    document.getElementById('qTitle').innerText=q.question;
+    document.getElementById('currentScore').innerText=score;
+    document.getElementById('feedback').classList.add('hidden');
+    document.getElementById('nextBtn').classList.add('hidden');
+    document.getElementById('progress').style.width=((qIndex/currentQuiz.length)*100)+'%';
+    clearInterval(questionTimerInterval);
+    document.getElementById('questionTimerContainer').classList.add('hidden');
+    document.getElementById('questionTimer').classList.remove('warning');
+    const mcqBox=document.getElementById('mcqBox'),textBox=document.getElementById('textBox'),tfBox=document.getElementById('tfBox');
+    mcqBox.innerHTML='';mcqBox.classList.add('hidden');textBox.classList.add('hidden');tfBox.classList.add('hidden');
+    document.getElementById('textAns').value='';
+    if(q.type==='mcq'){
+        mcqBox.classList.remove('hidden');
+        const letters=['أ','ب','ج','د'];
+        q.options.forEach((opt,idx)=>{const b=document.createElement('div');b.className='opt-btn';b.innerHTML='<div class="opt-letter">'+letters[idx]+'</div><span>'+opt+'</span>';b.onclick=()=>checkAnswer(opt,q.correctAnswer);mcqBox.appendChild(b);});
+    }else if(q.type==='tf'){tfBox.classList.remove('hidden');}
+    else{textBox.classList.remove('hidden');}
+    if(quizType==='challenge')startQuestionTimer();
+}
+
+function checkAnswer(userAns,correctAns){
+    clearInterval(questionTimerInterval);
+    stats.totalAnswered++;
+    const isRight=userAns.trim()===correctAns.trim();
+    if(isRight){score++;stats.correct++;if(!focusSilentMode) playSound('correct');}
+    else{if(!focusSilentMode) playSound('wrong');}
+    updateMonthlyStats(isRight);
+    updateStatsUI();
+    document.querySelectorAll('.opt-btn').forEach(btn=>{
+        btn.classList.add('disabled');
+        const txt=btn.querySelector('span')?btn.querySelector('span').innerText:btn.innerText;
+        if(txt.trim()===correctAns.trim())btn.classList.add('correct');
+        else if(txt.trim()===userAns.trim()&&!isRight)btn.classList.add('wrong');
+    });
+    showFeedback(isRight,isRight?"✅ صحيحة! أحسنت!":"❌ خاطئة! الإجابة الصحيحة: "+correctAns);
+}
+
+async function submitTextAnswer(){
+    clearInterval(questionTimerInterval);
+    const userAns=document.getElementById('textAns').value.trim();
+    if(!userAns){showToast('✏️ اكتب إجابة','warning');return;}
+    const q=currentQuiz[qIndex];
+    stats.totalAnswered++;
+    showLoading('🧠 جاري تقييم الإجابة...');
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'evaluate',question:q.question,correctAnswer:q.correctAnswer,userAnswer:userAns,grade:currentGrade||'عام',subject:'عام'})});
+        const data=await response.json();
+        if(data.isCorrect){score++;stats.correct++;if(!focusSilentMode) playSound('correct');}
+        else{if(!focusSilentMode) playSound('wrong');}
+        updateMonthlyStats(data.isCorrect);
+        updateStatsUI();
+        showFeedback(data.isCorrect,data.isCorrect?"✅ صحيحة! ممتاز!":"❌ خاطئة! الإجابة الصحيحة: "+q.correctAnswer);
+    }catch(err){
+        const isCorrect=userAns.toLowerCase().includes(q.correctAnswer.toLowerCase());
+        if(isCorrect){score++;stats.correct++;if(!focusSilentMode) playSound('correct');}
+        else{if(!focusSilentMode) playSound('wrong');}
+        updateMonthlyStats(isCorrect);
+        updateStatsUI();
+        showFeedback(isCorrect,isCorrect?"✅ صحيحة!":"❌ خاطئة! الإجابة: "+q.correctAnswer);
+    }
+    finally{hideLoading();}
+}
+
+function updateMonthlyStats(isCorrect){
+    const mk=getMonthKey();
+    if(!monthlyStats[mk])monthlyStats[mk]={correct:0,totalAnswered:0,lessons:0};
+    monthlyStats[mk].totalAnswered++;
+    if(isCorrect)monthlyStats[mk].correct++;
+    localStorage.setItem('monthlyStats',JSON.stringify(monthlyStats));
+}
+
+function showFeedback(isRight,text){
+    const fb=document.getElementById('feedback');
+    fb.innerHTML='<i class="fas fa-'+(isRight?'check-circle':'times-circle')+'"></i> '+text;
+    fb.className='feedback '+(isRight?'success':'error');
+    fb.classList.remove('hidden');
+    document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function nextQuestion(){qIndex++;if(qIndex<currentQuiz.length)renderQuestion();else finishQuiz();}
+
+function finishQuiz(){
+    clearInterval(timerInterval);clearInterval(questionTimerInterval);
+    const percent=currentQuiz.length>0?Math.round((score/currentQuiz.length)*100):0;
+    quizHistory.push({date:new Date().toLocaleDateString('ar-EG'),score,total:currentQuiz.length,percent,type:quizType});
+    document.getElementById('resultScore').innerText=score;
+    document.getElementById('resultTotal').innerText=currentQuiz.length;
+    document.getElementById('resultCorrect').innerText=score;
+    document.getElementById('resultWrong').innerText=currentQuiz.length-score;
+    document.getElementById('resultPercent').innerText=percent+'%';
+    let emoji,title,msg;
+    if(percent>=90){emoji='🏆';title='ممتاز!';msg='أداء رائع!';}
+    else if(percent>=70){emoji='🌟';title='أحسنت!';msg='أداء ممتاز!';}
+    else if(percent>=50){emoji='👍';title='جيد!';msg='يمكنك التحسن!';}
+    else{emoji='💪';title='حاول مرة أخرى!';msg='الممارسة تجعلك أفضل!';}
+    document.getElementById('resultEmoji').innerText=emoji;
+    document.getElementById('resultTitle').innerText=title;
+    document.getElementById('resultMessage').innerText=msg;
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
+    document.getElementById('tab-result').classList.remove('hidden');
+    updateHistory();updateReports();checkAchievements();
+    if(percent>=70 && !focusSilentMode) playSound('achievement');
+}
+
+function retryQuiz(){startQuiz(quizType);}
+function quitQuiz(){if(confirm('⚠️ هل أنت متأكد؟')){clearInterval(timerInterval);clearInterval(questionTimerInterval);switchTab('home');}}
+
+function updateStatsUI(){
+    const mk=getMonthKey();
+    const mStats=monthlyStats[mk]||{correct:0,totalAnswered:0,lessons:0};
+    document.getElementById('statLessons').innerText=mStats.lessons;
+    document.getElementById('statCorrect').innerText=mStats.correct;
+    document.getElementById('statStreak').innerText=stats.streak;
+    const acc=mStats.totalAnswered>0?Math.round((mStats.correct/mStats.totalAnswered)*100):0;
+    document.getElementById('statAcc').innerText=acc+'%';
+    document.getElementById('monthProgressText').innerText=acc+'%';
+    document.querySelectorAll('.emoji-step').forEach(s=>s.classList.remove('active'));
+    if(acc>=81)document.getElementById('lvl-4').classList.add('active');
+    else if(acc>=61)document.getElementById('lvl-3').classList.add('active');
+    else if(acc>=41)document.getElementById('lvl-2').classList.add('active');
+    else if(acc>=21)document.getElementById('lvl-1').classList.add('active');
+    else document.getElementById('lvl-0').classList.add('active');
+}
+
+function updateHistory(){
+    const list=document.getElementById('historyList');
+    if(quizHistory.length===0)return;
+    document.getElementById('historyEmpty').classList.add('hidden');
+    list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;color:var(--text-main);">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total+'</div></div></div></div>').join('');
+}
+function getQuizTypeName(type){const n={'quick':'⚡ سريع','mcq_only':'📝 اختياري','full':'📄 كامل','challenge':'🔥 تحدي'};return n[type]||type;}
+
+function updateReports(){
+    if(quizHistory.length===0)return;
+    document.getElementById('reportEmpty').classList.add('hidden');
+    document.getElementById('reportContent').classList.remove('hidden');
+    const total=quizHistory.reduce((s,q)=>s+q.total,0);
+    const correct=quizHistory.reduce((s,q)=>s+q.score,0);
+    const acc=total>0?Math.round((correct/total)*100):0;
+    document.getElementById('reportTotal').innerText=total;
+    document.getElementById('reportAccuracy').innerText=acc+'%';
+    const chart=document.getElementById('performanceChart');
+    chart.innerHTML=quizHistory.slice(-7).map(q=>{const h=Math.max(20,q.percent);const c=q.percent>=70?'var(--accent-green)':q.percent>=50?'var(--accent-yellow)':'var(--accent-red)';return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div style="width:100%;height:'+h+'%;background:'+c+';border-radius:4px 4px 0 0;min-height:20px;transition:height 0.5s ease;"></div><div style="font-size:10px;color:var(--text-sub);margin-top:4px;">'+q.percent+'%</div></div>';}).join('');
+}
+
+// ========== CHAT ==========
+async function sendChatMessage(){
+    const input=document.getElementById('chatInput');
+    const msg=input.value.trim();
+    if(!msg){showToast('✏️ اكتب سؤالك أولاً','warning');return;}
+    const box=document.getElementById('chatMessages');
+    box.innerHTML+='<div class="chat-message user"><div class="chat-avatar">🙋</div><div class="chat-bubble">'+escapeHtml(msg)+'</div></div>';
+    input.value='';
+    box.scrollTop=box.scrollHeight;
+    const typingId='typing-'+Date.now();
+    box.innerHTML+='<div class="chat-message bot" id="'+typingId+'"><div class="chat-avatar">🤖</div><div class="chat-bubble"><i class="fas fa-spinner fa-spin"></i> جاري التفكير...</div></div>';
+    box.scrollTop=box.scrollHeight;
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chat',message:msg,grade:currentGrade||'عام',subject:'عام'})});
+        const data=await response.json();
+        document.getElementById(typingId).remove();
+        let reply=data.answer||data.rawResponse||'عذراً، لم أستطع فهم سؤالك.';
+        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">'+escapeHtml(reply).replace(/\n/g,'<br>')+'</div></div>';
+        if(!focusSilentMode) playSound('notification');
+    }catch(err){
+        document.getElementById(typingId).remove();
+        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble" style="color:var(--accent-red);">❌ عذراً، حدث خطأ. حاول مرة أخرى.</div></div>';
+        showToast('❌ حدث خطأ في الشات', 'error');
+    }
+    box.scrollTop=box.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
