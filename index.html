@@ -1,6 +1,4 @@
-
-# Part 1: Head and CSS
-html_p1 = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -28,8 +26,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 @keyframes spin { to { transform:rotate(360deg); } }
 @keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
 @keyframes bounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
-@keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
-@keyframes glow { 0%,100%{box-shadow:0 0 5px rgba(124,58,237,0.3);} 50%{box-shadow:0 0 20px rgba(124,58,237,0.6);} }
 @keyframes slideIn { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
 
 /* Screens */
@@ -267,6 +263,15 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .reset-grade-settings { margin-top:16px; padding:16px; background:var(--primary-lighter); border-radius:var(--radius-xl); border:1px solid var(--border-color); }
 .reset-grade-settings button { width:100%; padding:14px; border-radius:16px; background:linear-gradient(135deg,#ef4444,#f87171);
   color:#fff; border:none; font-weight:800; font-size:14px; cursor:pointer; transition:all 0.3s; }
+.reset-grade-settings button:hover { transform:translateY(-2px); box-shadow:0 4px 15px rgba(239,68,68,0.3); }
+
+/* Focus Mode Settings */
+.focus-mode-settings { background:var(--primary-lighter); border-radius:var(--radius-xl); padding:16px; margin-top:12px; border:1px solid var(--border-color); }
+.focus-mode-settings .focus-title { font-size:14px; font-weight:800; color:var(--text-main); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.focus-mode-settings .focus-desc { font-size:12px; color:var(--text-sub); margin-bottom:12px; }
+.focus-mode-settings .focus-toggle-row { display:flex; justify-content:space-between; align-items:center; }
+.focus-mode-settings .focus-toggle-row .ft-label { font-size:13px; font-weight:600; }
+.focus-mode-settings .focus-toggle-row .ft-desc { font-size:11px; color:var(--text-sub); }
 
 /* Bottom Nav */
 .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:75px; background:var(--card-bg);
@@ -312,8 +317,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .pdf-upload-area:hover { background:rgba(245,158,11,0.1); transform:scale(1.01); }
 .pdf-upload-area i { font-size:30px; color:var(--accent-orange); margin-bottom:8px; display:block; }
 
-/* ========== NEW FEATURES CSS ========== */
-
 /* Study Timer Card */
 .study-timer-card { background:linear-gradient(135deg,#1a0a3e,#2d1b69); border-radius:var(--radius-2xl);
   padding:24px; margin-bottom:16px; color:#fff; position:relative; overflow:hidden; }
@@ -354,7 +357,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .break-btn.skip { background:var(--accent-red); color:#fff; }
 .break-btn.continue { background:var(--accent-green); color:#fff; }
 
-/* Focus Mode */
+/* Focus Overlay - Silent Mode (no notifications/sounds) */
 .focus-overlay { background:#0a0a1a; z-index:10001; }
 .focus-overlay.hidden { display:none !important; }
 .focus-timer { font-size:80px; font-weight:900; color:#fff; margin-bottom:20px;
@@ -369,8 +372,11 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .focus-btn.exit { background:rgba(255,255,255,0.1); color:#fff; border:2px solid rgba(255,255,255,0.2); }
 .focus-btn:hover { transform:scale(1.1); }
 .focus-session-info { position:absolute; bottom:30px; color:rgba(255,255,255,0.4); font-size:13px; }
+.focus-silent-badge { position:absolute; top:20px; left:50%; transform:translateX(-50%);
+  background:rgba(239,68,68,0.2); color:#f87171; padding:6px 16px; border-radius:var(--radius-full);
+  font-size:12px; font-weight:700; border:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; gap:6px; }
 
-/* Achievements */
+/* Achievements with counters */
 .achievements-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
 .achievement-item { background:var(--card-bg); border:2px solid var(--border-color); border-radius:var(--radius-xl);
   padding:14px; text-align:center; transition:all 0.3s; position:relative; overflow:hidden; }
@@ -380,6 +386,8 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .achievement-icon { font-size:36px; margin-bottom:6px; }
 .achievement-name { font-size:12px; font-weight:800; color:var(--text-main); }
 .achievement-desc { font-size:10px; color:var(--text-sub); }
+.achievement-counter { display:inline-block; background:var(--primary-purple); color:#fff;
+  border-radius:var(--radius-full); padding:0 8px; font-size:10px; font-weight:800; margin-right:4px; }
 
 /* Achievement popup */
 .achievement-popup { position:fixed; top:100px; left:50%; transform:translateX(-50%) translateY(-100px);
@@ -403,13 +411,9 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 /* Sound settings */
 .sound-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
 .sound-item { display:flex; align-items:center; gap:8px; padding:10px; background:var(--bg-body);
-  border-radius:12px; font-size:12px; font-weight:600; }
+  border-radius:12px; font-size:12px; font-weight:600; cursor:pointer; }
+.sound-item:hover { background:var(--primary-lighter); }
 .sound-item i { font-size:14px; color:var(--primary-purple); }
-
-/* White noise toggle */
-.white-noise-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border-color); }
-.white-noise-row .wn-label { font-size:14px; font-weight:700; }
-.white-noise-row .wn-desc { font-size:11px; color:var(--text-sub); }
 
 /* Toast notification */
 .toast-notif { position:fixed; top:80px; left:50%; transform:translateX(-50%); padding:12px 24px;
@@ -432,26 +436,11 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .heatmap-day.studied { background:var(--accent-green); color:#fff; }
 .heatmap-day.rest { background:var(--accent-yellow); color:#fff; }
 
-/* Focus mode white noise indicator */
-.white-noise-indicator { position:absolute; top:20px; right:20px; display:flex; align-items:center; gap:6px;
-  color:rgba(255,255,255,0.4); font-size:12px; }
-.white-noise-indicator.active { color:var(--accent-green); }
-
-/* Next break indicator */
-.next-break-info { text-align:center; font-size:12px; color:rgba(255,255,255,0.5); margin-top:8px; position:relative; z-index:1; }
-
 @media(max-width:400px){ .grade-grid,.level-grid{grid-template-columns:1fr;} .features-grid{grid-template-columns:1fr 1fr;} .action-buttons{grid-template-columns:1fr 1fr;} .achievements-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
-'''
-
-with open('/mnt/agents/output/index.html', 'w', encoding='utf-8') as f:
-    f.write(html_p1)
-
-print("Part 1 (Head+CSS) written")
-html_p2 = '''
-<!-- ========== GRADE SELECTION SCREEN ========== -->
+  <!-- ========== GRADE SELECTION SCREEN ========== -->
 <div id="gradeScreen" class="grade-screen">
   <div class="brain-emoji">🧠</div>
   <h1 class="screen-title">أهلاً بك في ذكاء Study!</h1>
@@ -459,7 +448,6 @@ html_p2 = '''
   <div class="grade-grid">
     <div class="grade-btn" onclick="selectGrade('first-primary')"><span class="grade-icon">🎒</span><div class="grade-name">الصف الأول الابتدائي</div></div>
     <div class="grade-btn" onclick="selectGrade('second-primary')"><span class="grade-icon">📚</span><div class="grade-name">الصف الثاني الابتدائي</div></div>
-    <div class="grade-btn" onclick="selectGrade('third-primary')"><span class="grade-icon">✏️</span><div class="grade-name">الصف الثالث الابتدائي</div></div>
     <div class="grade-btn" onclick="selectGrade('fourth-primary')"><span class="grade-icon">📝</span><div class="grade-name">الصف الرابع الابتدائي</div></div>
     <div class="grade-btn" onclick="selectGrade('fifth-primary')"><span class="grade-icon">📖</span><div class="grade-name">الصف الخامس الابتدائي</div></div>
     <div class="grade-btn" onclick="selectGrade('sixth-primary')"><span class="grade-icon">🎓</span><div class="grade-name">الصف السادس الابتدائي</div></div>
@@ -523,11 +511,9 @@ html_p2 = '''
   </div>
 </div>
 
-<!-- ========== FOCUS MODE OVERLAY ========== -->
+<!-- ========== FOCUS MODE OVERLAY (SILENT) ========== -->
 <div id="focusOverlay" class="focus-overlay hidden">
-  <div class="white-noise-indicator" id="focusWNIndicator">
-    <i class="fas fa-volume-up"></i> <span>White Noise</span>
-  </div>
+  <div class="focus-silent-badge"><i class="fas fa-moon"></i> وضع التركيز - ممنوع الإشعارات</div>
   <div class="focus-timer" id="focusTimer">45:00</div>
   <div class="focus-status" id="focusStatus">🎯 جلسة دراسية نشطة</div>
   <div class="focus-actions">
@@ -846,16 +832,23 @@ html_p2 = '''
         </div>
       </div>
 
-      <!-- White Noise -->
-      <div class="white-noise-row">
-        <div><div class="wn-label">🌙 White Noise (صوت بيئة هادئ)</div><div class="wn-desc">صوت مطر/رياح للتركيز أثناء المذاكرة</div></div>
-        <label class="toggle-switch"><input type="checkbox" id="whiteNoiseToggle" onchange="toggleWhiteNoise(this.checked)"><span class="toggle-slider"></span></label>
-      </div>
-
       <!-- Dark Mode -->
       <div class="setting-item">
         <div><div class="setting-title">🌙 الوضع المظلم</div><div class="setting-desc">تفعيل الوضع المظلم</div></div>
         <label class="toggle-switch"><input type="checkbox" onchange="toggleDarkMode(this.checked)"><span class="toggle-slider"></span></label>
+      </div>
+
+      <!-- FOCUS MODE SETTINGS - Silent Mode (no notifications/runs) -->
+      <div class="focus-mode-settings">
+        <div class="focus-title"><i class="fas fa-moon"></i> وضع التركيز (صامت)</div>
+        <div class="focus-desc">تفعيل وضع التركيز يمنع جميع الإشعارات والأصوات نهائياً</div>
+        <div class="focus-toggle-row">
+          <div>
+            <div class="ft-label">🔇 وضع صامت</div>
+            <div class="ft-desc">يمنع الإشعارات والرنات أثناء التركيز</div>
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="focusSilentToggle" checked><span class="toggle-slider"></span></label>
+        </div>
       </div>
 
       <!-- Notification Time -->
@@ -903,21 +896,14 @@ html_p2 = '''
   <div class="nav-item center-btn" onclick="switchTab('chat', this)"><div class="nav-icon-wrapper"><span class="nav-icon">🧠</span></div><span style="color:var(--primary-purple);">المحادثة</span></div>
   <div class="nav-item" onclick="switchTab('achievements', this)"><span class="nav-icon">🏆</span><span>الإنجازات</span></div>
   <div class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>الإعدادات</span></div>
-</nav>
-'''
-
-with open('/mnt/agents/output/index.html', 'a', encoding='utf-8') as f:
-    f.write(html_p2)
-
-print("Part 2 (Body HTML) written")
-html_p3 = '''
-<script>
+  </nav>
+  <script>
 // ========== CONFIG ==========
 const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
 const MAX_IMAGES = 5;
 const QUESTION_TIMER_SECONDS = 30;
-const BREAK_DURATION = 5 * 60; // 5 minutes in seconds
-const BREAK_INTERVAL = 60 * 60; // break every 60 minutes
+const BREAK_DURATION = 5 * 60;
+const BREAK_INTERVAL = 60 * 60;
 
 // ========== STATE ==========
 let stats = { docs:0, lessons:0, correct:0, totalAnswered:0, streak:1 };
@@ -935,8 +921,8 @@ let quizHistory = [];
 let currentGrade = null;
 let monthlyStats = {};
 
-// New features state
-let studyLevel = null; // 'beginner','learner','smart','expert','custom'
+// New features
+let studyLevel = null;
 let studyMinutes = 30;
 let studyTimerInterval = null;
 let studySecondsLeft = 0;
@@ -949,25 +935,27 @@ let focusModeActive = false;
 let focusTimerInterval = null;
 let focusSecondsLeft = 0;
 let soundsEnabled = true;
-let whiteNoiseEnabled = false;
-let whiteNoiseAudio = null;
+let focusSilentMode = true; // silent mode default ON
 let notificationTime = '18:00';
 let streakFreezeUsed = false;
 let achievements = [];
-let studyDays = {}; // for heatmap
+let studyDays = {};
+let achievementCounts = {};
 
 const gradeNames = {
-    'first-primary':'الصف الأول الابتدائي','second-primary':'الصف الثاني الابتدائي','third-primary':'الصف الثالث الابتدائي',
-    'fourth-primary':'الصف الرابع الابتدائي','fifth-primary':'الصف الخامس الابتدائي','sixth-primary':'الصف السادس الابتدائي',
-    'first-prep':'الصف الأول الإعدادي','second-prep':'الصف الثاني الإعدادي','third-prep':'الصف الثالث الإعدادي',
-    'first-secondary':'الصف الأول الثانوي','second-secondary':'الصف الثاني الثانوي','third-secondary':'الصف الثالث الثانوي'
+    'first-primary':'الصف الأول الابتدائي','second-primary':'الصف الثاني الابتدائي',
+    'fourth-primary':'الصف الرابع الابتدائي','fifth-primary':'الصف الخامس الابتدائي',
+    'sixth-primary':'الصف السادس الابتدائي','first-prep':'الصف الأول الإعدادي',
+    'second-prep':'الصف الثاني الإعدادي','third-prep':'الصف الثالث الإعدادي',
+    'first-secondary':'الصف الأول الثانوي','second-secondary':'الصف الثاني الثانوي',
+    'third-secondary':'الصف الثالث الثانوي'
 };
 const levelNames = {
     'beginner':'🌱 مبتدئ','learner':'📖 متعلم','smart':'🧠 ذكي','expert':'🏆 خبير','custom':'⚙️ مخصص'
 };
 const monthNames = ['يناير','فبراير','مارس','إبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 
-// Achievement definitions
+// ========== ACHIEVEMENTS WITH COUNTERS ==========
 const achievementDefs = [
     {id:'first_quiz', name:'أول اختبار', desc:'أكمل أول اختبار', icon:'📝', condition:()=>quizHistory.length>=1},
     {id:'perfect_score', name:'الكمال', desc:'100% في اختبار', icon:'💯', condition:()=>quizHistory.some(q=>q.percent===100)},
@@ -984,11 +972,13 @@ const achievementDefs = [
     {id:'search_master', name:'باحث', desc:'ابحث عن درس', icon:'🔍', condition:()=>document.getElementById('searchResults').innerHTML.length>50},
     {id:'focus_mode', name:'وضع التركيز', desc:'استخدم وضع التركيز', icon:'🎯', condition:()=>focusModeActive},
     {id:'break_skipper', name:'تخطي البريك', desc:'تخطي استراحة', icon:'⏭️', condition:()=>localStorage.getItem('breakSkipped')==='true'},
+    {id:'quiz_master', name:'خبير اختبارات', desc:'أكمل 5 اختبارات', icon:'📝', condition:()=>quizHistory.length>=5, maxCount:5},
+    {id:'study_expert', name:'خبير مذاكرة', desc:'أكمل 10 جلسات مذاكرة', icon:'🧠', condition:()=>stats.lessons>=10, maxCount:10},
 ];
 
+// ========== HELPERS ==========
 function getMonthKey(){const n=new Date();return n.getFullYear()+'-'+(n.getMonth()+1);}
 function updateMonthLabel(){const n=new Date();document.getElementById('currentMonthLabel').innerText=monthNames[n.getMonth()]+' '+n.getFullYear();}
-
 function escapeHtml(text){const d=document.createElement('div');d.textContent=text;return d.innerHTML;}
 function showLoading(text){document.getElementById('loadingText').innerText=text||'جاري...';document.getElementById('loadingOverlay').classList.remove('hidden');}
 function hideLoading(){document.getElementById('loadingOverlay').classList.add('hidden');}
@@ -1005,106 +995,53 @@ function showToast(msg,type){
 
 // ========== SOUND SYSTEM ==========
 function playSound(type){
-    if(!soundsEnabled) return;
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    
-    switch(type){
-        case 'correct':
-            osc.type='sine'; osc.frequency.setValueAtTime(523, ctx.currentTime);
-            osc.frequency.setValueAtTime(659, ctx.currentTime+0.1);
-            osc.frequency.setValueAtTime(784, ctx.currentTime+0.2);
-            gain.gain.setValueAtTime(0.3, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.4);
-            osc.start(); osc.stop(ctx.currentTime+0.4);
-            break;
-        case 'wrong':
-            osc.type='sawtooth'; osc.frequency.setValueAtTime(200, ctx.currentTime);
-            osc.frequency.setValueAtTime(150, ctx.currentTime+0.2);
-            gain.gain.setValueAtTime(0.2, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.4);
-            osc.start(); osc.stop(ctx.currentTime+0.4);
-            break;
-        case 'start':
-            osc.type='square'; osc.frequency.setValueAtTime(440, ctx.currentTime);
-            osc.frequency.setValueAtTime(554, ctx.currentTime+0.15);
-            osc.frequency.setValueAtTime(659, ctx.currentTime+0.3);
-            gain.gain.setValueAtTime(0.15, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.5);
-            osc.start(); osc.stop(ctx.currentTime+0.5);
-            break;
-        case 'break':
-            osc.type='sine'; osc.frequency.setValueAtTime(400, ctx.currentTime);
-            gain.gain.setValueAtTime(0.2, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3);
-            osc.start(); osc.stop(ctx.currentTime+0.3);
-            setTimeout(()=>{
-                const o2=ctx.createOscillator(),g2=ctx.createGain();
-                o2.connect(g2); g2.connect(ctx.destination);
-                o2.type='sine'; o2.frequency.setValueAtTime(500, ctx.currentTime);
-                g2.gain.setValueAtTime(0.2, ctx.currentTime);
-                g2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3);
-                o2.start(); o2.stop(ctx.currentTime+0.3);
-            },200);
-            break;
-        case 'notification':
-            osc.type='sine'; osc.frequency.setValueAtTime(600, ctx.currentTime);
-            osc.frequency.setValueAtTime(800, ctx.currentTime+0.1);
-            gain.gain.setValueAtTime(0.2, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3);
-            osc.start(); osc.stop(ctx.currentTime+0.3);
-            break;
-        case 'achievement':
-            [523,659,784,1047].forEach((f,i)=>{
-                setTimeout(()=>{
-                    const o=ctx.createOscillator(),g=ctx.createGain();
-                    o.connect(g); g.connect(ctx.destination);
-                    o.type='sine'; o.frequency.setValueAtTime(f, ctx.currentTime);
-                    g.gain.setValueAtTime(0.2, ctx.currentTime);
-                    g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.2);
-                    o.start(); o.stop(ctx.currentTime+0.2);
-                },i*100);
-            });
-            break;
-        case 'timer':
-            osc.type='sine'; osc.frequency.setValueAtTime(800, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.1);
-            osc.start(); osc.stop(ctx.currentTime+0.1);
-            break;
-    }
+    if(!soundsEnabled || focusSilentMode) return;
+    try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        switch(type){
+            case 'correct':
+                osc.type='sine'; osc.frequency.setValueAtTime(523, ctx.currentTime);
+                osc.frequency.setValueAtTime(659, ctx.currentTime+0.1);
+                osc.frequency.setValueAtTime(784, ctx.currentTime+0.2);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.4);
+                osc.start(); osc.stop(ctx.currentTime+0.4); break;
+            case 'wrong':
+                osc.type='sawtooth'; osc.frequency.setValueAtTime(200, ctx.currentTime);
+                osc.frequency.setValueAtTime(150, ctx.currentTime+0.2);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.4);
+                osc.start(); osc.stop(ctx.currentTime+0.4); break;
+            case 'start':
+                osc.type='square'; osc.frequency.setValueAtTime(440, ctx.currentTime);
+                osc.frequency.setValueAtTime(554, ctx.currentTime+0.15);
+                osc.frequency.setValueAtTime(659, ctx.currentTime+0.3);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.5);
+                osc.start(); osc.stop(ctx.currentTime+0.5); break;
+            case 'break':
+                osc.type='sine'; osc.frequency.setValueAtTime(400, ctx.currentTime);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3);
+                osc.start(); osc.stop(ctx.currentTime+0.3);
+                setTimeout(()=>{const o2=ctx.createOscillator(),g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.type='sine';o2.frequency.setValueAtTime(500, ctx.currentTime);g2.gain.setValueAtTime(0.2, ctx.currentTime);g2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3);o2.start();o2.stop(ctx.currentTime+0.3);},200); break;
+            case 'notification':
+                osc.type='sine'; osc.frequency.setValueAtTime(600, ctx.currentTime);
+                osc.frequency.setValueAtTime(800, ctx.currentTime+0.1);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3);
+                osc.start(); osc.stop(ctx.currentTime+0.3); break;
+            case 'achievement':
+                [523,659,784,1047].forEach((f,i)=>{setTimeout(()=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(f, ctx.currentTime);g.gain.setValueAtTime(0.2, ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.2);o.start();o.stop(ctx.currentTime+0.2);},i*100);}); break;
+        }
+    }catch(e){}
 }
 
 function toggleSounds(enabled){soundsEnabled=enabled;localStorage.setItem('soundsEnabled',enabled);}
-
-// ========== WHITE NOISE ==========
-function toggleWhiteNoise(enabled){
-    whiteNoiseEnabled=enabled;
-    if(enabled){
-        const ctx=new (window.AudioContext||window.webkitAudioContext)();
-        const bufferSize=2*ctx.sampleRate;
-        const buffer=ctx.createBuffer(1,bufferSize,ctx.sampleRate);
-        const data=buffer.getChannelData(0);
-        for(let i=0;i<bufferSize;i++) data[i]=Math.random()*2-1;
-        whiteNoiseAudio=ctx.createBufferSource();
-        whiteNoiseAudio.buffer=buffer;
-        whiteNoiseAudio.loop=true;
-        const gain=ctx.createGain();
-        gain.gain.value=0.05;
-        whiteNoiseAudio.connect(gain);
-        gain.connect(ctx.destination);
-        whiteNoiseAudio.start();
-        document.getElementById('focusWNIndicator').classList.add('active');
-        document.getElementById('focusWNIndicator').innerHTML='<i class="fas fa-volume-up"></i> <span>White Noise ON</span>';
-    }else{
-        if(whiteNoiseAudio){whiteNoiseAudio.stop();whiteNoiseAudio=null;}
-        document.getElementById('focusWNIndicator').classList.remove('active');
-        document.getElementById('focusWNIndicator').innerHTML='<i class="fas fa-volume-mute"></i> <span>White Noise</span>';
-    }
-}
 
 // ========== NOTIFICATIONS ==========
 function saveNotificationTime(){
@@ -1116,27 +1053,23 @@ function saveNotificationTime(){
 }
 
 function scheduleDailyNotification(){
+    if(focusSilentMode) return;
     if(!('Notification' in window)) return;
-    if(Notification.permission!=='granted'){
-        Notification.requestPermission().then(p=>{if(p==='granted') scheduleDailyNotification();});
-        return;
-    }
+    if(Notification.permission!=='granted'){Notification.requestPermission().then(p=>{if(p==='granted') scheduleDailyNotification();});return;}
     const now=new Date();
     const [h,m]=notificationTime.split(':').map(Number);
     let next=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,0);
     if(next<=now) next.setDate(next.getDate()+1);
     const delay=next-now;
     setTimeout(()=>{
+        if(focusSilentMode) {scheduleDailyNotification();return;}
         new Notification('🔔 وقت المذاكرة!',{body:'حان وقت مذاكرتك اليومية في ذكاء Study!',icon:'🧠'});
         playSound('notification');
         scheduleDailyNotification();
     },delay);
 }
 
-function showNotificationSettings(){
-    switchTab('settings');
-    setTimeout(()=>document.getElementById('notifTimeInput').scrollIntoView({behavior:'smooth'}),300);
-}
+function showNotificationSettings(){switchTab('settings');setTimeout(()=>document.getElementById('notifTimeInput').scrollIntoView({behavior:'smooth'}),300);}
 
 // ========== STREAK FREEZE ==========
 function useStreakFreeze(){
@@ -1147,28 +1080,43 @@ function useStreakFreeze(){
     showToast('❄️ تم استخدام يوم الراحة! سلسلتك محفوظة','success');
 }
 
-// ========== ACHIEVEMENTS ==========
+// ========== ACHIEVEMENTS WITH COUNTERS ==========
 function checkAchievements(){
     let newUnlock=false;
     achievementDefs.forEach(def=>{
-        const existing=achievements.find(a=>a.id===def.id);
-        if(!existing && def.condition()){
-            achievements.push({id:def.id, unlockedAt:new Date().toISOString()});
-            newUnlock=true;
-            showAchievementPopup(def);
-            playSound('achievement');
+        const existing = achievements.find(a=>a.id===def.id);
+        if(def.maxCount){
+            const count = def.condition();
+            achievementCounts[def.id] = count;
+            if(!existing){
+                achievements.push({id:def.id, unlockedAt:new Date().toISOString(), count:count});
+                newUnlock=true;
+                showAchievementPopup(def, count);
+                playSound('achievement');
+            } else if(existing.count !== count){
+                existing.count = count;
+                newUnlock=true;
+                showAchievementPopup(def, count);
+                playSound('achievement');
+            }
+        } else {
+            if(!existing && def.condition()){
+                achievements.push({id:def.id, unlockedAt:new Date().toISOString()});
+                newUnlock=true;
+                showAchievementPopup(def);
+                playSound('achievement');
+            }
         }
     });
-    if(newUnlock){
-        localStorage.setItem('achievements',JSON.stringify(achievements));
-        updateAchievementsUI();
-    }
+    if(newUnlock){localStorage.setItem('achievements',JSON.stringify(achievements));localStorage.setItem('achievementCounts',JSON.stringify(achievementCounts));updateAchievementsUI();}
 }
 
-function showAchievementPopup(def){
+function showAchievementPopup(def, count){
     const pop=document.getElementById('achievementPopup');
     document.getElementById('achPopIcon').innerText=def.icon;
-    document.getElementById('achPopTitle').innerText='إنجاز جديد: '+def.name;
+    let name = def.name;
+    if(count && count>1) name += ' ✕'+count;
+    document.getElementById('achPopTitle').innerText='إنجاز جديد: '+name;
     document.getElementById('achPopDesc').innerText=def.desc;
     pop.classList.remove('hidden');
     setTimeout(()=>pop.classList.add('hidden'),4000);
@@ -1183,9 +1131,12 @@ function updateAchievementsUI(){
     document.getElementById('achLockedCount').innerText=locked;
     grid.innerHTML=achievementDefs.map(def=>{
         const isUnlocked=achievements.some(a=>a.id===def.id);
+        let count = achievementCounts[def.id] || 0;
+        let name = def.name;
+        if(count && count>1) name += ' <span class="achievement-counter">✕'+count+'</span>';
         return '<div class="achievement-item '+(isUnlocked?'unlocked':'locked')+'">'+
             '<div class="achievement-icon">'+def.icon+'</div>'+
-            '<div class="achievement-name">'+def.name+'</div>'+
+            '<div class="achievement-name">'+name+'</div>'+
             '<div class="achievement-desc">'+def.desc+'</div>'+
             '</div>';
     }).join('');
@@ -1238,49 +1189,23 @@ function selectLevel(level, minutes){
     checkAchievements();
 }
 
-function showCustomLevel(){
-    document.getElementById('customTimeArea').style.display='block';
-}
-
-function selectCustomLevel(){
-    const m=parseInt(document.getElementById('customMinutes').value);
-    if(!m||m<5||m>300){showToast('⚠️ اختر من 5 لـ 300 دقيقة','warning');return;}
-    selectLevel('custom',m);
-}
-
-function skipLevel(){
-    studyLevel=null;
-    document.getElementById('levelScreen').classList.add('hidden');
-    showToast('⏭️ تم التخطي','info');
-}
-
-function resetLevel(){
-    document.getElementById('levelScreen').classList.remove('hidden');
-    stopStudyTimer();
-}
-
-function updateLevelBadge(){
-    const area=document.getElementById('levelBadgeArea');
-    if(!area||!studyLevel) return;
-    area.innerHTML='<div class="level-badge '+studyLevel+'">'+levelNames[studyLevel]+' - '+studyMinutes+' دقيقة</div>';
-}
+function showCustomLevel(){document.getElementById('customTimeArea').style.display='block';}
+function selectCustomLevel(){const m=parseInt(document.getElementById('customMinutes').value);if(!m||m<5||m>300){showToast('⚠️ اختر من 5 لـ 300 دقيقة','warning');return;}selectLevel('custom',m);}
+function skipLevel(){studyLevel=null;document.getElementById('levelScreen').classList.add('hidden');showToast('⏭️ تم التخطي','info');}
+function resetLevel(){document.getElementById('levelScreen').classList.remove('hidden');stopStudyTimer();}
+function updateLevelBadge(){const area=document.getElementById('levelBadgeArea');if(!area||!studyLevel) return;area.innerHTML='<div class="level-badge '+studyLevel+'">'+levelNames[studyLevel]+' - '+studyMinutes+' دقيقة</div>';}
 
 // ========== STUDY TIMER ==========
 function updateStudyTimerDisplay(){
-    const m=Math.floor(studySecondsLeft/60);
-    const s=studySecondsLeft%60;
+    const m=Math.floor(studySecondsLeft/60),s=studySecondsLeft%60;
     const text=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
     document.getElementById('timerRingText').innerText=text;
     document.getElementById('timerStatus').innerText=studyIsRunning?'▶️ جلسة نشطة':(studyIsPaused?'⏸️ متوقف مؤقتاً':'⏸️ جلسة متوقفة');
-    // Update ring
     const progress=studyTotalSeconds>0?(studySecondsLeft/studyTotalSeconds):1;
-    const offset=440-(440*progress);
-    document.getElementById('timerRingProgress').style.strokeDashoffset=offset;
-    // Next break info
+    document.getElementById('timerRingProgress').style.strokeDashoffset=440-(440*progress);
     const elapsed=studyTotalSeconds-studySecondsLeft;
     const nextBreak=BREAK_INTERVAL-(elapsed%BREAK_INTERVAL);
-    const nbM=Math.floor(nextBreak/60);
-    document.getElementById('nextBreakInfo').innerText='البريك القادم: بعد '+nbM+' دقيقة';
+    document.getElementById('nextBreakInfo').innerText='البريك القادم: بعد '+Math.floor(nextBreak/60)+' دقيقة';
 }
 
 function startStudyTimer(){
@@ -1288,10 +1213,10 @@ function startStudyTimer(){
     studyIsRunning=true; studyIsPaused=false;
     document.getElementById('timerStartBtn').classList.add('hidden');
     document.getElementById('timerPauseBtn').classList.remove('hidden');
-    playSound('start');
+    if(!focusSilentMode) playSound('start');
     markStudyDay('studied');
     studyTimerInterval=setInterval(()=>{
-        if(studySecondsLeft<=0){stopStudyTimer();showToast('🎉 انتهت جلسة المذاكرة!','success');playSound('achievement');return;}
+        if(studySecondsLeft<=0){stopStudyTimer();showToast('🎉 انتهت جلسة المذاكرة!','success');if(!focusSilentMode) playSound('achievement');return;}
         studySecondsLeft--;
         const elapsed=studyTotalSeconds-studySecondsLeft;
         if(elapsed>0 && elapsed%BREAK_INTERVAL===0){pauseStudyTimer();showBreakOverlay();}
@@ -1299,57 +1224,20 @@ function startStudyTimer(){
     },1000);
 }
 
-function pauseStudyTimer(){
-    studyIsRunning=false; studyIsPaused=true;
-    clearInterval(studyTimerInterval);
-    document.getElementById('timerStartBtn').classList.remove('hidden');
-    document.getElementById('timerPauseBtn').classList.add('hidden');
-    playSound('timer');
-}
-
-function stopStudyTimer(){
-    studyIsRunning=false; studyIsPaused=false;
-    clearInterval(studyTimerInterval);
-    studySecondsLeft=studyTotalSeconds;
-    document.getElementById('timerStartBtn').classList.remove('hidden');
-    document.getElementById('timerPauseBtn').classList.add('hidden');
-    updateStudyTimerDisplay();
-}
+function pauseStudyTimer(){studyIsRunning=false;studyIsPaused=true;clearInterval(studyTimerInterval);document.getElementById('timerStartBtn').classList.remove('hidden');document.getElementById('timerPauseBtn').classList.add('hidden');if(!focusSilentMode) playSound('timer');}
+function stopStudyTimer(){studyIsRunning=false;studyIsPaused=false;clearInterval(studyTimerInterval);studySecondsLeft=studyTotalSeconds;document.getElementById('timerStartBtn').classList.remove('hidden');document.getElementById('timerPauseBtn').classList.add('hidden');updateStudyTimerDisplay();}
 
 // ========== BREAK OVERLAY ==========
 function showBreakOverlay(){
     breakSecondsLeft=BREAK_DURATION;
     document.getElementById('breakOverlay').classList.remove('hidden');
-    playSound('break');
+    if(!focusSilentMode) playSound('break');
     updateBreakTimer();
-    breakTimerInterval=setInterval(()=>{
-        breakSecondsLeft--;
-        updateBreakTimer();
-        if(breakSecondsLeft<=0){endBreak();}
-    },1000);
+    breakTimerInterval=setInterval(()=>{breakSecondsLeft--;updateBreakTimer();if(breakSecondsLeft<=0) endBreak();},1000);
 }
-
-function updateBreakTimer(){
-    const m=Math.floor(breakSecondsLeft/60);
-    const s=breakSecondsLeft%60;
-    document.getElementById('breakTimer').innerText=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
-}
-
-function skipBreak(){
-    localStorage.setItem('breakSkipped','true');
-    clearInterval(breakTimerInterval);
-    document.getElementById('breakOverlay').classList.add('hidden');
-    startStudyTimer();
-    showToast('⏭️ تم تخطي الاستراحة','info');
-    checkAchievements();
-}
-
-function endBreak(){
-    clearInterval(breakTimerInterval);
-    document.getElementById('breakOverlay').classList.add('hidden');
-    startStudyTimer();
-    showToast('▶️ استمرار المذاكرة!','success');
-}
+function updateBreakTimer(){const m=Math.floor(breakSecondsLeft/60),s=breakSecondsLeft%60;document.getElementById('breakTimer').innerText=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;}
+function skipBreak(){localStorage.setItem('breakSkipped','true');clearInterval(breakTimerInterval);document.getElementById('breakOverlay').classList.add('hidden');startStudyTimer();showToast('⏭️ تم تخطي الاستراحة','info');checkAchievements();}
+function endBreak(){clearInterval(breakTimerInterval);document.getElementById('breakOverlay').classList.add('hidden');startStudyTimer();showToast('▶️ استمرار المذاكرة!','success');}
 
 // ========== FOCUS MODE ==========
 function enterFocusMode(){
@@ -1358,38 +1246,30 @@ function enterFocusMode(){
     document.getElementById('focusOverlay').classList.remove('hidden');
     focusSecondsLeft=studySecondsLeft;
     updateFocusDisplay();
-    focusTimerInterval=setInterval(()=>{
-        if(focusSecondsLeft<=0){exitFocusMode();return;}
-        focusSecondsLeft--;
-        updateFocusDisplay();
-    },1000);
-    if(whiteNoiseEnabled) toggleWhiteNoise(true);
+    focusTimerInterval=setInterval(()=>{if(focusSecondsLeft<=0){exitFocusMode();return;}focusSecondsLeft--;updateFocusDisplay();},1000);
+    // إظهار وضع الصامت
+    if(document.getElementById('focusSilentToggle').checked){
+        focusSilentMode = true;
+        document.querySelector('.focus-silent-badge').innerHTML = '<i class="fas fa-moon"></i> وضع التركيز - صامت (ممنوع الإشعارات)';
+    } else {
+        focusSilentMode = false;
+        document.querySelector('.focus-silent-badge').innerHTML = '<i class="fas fa-volume-up"></i> وضع التركيز - مسموح بالإشعارات';
+    }
+    checkAchievements();
 }
 
 function updateFocusDisplay(){
-    const m=Math.floor(focusSecondsLeft/60);
-    const s=focusSecondsLeft%60;
+    const m=Math.floor(focusSecondsLeft/60),s=focusSecondsLeft%60;
     document.getElementById('focusTimer').innerText=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
     document.getElementById('focusSessionInfo').innerText='الجلسة: '+studyMinutes+' دقيقة | البريك: كل 60 دقيقة';
 }
 
 function toggleFocusTimer(){
-    // Toggle pause/resume in focus mode
     if(studyIsRunning){pauseStudyTimer();document.getElementById('focusStatus').innerText='⏸️ متوقف مؤقتاً';}
     else{startStudyTimer();document.getElementById('focusStatus').innerText='🎯 جلسة دراسية نشطة';}
 }
-
-function stopFocusMode(){
-    stopStudyTimer();
-    exitFocusMode();
-}
-
-function exitFocusMode(){
-    focusModeActive=false;
-    clearInterval(focusTimerInterval);
-    document.getElementById('focusOverlay').classList.add('hidden');
-    if(whiteNoiseEnabled) toggleWhiteNoise(false);
-}
+function stopFocusMode(){stopStudyTimer();exitFocusMode();}
+function exitFocusMode(){focusModeActive=false;focusSilentMode=false;clearInterval(focusTimerInterval);document.getElementById('focusOverlay').classList.add('hidden');}
 
 // ========== APP INIT ==========
 function initApp(){
@@ -1399,6 +1279,7 @@ function initApp(){
     const savedStats=localStorage.getItem('studyStats');
     const savedMonthly=localStorage.getItem('monthlyStats');
     const savedAch=localStorage.getItem('achievements');
+    const savedAchCounts=localStorage.getItem('achievementCounts');
     const savedDays=localStorage.getItem('studyDays');
     const savedNotif=localStorage.getItem('notifTime');
     const savedFreeze=localStorage.getItem('streakFreezeUsed');
@@ -1407,6 +1288,7 @@ function initApp(){
     if(savedStats) stats=JSON.parse(savedStats);
     if(savedMonthly) monthlyStats=JSON.parse(savedMonthly);
     if(savedAch) achievements=JSON.parse(savedAch);
+    if(savedAchCounts) achievementCounts=JSON.parse(savedAchCounts);
     if(savedDays) studyDays=JSON.parse(savedDays);
     if(savedNotif){notificationTime=savedNotif;document.getElementById('notifTimeInput').value=savedNotif;}
     if(savedFreeze){streakFreezeUsed=savedFreeze==='true';document.getElementById('freezeCount').innerText=streakFreezeUsed?'0':'1';}
@@ -1426,25 +1308,17 @@ function initApp(){
             document.getElementById('levelScreen').classList.add('hidden');
             updateLevelBadge();
             updateStudyTimerDisplay();
-        }else{
-            document.getElementById('levelScreen').classList.remove('hidden');
-        }
+        }else{document.getElementById('levelScreen').classList.remove('hidden');}
         updateStatsUI();updateMonthLabel();updateHeatmap();updateAchievementsUI();
     }
-    if(localStorage.getItem('darkMode')==='true'){
-        document.body.classList.add('dark-mode');
-        const t=document.querySelector('.toggle-switch input');
-        if(t)t.checked=true;
-    }
+    if(localStorage.getItem('darkMode')==='true'){document.body.classList.add('dark-mode');const t=document.querySelector('.toggle-switch input');if(t)t.checked=true;}
     scheduleDailyNotification();
     checkAchievements();
 }
 
 function resetGrade(){
     if(confirm('⚠️ هل أنت متأكد من إعادة تعيين المستوى الدراسي؟')){
-        localStorage.removeItem('userGrade');
-        localStorage.removeItem('studyLevel');
-        localStorage.removeItem('studyMinutes');
+        localStorage.removeItem('userGrade');localStorage.removeItem('studyLevel');localStorage.removeItem('studyMinutes');
         currentGrade=null;studyLevel=null;
         document.getElementById('gradeScreen').classList.remove('hidden');
         document.getElementById('levelScreen').classList.add('hidden');
@@ -1454,11 +1328,10 @@ function resetGrade(){
 
 function clearAll(){
     if(confirm('⚠️ هل تريد مسح جميع الصور والـ PDF؟')){
-        uploadedImages = [];
-        pdfText = '';
-        document.getElementById('imagePreviewGrid').innerHTML = '';
+        uploadedImages=[];pdfText='';
+        document.getElementById('imagePreviewGrid').innerHTML='';
         document.getElementById('imagePreviewGrid').classList.add('hidden');
-        document.getElementById('pdfPreview').style.display = 'none';
+        document.getElementById('pdfPreview').style.display='none';
         document.getElementById('actionButtons').classList.add('hidden');
         document.getElementById('quizOptions').classList.add('hidden');
         document.getElementById('summaryResult').classList.add('hidden');
@@ -1483,86 +1356,42 @@ function toggleDarkMode(isDark){if(isDark){document.body.classList.add('dark-mod
 function openCamera(){document.getElementById('imgInput').click();}
 function openGallery(){document.getElementById('galleryInput').click();}
 function triggerFileInput(){const c=confirm('📷 اضغط "موافق" للكاميرا أو "إلغاء" للمعرض');if(c)openCamera();else openGallery();}
-
-function openSearchLesson(){
-    const s=document.getElementById('searchSection');
-    if(s.style.display==='none'){s.style.display='block';s.scrollIntoView({behavior:'smooth'});}
-    else s.style.display='none';
-}
+function openSearchLesson(){const s=document.getElementById('searchSection');if(s.style.display==='none'){s.style.display='block';s.scrollIntoView({behavior:'smooth'});}else s.style.display='none';}
 
 // ========== PDF HANDLING ==========
-async function handlePDF(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+async function handlePDF(event){
+    const file=event.target.files[0];
+    if(!file) return;
     showLoading('📖 جاري قراءة الـ PDF...');
-    try {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        let fullText = '';
-        for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i);
-            const content = await page.getTextContent();
-            fullText += content.items.map(item => item.str).join(' ') + '\\n';
-        }
-        pdfText = fullText.trim();
-        document.getElementById('pdfPreview').style.display = 'block';
-        document.getElementById('pdfPreview').innerHTML = `
-            <div style="display:flex;align-items:center;gap:10px;">
-                <i class="fas fa-file-pdf" style="color:var(--accent-orange);font-size:24px;"></i>
-                <div>
-                    <div style="font-weight:700;color:var(--text-main);">${file.name}</div>
-                    <div style="font-size:12px;color:var(--text-sub);">${pdf.numPages} صفحات - ${fullText.length} حرف</div>
-                </div>
-                <button onclick="clearPDF()" style="margin-right:auto;background:var(--accent-red);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;">×</button>
-            </div>
-            <div style="font-size:12px;color:var(--text-sub);margin-top:8px;max-height:80px;overflow-y:auto;background:var(--bg-body);padding:8px;border-radius:8px;">${fullText.substring(0, 300)}...</div>
-        `;
+    try{
+        const arrayBuffer=await file.arrayBuffer();
+        const pdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+        let fullText='';
+        for(let i=1;i<=pdf.numPages;i++){const page=await pdf.getPage(i);const content=await page.getTextContent();fullText+=content.items.map(item=>item.str).join(' ')+'\n';}
+        pdfText=fullText.trim();
+        document.getElementById('pdfPreview').style.display='block';
+        document.getElementById('pdfPreview').innerHTML='<div style="display:flex;align-items:center;gap:10px;"><i class="fas fa-file-pdf" style="color:var(--accent-orange);font-size:24px;"></i><div><div style="font-weight:700;color:var(--text-main);">'+file.name+'</div><div style="font-size:12px;color:var(--text-sub);">'+pdf.numPages+' صفحات - '+fullText.length+' حرف</div></div><button onclick="clearPDF()" style="margin-right:auto;background:var(--accent-red);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;">×</button></div><div style="font-size:12px;color:var(--text-sub);margin-top:8px;max-height:80px;overflow-y:auto;background:var(--bg-body);padding:8px;border-radius:8px;">'+fullText.substring(0,300)+'...</div>';
         document.getElementById('actionButtons').classList.remove('hidden');
         showToast('✅ تم قراءة الـ PDF بنجاح!', 'success');
         checkAchievements();
-    } catch (error) {
-        showToast('❌ حدث خطأ في قراءة الـ PDF', 'error');
-    }
+    }catch(error){showToast('❌ حدث خطأ في قراءة الـ PDF', 'error');}
     hideLoading();
-    event.target.value = '';
+    event.target.value='';
 }
+function clearPDF(){pdfText='';document.getElementById('pdfPreview').style.display='none';showToast('🗑️ تم مسح الـ PDF','info');}
 
-function clearPDF() {
-    pdfText = '';
-    document.getElementById('pdfPreview').style.display = 'none';
-    showToast('🗑️ تم مسح الـ PDF', 'info');
-}
-
-async function summarizePDF() {
-    if (!pdfText || pdfText.length < 10) {
-        showToast('⚠️ ارفع ملف PDF أولاً', 'warning');
-        return;
-    }
+async function summarizePDF(){
+    if(!pdfText||pdfText.length<10){showToast('⚠️ ارفع ملف PDF أولاً','warning');return;}
     showLoading('📝 جاري تلخيص الـ PDF...');
-    try {
-        const response = await fetch(WORKER_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'summarizeText',
-                text: pdfText,
-                grade: currentGrade || 'عام',
-                subject: 'عام'
-            })
-        });
-        const data = await response.json();
-        if(data.error){
-            showToast('❌ ' + data.error, 'error');
-            hideLoading();
-            return;
-        }
-        let summaryText = data.executiveSummary || data.detailedExplanation || data.quickSummary || data.rawResponse || 'تم التلخيص';
-        document.getElementById('summaryContent').innerHTML = escapeHtml(summaryText).replace(/\\n/g, '<br>');
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'summarizeText',text:pdfText,grade:currentGrade||'عام',subject:'عام'})});
+        const data=await response.json();
+        if(data.error){showToast('❌ '+data.error,'error');hideLoading();return;}
+        let summaryText=data.executiveSummary||data.detailedExplanation||data.quickSummary||data.rawResponse||'تم التلخيص';
+        document.getElementById('summaryContent').innerHTML=escapeHtml(summaryText).replace(/\n/g,'<br>');
         document.getElementById('summaryResult').classList.remove('hidden');
         showToast('✅ تم تلخيص الـ PDF!', 'success');
-    } catch (error) {
-        showToast('❌ حدث خطأ في التلخيص', 'error');
-    }
+    }catch(error){showToast('❌ حدث خطأ في التلخيص', 'error');}
     hideLoading();
 }
 
@@ -1574,57 +1403,21 @@ async function searchLesson(){
     if(!currentGrade){showToast('⚠️ اختر مستواك أولاً','warning');return;}
     showLoading('🔍 جاري البحث...');
     try{
-        const response=await fetch(WORKER_URL,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                action:'searchLesson',
-                grade:gradeNames[currentGrade]||currentGrade,
-                subject:subject||'عام',
-                lessonName:q
-            })
-        });
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'searchLesson',grade:gradeNames[currentGrade]||currentGrade,subject:subject||'عام',lessonName:q})});
         const data=await response.json();
-        if(data.error){
-            showToast('❌ ' + data.error, 'error');
-            hideLoading();
-            return;
-        }
-        let html = '<div class="summary-card" style="margin-top:0;">';
-        html += '<div class="summary-title"><i class="fas fa-search"></i> 📚 نتائج البحث عن: "' + escapeHtml(q) + '"</div>';
-        html += '<div class="summary-content">';
-        if(data.title) html += '<h3 style="color:var(--primary-purple);margin-bottom:10px;">' + escapeHtml(data.title) + '</h3>';
-        if(data.fullExplanation) html += '<p style="margin-bottom:12px;">' + escapeHtml(data.fullExplanation).replace(/\\n/g,'<br>') + '</p>';
-        if(data.keyPoints && data.keyPoints.length){
-            html += '<h4 style="margin:10px 0 6px;">🔑 النقاط المهمة:</h4><ul style="margin-right:16px;margin-bottom:12px;">';
-            data.keyPoints.forEach(p => html += '<li>' + escapeHtml(p) + '</li>');
-            html += '</ul>';
-        }
-        if(data.examples && data.examples.length){
-            html += '<h4 style="margin:10px 0 6px;">💡 أمثلة:</h4><ul style="margin-right:16px;margin-bottom:12px;">';
-            data.examples.forEach(e => html += '<li>' + escapeHtml(e) + '</li>');
-            html += '</ul>';
-        }
-        if(data.questions && data.questions.length){
-            html += '<h4 style="margin:10px 0 6px;">❓ أسئلة للتفكير:</h4><ul style="margin-right:16px;margin-bottom:12px;">';
-            data.questions.forEach(qs => html += '<li>' + escapeHtml(qs) + '</li>');
-            html += '</ul>';
-        }
-        if(data.sources && data.sources.length){
-            html += '<h4 style="margin:10px 0 6px;">🔗 مصادر:</h4><ul style="margin-right:16px;margin-bottom:12px;">';
-            data.sources.forEach(s => html += '<li>' + escapeHtml(s) + '</li>');
-            html += '</ul>';
-        }
-        if(data.relatedLessons && data.relatedLessons.length){
-            html += '<h4 style="margin:10px 0 6px;">📎 دروس مرتبطة:</h4><ul style="margin-right:16px;">';
-            data.relatedLessons.forEach(r => html += '<li>' + escapeHtml(r) + '</li>');
-            html += '</ul>';
-        }
-        html += '</div></div>';
-        document.getElementById('searchResults').innerHTML = html;
+        if(data.error){showToast('❌ '+data.error,'error');hideLoading();return;}
+        let html='<div class="summary-card" style="margin-top:0;"><div class="summary-title"><i class="fas fa-search"></i> 📚 نتائج البحث عن: "'+escapeHtml(q)+'"</div><div class="summary-content">';
+        if(data.title) html+='<h3 style="color:var(--primary-purple);margin-bottom:10px;">'+escapeHtml(data.title)+'</h3>';
+        if(data.fullExplanation) html+='<p style="margin-bottom:12px;">'+escapeHtml(data.fullExplanation).replace(/\n/g,'<br>')+'</p>';
+        if(data.keyPoints&&data.keyPoints.length){html+='<h4 style="margin:10px 0 6px;">🔑 النقاط المهمة:</h4><ul style="margin-right:16px;margin-bottom:12px;">';data.keyPoints.forEach(p=>html+='<li>'+escapeHtml(p)+'</li>');html+='</ul>';}
+        if(data.examples&&data.examples.length){html+='<h4 style="margin:10px 0 6px;">💡 أمثلة:</h4><ul style="margin-right:16px;margin-bottom:12px;">';data.examples.forEach(e=>html+='<li>'+escapeHtml(e)+'</li>');html+='</ul>';}
+        if(data.questions&&data.questions.length){html+='<h4 style="margin:10px 0 6px;">❓ أسئلة للتفكير:</h4><ul style="margin-right:16px;margin-bottom:12px;">';data.questions.forEach(qs=>html+='<li>'+escapeHtml(qs)+'</li>');html+='</ul>';}
+        if(data.relatedLessons&&data.relatedLessons.length){html+='<h4 style="margin:10px 0 6px;">📎 دروس مرتبطة:</h4><ul style="margin-right:16px;">';data.relatedLessons.forEach(r=>html+='<li>'+escapeHtml(r)+'</li>');html+='</ul>';}
+        html+='</div></div>';
+        document.getElementById('searchResults').innerHTML=html;
         showToast('✅ تم العثور على نتائج!','success');
         checkAchievements();
-    }catch(err){showToast('❌ حدث خطأ: ' + err.message,'error');}
+    }catch(err){showToast('❌ حدث خطأ: '+err.message,'error');}
     finally{hideLoading();}
 }
 
@@ -1636,10 +1429,7 @@ async function handleFiles(e){
     if(remainingSlots<=0){showToast('⚠️ حد أقصى 5 صور','error');return;}
     const filesToProcess=files.slice(0,remainingSlots);
     showLoading('📤 جاري معالجة الصور...');
-    for(const file of filesToProcess){
-        try{const base64=await fileToBase64(file);uploadedImages.push(base64);stats.docs++;}
-        catch(err){console.error(err);}
-    }
+    for(const file of filesToProcess){try{const base64=await fileToBase64(file);uploadedImages.push(base64);stats.docs++;}catch(err){console.error(err);}}
     hideLoading();
     updateImagePreview();
     updateStatsUI();
@@ -1655,7 +1445,6 @@ function updateImagePreview(){
     grid.classList.remove('hidden');
     uploadedImages.forEach((img,idx)=>{const item=document.createElement('div');item.className='image-preview-item';item.innerHTML='<img src="'+img+'"><button class="remove-btn" onclick="removeImage('+idx+')">×</button>';grid.appendChild(item);});
 }
-
 function removeImage(index){uploadedImages.splice(index,1);updateImagePreview();if(uploadedImages.length===0){document.getElementById('actionButtons').classList.add('hidden');document.getElementById('uploadArea').classList.remove('has-images');document.getElementById('quizOptions').classList.add('hidden');document.getElementById('summaryResult').classList.add('hidden');}}
 
 // ========== SUMMARY ==========
@@ -1663,31 +1452,14 @@ async function generateSummary(){
     if(uploadedImages.length===0){showToast('⚠️ ارفع صور أولاً','error');return;}
     showLoading('📝 جاري التلخيص...');
     try{
-        const response=await fetch(WORKER_URL,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                action:'summarize',
-                image:uploadedImages[0],
-                grade:currentGrade||'عام',
-                subject:'عام'
-            })
-        });
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'summarize',image:uploadedImages[0],grade:currentGrade||'عام',subject:'عام'})});
         const data=await response.json();
-        if(data.error){
-            showToast('❌ '+data.error, 'error');
-            document.getElementById('summaryContent').innerHTML = '❌ '+escapeHtml(data.error);
-            document.getElementById('summaryResult').classList.remove('hidden');
-            hideLoading();
-            return;
-        }
-        let summaryText = data.executiveSummary || data.detailedExplanation || data.quickSummary || data.rawResponse || 'لا يوجد ملخص';
-        document.getElementById('summaryContent').innerHTML = escapeHtml(summaryText).replace(/\\n/g, '<br>');
+        if(data.error){showToast('❌ '+data.error,'error');document.getElementById('summaryContent').innerHTML='❌ '+escapeHtml(data.error);document.getElementById('summaryResult').classList.remove('hidden');hideLoading();return;}
+        let summaryText=data.executiveSummary||data.detailedExplanation||data.quickSummary||data.rawResponse||'لا يوجد ملخص';
+        document.getElementById('summaryContent').innerHTML=escapeHtml(summaryText).replace(/\n/g,'<br>');
         document.getElementById('summaryResult').classList.remove('hidden');
         showToast('✅ تم التلخيص!','success');
-    }catch(err){
-        showToast('❌ حدث خطأ: '+err.message, 'error');
-    }
+    }catch(err){showToast('❌ حدث خطأ: '+err.message,'error');}
     finally{hideLoading();}
 }
 
@@ -1700,41 +1472,16 @@ function showQuizOptions(){
 async function startQuiz(type){
     quizType=type;
     document.getElementById('quizOptions').classList.add('hidden');
-    if(uploadedImages.length===0){
-        showToast('⚠️ ارفع صورة أولاً','error');
-        hideLoading();
-        return;
-    }
+    if(uploadedImages.length===0){showToast('⚠️ ارفع صورة أولاً','error');hideLoading();return;}
     showLoading('🧠 جاري إنشاء الأسئلة الذكية...');
     try{
-        const response=await fetch(WORKER_URL,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                action:'generateQuestions',
-                image:uploadedImages[0],
-                quizType:type,
-                grade:currentGrade||'عام',
-                subject:'عام'
-            })
-        });
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'generateQuestions',image:uploadedImages[0],quizType:type,grade:currentGrade||'عام',subject:'عام'})});
         const data=await response.json();
-        if(data.error){
-            showToast('❌ '+data.error, 'error');
-            hideLoading();
-            return;
-        }
-        if(!data.questions || data.questions.length===0){
-            showToast('❌ لم يتم إنشاء أسئلة', 'error');
-            hideLoading();
-            return;
-        }
-        currentQuiz = data.questions;
+        if(data.error){showToast('❌ '+data.error,'error');hideLoading();return;}
+        if(!data.questions||data.questions.length===0){showToast('❌ لم يتم إنشاء أسئلة','error');hideLoading();return;}
+        currentQuiz=data.questions;
         startQuizUI();
-    }catch(err){
-        showToast('❌ حدث خطأ: '+err.message, 'error');
-        hideLoading();
-    }
+    }catch(err){showToast('❌ حدث خطأ: '+err.message,'error');hideLoading();}
 }
 
 function startQuizUI(){
@@ -1748,7 +1495,7 @@ function startQuizUI(){
     document.getElementById('tab-quiz').classList.remove('hidden');
     document.getElementById('totalQuestions').innerText=currentQuiz.length;
     document.getElementById('currentScore').innerText=0;
-    playSound('start');
+    if(!focusSilentMode) playSound('start');
     startTimer();
     renderQuestion();
 }
@@ -1809,8 +1556,8 @@ function checkAnswer(userAns,correctAns){
     clearInterval(questionTimerInterval);
     stats.totalAnswered++;
     const isRight=userAns.trim()===correctAns.trim();
-    if(isRight){score++;stats.correct++;playSound('correct');}
-    else{playSound('wrong');}
+    if(isRight){score++;stats.correct++;if(!focusSilentMode) playSound('correct');}
+    else{if(!focusSilentMode) playSound('wrong');}
     updateMonthlyStats(isRight);
     updateStatsUI();
     document.querySelectorAll('.opt-btn').forEach(btn=>{
@@ -1830,28 +1577,17 @@ async function submitTextAnswer(){
     stats.totalAnswered++;
     showLoading('🧠 جاري تقييم الإجابة...');
     try{
-        const response=await fetch(WORKER_URL,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                action:'evaluate',
-                question:q.question,
-                correctAnswer:q.correctAnswer,
-                userAnswer:userAns,
-                grade:currentGrade||'عام',
-                subject:'عام'
-            })
-        });
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'evaluate',question:q.question,correctAnswer:q.correctAnswer,userAnswer:userAns,grade:currentGrade||'عام',subject:'عام'})});
         const data=await response.json();
-        if(data.isCorrect){score++;stats.correct++;playSound('correct');}
-        else{playSound('wrong');}
+        if(data.isCorrect){score++;stats.correct++;if(!focusSilentMode) playSound('correct');}
+        else{if(!focusSilentMode) playSound('wrong');}
         updateMonthlyStats(data.isCorrect);
         updateStatsUI();
         showFeedback(data.isCorrect,data.isCorrect?"✅ صحيحة! ممتاز!":"❌ خاطئة! الإجابة الصحيحة: "+q.correctAnswer);
     }catch(err){
         const isCorrect=userAns.toLowerCase().includes(q.correctAnswer.toLowerCase());
-        if(isCorrect){score++;stats.correct++;playSound('correct');}
-        else{playSound('wrong');}
+        if(isCorrect){score++;stats.correct++;if(!focusSilentMode) playSound('correct');}
+        else{if(!focusSilentMode) playSound('wrong');}
         updateMonthlyStats(isCorrect);
         updateStatsUI();
         showFeedback(isCorrect,isCorrect?"✅ صحيحة!":"❌ خاطئة! الإجابة: "+q.correctAnswer);
@@ -1897,7 +1633,7 @@ function finishQuiz(){
     document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
     document.getElementById('tab-result').classList.remove('hidden');
     updateHistory();updateReports();checkAchievements();
-    if(percent>=70) playSound('achievement');
+    if(percent>=70 && !focusSilentMode) playSound('achievement');
 }
 
 function retryQuiz(){startQuiz(quizType);}
@@ -1926,7 +1662,6 @@ function updateHistory(){
     document.getElementById('historyEmpty').classList.add('hidden');
     list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;color:var(--text-main);">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total+'</div></div></div></div>').join('');
 }
-
 function getQuizTypeName(type){const n={'quick':'⚡ سريع','mcq_only':'📝 اختياري','full':'📄 كامل','challenge':'🔥 تحدي'};return n[type]||type;}
 
 function updateReports(){
@@ -1955,20 +1690,11 @@ async function sendChatMessage(){
     box.innerHTML+='<div class="chat-message bot" id="'+typingId+'"><div class="chat-avatar">🤖</div><div class="chat-bubble"><i class="fas fa-spinner fa-spin"></i> جاري التفكير...</div></div>';
     box.scrollTop=box.scrollHeight;
     try{
-        const response=await fetch(WORKER_URL,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                action:'chat',
-                message:msg,
-                grade:currentGrade||'عام',
-                subject:'عام'
-            })
-        });
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chat',message:msg,grade:currentGrade||'عام',subject:'عام'})});
         const data=await response.json();
         document.getElementById(typingId).remove();
-        let reply = data.answer || data.rawResponse || 'عذراً، لم أستطع فهم سؤالك.';
-        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">'+escapeHtml(reply).replace(/\\n/g,'<br>')+'</div></div>';
+        let reply=data.answer||data.rawResponse||'عذراً، لم أستطع فهم سؤالك.';
+        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">'+escapeHtml(reply).replace(/\n/g,'<br>')+'</div></div>';
     }catch(err){
         document.getElementById(typingId).remove();
         box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble" style="color:var(--accent-red);">❌ عذراً، حدث خطأ. حاول مرة أخرى.</div></div>';
@@ -1981,10 +1707,3 @@ document.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
 </html>
-'''
-
-with open('/mnt/agents/output/index.html', 'a', encoding='utf-8') as f:
-    f.write(html_p3)
-
-print("✅ Part 3 (JavaScript) written successfully!")
-print("📁 File saved to: /mnt/agents/output/index.html")
