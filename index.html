@@ -179,7 +179,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .btn-action.pink { background:linear-gradient(135deg,#ec4899,#f472b6); }
 .btn-action.outline { background:transparent; border:2px solid var(--primary-purple); color:var(--primary-purple); }
 
-/* ===== Quiz ===== */
 .quiz-types-group { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
 .quiz-type-btn { background:var(--card-bg); border:2px solid var(--border-color); padding:16px; border-radius:var(--radius-xl);
   display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:all 0.3s; }
@@ -191,19 +190,16 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .quiz-type-btn .quiz-icon.purple { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); }
 .quiz-type-btn .quiz-icon.orange { background:linear-gradient(135deg,#ffedd5,#fed7aa); }
 
-/* ===== Search ===== */
 .search-box { display:flex; gap:10px; margin-bottom:16px; }
 .search-box input { flex:1; padding:14px 16px; border-radius:16px; border:2px solid var(--border-color);
   background:var(--bg-body); font-size:14px; font-weight:600; color:var(--text-main); }
 .search-box input:focus { outline:none; border-color:var(--primary-purple); box-shadow:0 0 0 3px var(--primary-light); }
 .search-box button { padding:14px 20px; border-radius:16px; background:var(--primary-gradient); color:#fff;
   border:none; font-weight:800; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:all 0.3s; }
-.search-box button:hover { transform:translateY(-2px); box-shadow:0 4px 15px rgba(124,58,237,0.3); }
 .subject-select { width:100%; padding:14px 16px; border-radius:16px; border:2px solid var(--border-color);
   background:var(--bg-body); font-size:14px; font-weight:600; color:var(--text-main); margin-bottom:12px; cursor:pointer; }
 .subject-select:focus { outline:none; border-color:var(--primary-purple); box-shadow:0 0 0 3px var(--primary-light); }
 
-/* ===== Progress ===== */
 .progress-card { background:var(--card-bg); border-radius:var(--radius-2xl); padding:20px; margin-bottom:16px; border:1px solid var(--border-color); }
 .progress-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .progress-header h3 { font-size:15px; font-weight:800; display:flex; align-items:center; gap:6px; color:var(--text-main); }
@@ -217,11 +213,9 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .emoji-label { font-size:10px; font-weight:700; color:var(--text-sub); }
 .emoji-step.active .emoji-label { color:var(--primary-purple); }
 
-/* ===== Stats ===== */
 .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
 .stat-box { background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-xl);
-  padding:16px; display:flex; align-items:center; gap:12px; transition:all 0.3s; }
-.stat-box:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.06); }
+  padding:16px; display:flex; align-items:center; gap:12px; }
 .stat-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
 .stat-icon.purple { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); }
 .stat-icon.green { background:linear-gradient(135deg,#d1fae5,#a7f3d0); }
@@ -232,7 +226,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .stat-number { font-size:24px; font-weight:900; line-height:1.2; color:var(--text-main); }
 .stat-label { font-size:12px; color:var(--text-sub); font-weight:600; }
 
-/* ===== Quiz UI ===== */
 .quiz-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .quiz-timer { display:flex; align-items:center; gap:6px; background:linear-gradient(135deg,#fef3c7,#fde68a);
   padding:8px 16px; border-radius:var(--radius-full); font-weight:800; font-size:14px; color:#92400e; }
@@ -265,7 +258,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .question-timer-fill { height:100%; background:linear-gradient(90deg,var(--accent-green),var(--accent-yellow),var(--accent-red));
   width:100%; transition:width 1s linear; border-radius:var(--radius-full); }
 
-/* ===== Result ===== */
 .result-screen { text-align:center; padding:30px 20px; }
 .result-emoji { font-size:80px; margin-bottom:16px; animation:bounce 1s ease-in-out infinite; }
 .result-title { font-size:24px; font-weight:900; color:var(--text-main); }
@@ -277,7 +269,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .result-stat-value { font-size:20px; font-weight:900; color:var(--primary-purple); }
 .result-stat-label { font-size:11px; color:var(--text-sub); font-weight:600; }
 
-/* ===== Chat ===== */
 .chat-container { height:350px; overflow-y:auto; margin:16px 0; padding:12px; background:var(--bg-body);
   border-radius:var(--radius-xl); border:1px solid var(--border-color); }
 .chat-container::-webkit-scrollbar { width:4px; }
@@ -290,7 +281,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .chat-message.bot .chat-bubble { background:var(--card-bg); border:1px solid var(--border-color); border-bottom-right-radius:4px; }
 .chat-avatar { width:32px; height:32px; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; font-size:16px; margin-bottom:4px; }
 
-/* ===== Settings ===== */
 .setting-item { display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-bottom:1px solid var(--border-color); }
 .setting-title { font-size:15px; font-weight:700; color:var(--text-main); }
 .setting-desc { font-size:12px; color:var(--text-sub); }
@@ -313,7 +303,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .reset-grade-settings button { width:100%; padding:14px; border-radius:16px; background:linear-gradient(135deg,#ef4444,#f87171);
   color:#fff; border:none; font-weight:800; font-size:14px; cursor:pointer; transition:all 0.3s; }
 
-/* ===== Bottom Nav ===== */
 .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:75px; background:var(--card-bg);
   border-top:1px solid var(--border-color); display:flex; justify-content:space-around; align-items:center;
   z-index:1000; box-shadow:0 -4px 20px rgba(0,0,0,0.05); }
@@ -330,7 +319,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .nav-item.center-btn .nav-icon-wrapper:hover { transform:scale(1.05); }
 .nav-item.center-btn .nav-icon { color:#fff; margin-bottom:0; }
 
-/* ===== Common ===== */
 .empty-state { text-align:center; padding:40px 20px; color:var(--text-sub); }
 .empty-state i { font-size:48px; margin-bottom:12px; opacity:0.5; }
 .input-box { width:100%; padding:12px; border-radius:12px; border:2px solid var(--border-color);
@@ -466,9 +454,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 
 <!-- ===== SOUND TEST ===== -->
 <div style="position:fixed;bottom:100px;right:10px;z-index:9999;">
-  <button onclick="playSound('welcome')" style="background:#7c3aed;color:#fff;border:none;border-radius:50%;width:50px;height:50px;font-size:20px;box-shadow:0 4px 15px rgba(124,58,237,0.4);cursor:pointer;">
-    🔊
-  </button>
+  <button onclick="playSound('welcome')" style="background:#7c3aed;color:#fff;border:none;border-radius:50%;width:50px;height:50px;font-size:20px;box-shadow:0 4px 15px rgba(124,58,237,0.4);cursor:pointer;"> 🔊 </button>
 </div>
 
 <!-- ===== GRADE SELECTION ===== -->
@@ -954,8 +940,8 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   <div class="nav-item center-btn" onclick="playSound('click');switchTab('chat', this)"><div class="nav-icon-wrapper"><span class="nav-icon">🧠</span></div><span style="color:var(--primary-purple);">المحادثة</span></div>
   <div class="nav-item" onclick="playSound('click');switchTab('achievements', this)"><span class="nav-icon">🏆</span><span>الإنجازات</span></div>
   <div class="nav-item" onclick="playSound('click');switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>الإعدادات</span></div>
-        </nav>
-        <script>
+      </nav>
+      <script>
 // ============================================
 // ===== الأصوات - VERSION 2 (شغالة كل مرة) =====
 // ============================================
@@ -976,14 +962,14 @@ function getAudioContext() {
 function playSound(type) {
     if (!soundsEnabled) return;
     if (focusSilentMode) return;
-    
+
     try {
         const ctx = getAudioContext();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
         gain.connect(ctx.destination);
-        
+
         switch(type) {
             case 'click':
                 osc.type = 'sine';
@@ -1183,7 +1169,7 @@ let breakSecondsLeft = 0;
 let pomodoroInterval = null;
 let pomodoroSeconds = 25 * 60;
 let pomodoroRunning = false;
-let pomodoroType = 'focus'; // 'focus' or 'break'
+let pomodoroType = 'focus';
 
 // Daily Challenge
 let dailyChallenge = { target: 5, progress: 0, completed: false };
@@ -1266,6 +1252,8 @@ function startApp() {
     document.getElementById('welcomeScreen').classList.add('hidden');
     localStorage.setItem('welcomeShown', 'true');
     playSound('welcome');
+    document.getElementById('gradeScreen').classList.remove('hidden');
+    showToast('🎉 مرحباً بك في رحلة التعلم!', 'success');
 }
 
 // ============================================
@@ -1937,4 +1925,199 @@ function renderQuestion(){
     const mcqBox=document.getElementById('mcqBox'),textBox=document.getElementById('textBox'),tfBox=document.getElementById('tfBox');
     mcqBox.innerHTML='';mcqBox.classList.add('hidden');textBox.classList.add('hidden');tfBox.classList.add('hidden');
     document.getElementById('textAns').value='';
-    if(q.type==='mcq'
+    if(q.type==='mcq'){
+        mcqBox.classList.remove('hidden');
+        const letters=['أ','ب','ج','د'];
+        q.options.forEach((opt,idx)=>{const b=document.createElement('div');b.className='opt-btn';b.innerHTML='<div class="opt-letter">'+letters[idx]+'</div><span>'+opt+'</span>';b.onclick=()=>checkAnswer(opt,q.correctAnswer);mcqBox.appendChild(b);});
+    }else if(q.type==='tf'){tfBox.classList.remove('hidden');}
+    else{textBox.classList.remove('hidden');}
+    if(quizType==='challenge')startQuestionTimer();
+}
+
+function checkAnswer(userAns,correctAns){
+    clearInterval(questionTimerInterval);
+    stats.totalAnswered++;
+    const isRight=userAns.trim()===correctAns.trim();
+    if(isRight){score++;stats.correct++;playSound('correct');addXP(5);updateDailyChallenge(1);}
+    else{playSound('wrong');}
+    updateMonthlyStats(isRight);
+    updateStatsUI();
+    document.querySelectorAll('.opt-btn').forEach(btn=>{
+        btn.classList.add('disabled');
+        const txt=btn.querySelector('span')?btn.querySelector('span').innerText:btn.innerText;
+        if(txt.trim()===correctAns.trim())btn.classList.add('correct');
+        else if(txt.trim()===userAns.trim()&&!isRight)btn.classList.add('wrong');
+    });
+    showFeedback(isRight,isRight?"✅ صحيحة! أحسنت! (+5 XP)":"❌ خاطئة! الإجابة الصحيحة: "+correctAns);
+}
+
+async function submitTextAnswer(){
+    clearInterval(questionTimerInterval);
+    const userAns=document.getElementById('textAns').value.trim();
+    if(!userAns){showToast('✏️ اكتب إجابة','warning');return;}
+    const q=currentQuiz[qIndex];
+    stats.totalAnswered++;
+    showLoading('🧠 جاري تقييم الإجابة...');
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'evaluate',question:q.question,correctAnswer:q.correctAnswer,userAnswer:userAns,grade:currentGrade||'عام',subject:'عام'})});
+        const data=await response.json();
+        if(data.isCorrect){score++;stats.correct++;playSound('correct');addXP(5);updateDailyChallenge(1);}
+        else{playSound('wrong');}
+        updateMonthlyStats(data.isCorrect);
+        updateStatsUI();
+        showFeedback(data.isCorrect,data.isCorrect?"✅ صحيحة! ممتاز! (+5 XP)":"❌ خاطئة! الإجابة الصحيحة: "+q.correctAnswer);
+    }catch(err){
+        const isCorrect=userAns.toLowerCase().includes(q.correctAnswer.toLowerCase());
+        if(isCorrect){score++;stats.correct++;playSound('correct');addXP(5);updateDailyChallenge(1);}
+        else{playSound('wrong');}
+        updateMonthlyStats(isCorrect);
+        updateStatsUI();
+        showFeedback(isCorrect,isCorrect?"✅ صحيحة!":"❌ خاطئة! الإجابة: "+q.correctAnswer);
+    }
+    finally{hideLoading();}
+}
+
+function updateMonthlyStats(isCorrect){
+    const mk=getMonthKey();
+    if(!monthlyStats[mk])monthlyStats[mk]={correct:0,totalAnswered:0,lessons:0};
+    monthlyStats[mk].totalAnswered++;
+    if(isCorrect)monthlyStats[mk].correct++;
+    localStorage.setItem('monthlyStats',JSON.stringify(monthlyStats));
+}
+
+function showFeedback(isRight,text){
+    const fb=document.getElementById('feedback');
+    fb.innerHTML='<i class="fas fa-'+(isRight?'check-circle':'times-circle')+'"></i> '+text;
+    fb.className='feedback '+(isRight?'success':'error');
+    fb.classList.remove('hidden');
+    document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function nextQuestion(){qIndex++;if(qIndex<currentQuiz.length)renderQuestion();else finishQuiz();}
+
+function finishQuiz(){
+    clearInterval(timerInterval);clearInterval(questionTimerInterval);
+    const percent=currentQuiz.length>0?Math.round((score/currentQuiz.length)*100):0;
+    quizHistory.push({date:new Date().toLocaleDateString('ar-EG'),score,total:currentQuiz.length,percent,type:quizType});
+    document.getElementById('resultScore').innerText=score;
+    document.getElementById('resultTotal').innerText=currentQuiz.length;
+    document.getElementById('resultCorrect').innerText=score;
+    document.getElementById('resultWrong').innerText=currentQuiz.length-score;
+    document.getElementById('resultPercent').innerText=percent+'%';
+    let emoji,title,msg;
+    if(percent>=90){emoji='🏆';title='ممتاز!';msg='أداء رائع!';}
+    else if(percent>=70){emoji='🌟';title='أحسنت!';msg='أداء ممتاز!';}
+    else if(percent>=50){emoji='👍';title='جيد!';msg='يمكنك التحسن!';}
+    else{emoji='💪';title='حاول مرة أخرى!';msg='الممارسة تجعلك أفضل!';}
+    document.getElementById('resultEmoji').innerText=emoji;
+    document.getElementById('resultTitle').innerText=title;
+    document.getElementById('resultMessage').innerText=msg;
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
+    document.getElementById('tab-result').classList.remove('hidden');
+    updateHistory();updateReports();checkAchievements();
+    if(percent>=70){playSound('achievement');addXP(25);}
+}
+
+function retryQuiz(){startQuiz(quizType);}
+function quitQuiz(){if(confirm('⚠️ هل أنت متأكد؟')){clearInterval(timerInterval);clearInterval(questionTimerInterval);switchTab('home');}}
+
+// ============================================
+// ===== STATS UI =====
+// ============================================
+function updateStatsUI(){
+    const mk=getMonthKey();
+    const mStats=monthlyStats[mk]||{correct:0,totalAnswered:0,lessons:0};
+    document.getElementById('statLessons').innerText=mStats.lessons;
+    document.getElementById('statCorrect').innerText=mStats.correct;
+    document.getElementById('statStreak').innerText=stats.streak;
+    const acc=mStats.totalAnswered>0?Math.round((mStats.correct/mStats.totalAnswered)*100):0;
+    document.getElementById('statAcc').innerText=acc+'%';
+    document.getElementById('monthProgressText').innerText=acc+'%';
+    document.querySelectorAll('.emoji-step').forEach(s=>s.classList.remove('active'));
+    if(acc>=81)document.getElementById('lvl-4').classList.add('active');
+    else if(acc>=61)document.getElementById('lvl-3').classList.add('active');
+    else if(acc>=41)document.getElementById('lvl-2').classList.add('active');
+    else if(acc>=21)document.getElementById('lvl-1').classList.add('active');
+    else document.getElementById('lvl-0').classList.add('active');
+}
+
+function updateHistory(){
+    const list=document.getElementById('historyList');
+    if(quizHistory.length===0)return;
+    document.getElementById('historyEmpty').classList.add('hidden');
+    list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;color:var(--text-main);">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total+'</div></div></div></div>').join('');
+}
+function getQuizTypeName(type){const n={'quick':'⚡ سريع','mcq_only':'📝 اختياري','full':'📄 كامل','challenge':'🔥 تحدي'};return n[type]||type;}
+
+function updateReports(){
+    if(quizHistory.length===0)return;
+    document.getElementById('reportEmpty').classList.add('hidden');
+    document.getElementById('reportContent').classList.remove('hidden');
+    const total=quizHistory.reduce((s,q)=>s+q.total,0);
+    const correct=quizHistory.reduce((s,q)=>s+q.score,0);
+    const acc=total>0?Math.round((correct/total)*100):0;
+    document.getElementById('reportTotal').innerText=total;
+    document.getElementById('reportAccuracy').innerText=acc+'%';
+    const chart=document.getElementById('performanceChart');
+    chart.innerHTML=quizHistory.slice(-7).map(q=>{const h=Math.max(20,q.percent);const c=q.percent>=70?'var(--accent-green)':q.percent>=50?'var(--accent-yellow)':'var(--accent-red)';return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div style="width:100%;height:'+h+'%;background:'+c+';border-radius:4px 4px 0 0;min-height:20px;transition:height 0.5s ease;"></div><div style="font-size:10px;color:var(--text-sub);margin-top:4px;">'+q.percent+'%</div></div>';}).join('');
+}
+
+// ============================================
+// ===== WEEKLY HEATMAP =====
+// ============================================
+function updateHeatmap(){
+    const container=document.getElementById('weeklyHeatmap');
+    if(!container) return;
+    const days=['أ','إ','ث','أ','خ','ج','س'];
+    const today=new Date();
+    let html='';
+    for(let i=6;i>=0;i--){
+        const d=new Date(today); d.setDate(d.getDate()-i);
+        const key=d.toISOString().split('T')[0];
+        const status=studyDays[key]||'empty';
+        html+='<div class="heatmap-day '+status+'">'+days[d.getDay()]+'</div>';
+    }
+    container.innerHTML=html;
+}
+
+function markStudyDay(status='studied'){
+    const key=new Date().toISOString().split('T')[0];
+    studyDays[key]=status;
+    localStorage.setItem('studyDays',JSON.stringify(studyDays));
+    updateHeatmap();
+}
+
+// ============================================
+// ===== CHAT =====
+// ============================================
+async function sendChatMessage(){
+    const input=document.getElementById('chatInput');
+    const msg=input.value.trim();
+    if(!msg){showToast('✏️ اكتب سؤالك أولاً','warning');return;}
+    const box=document.getElementById('chatMessages');
+    box.innerHTML+='<div class="chat-message user"><div class="chat-avatar">🙋</div><div class="chat-bubble">'+escapeHtml(msg)+'</div></div>';
+    input.value='';
+    box.scrollTop=box.scrollHeight;
+    const typingId='typing-'+Date.now();
+    box.innerHTML+='<div class="chat-message bot" id="'+typingId+'"><div class="chat-avatar">🤖</div><div class="chat-bubble"><i class="fas fa-spinner fa-spin"></i> جاري التفكير...</div></div>';
+    box.scrollTop=box.scrollHeight;
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chat',message:msg,grade:currentGrade||'عام',subject:'عام'})});
+        const data=await response.json();
+        document.getElementById(typingId).remove();
+        let reply=data.answer||data.rawResponse||'عذراً، لم أستطع فهم سؤالك.';
+        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">'+escapeHtml(reply).replace(/\n/g,'<br>')+'</div></div>';
+        playSound('notification');
+        addXP(2);
+    }catch(err){
+        document.getElementById(typingId).remove();
+        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble" style="color:var(--accent-red);">❌ عذراً، حدث خطأ. حاول مرة أخرى.</div></div>';
+        showToast('❌ حدث خطأ في الشات', 'error');
+    }
+    box.scrollTop=box.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+  </html>
