@@ -15,6 +15,7 @@
   --accent-green: #10b981; --accent-red: #ef4444; --accent-yellow: #f59e0b; --accent-orange: #f97316;
   --accent-blue: #3b82f6; --accent-pink: #ec4899;
   --border-color: #e5e7eb; --radius-xl: 20px; --radius-2xl: 24px; --radius-full: 9999px;
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
 }
 body.dark-mode { --bg-body: #0a0a1a; --card-bg: #131124; --text-main: #f1f5f9; --text-sub: #94a3b8; --border-color: #1e1b3a; }
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
@@ -26,8 +27,26 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 @keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
 @keyframes bounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
 @keyframes slideIn { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
+@keyframes glow { 0%,100% { box-shadow:0 0 20px rgba(124,58,237,0.3); } 50% { box-shadow:0 0 40px rgba(124,58,237,0.6); } }
 
-/* Screens */
+/* ===== شاشة الترحيب ===== */
+.welcome-screen {
+  position:fixed; top:0; left:0; right:0; bottom:0;
+  background:linear-gradient(135deg,#0a0a2e,#1a0a4e,#2d1b69);
+  z-index:99999;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:20px;
+  animation:fadeIn 0.8s ease-out;
+}
+.welcome-screen.hidden { display:none !important; }
+.welcome-character { font-size:120px; animation:float 3s ease-in-out infinite; filter:drop-shadow(0 0 40px rgba(124,58,237,0.5)); }
+.welcome-title { color:#fff; font-size:32px; font-weight:900; background:linear-gradient(90deg,#c084fc,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; }
+.welcome-text { color:rgba(255,255,255,0.85); font-size:16px; text-align:center; max-width:400px; line-height:1.8; margin:12px 0 24px; }
+.welcome-btn { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:16px 40px; border-radius:50px; font-size:18px; font-weight:800; cursor:pointer; animation:pulse 2s ease-in-out infinite; box-shadow:0 4px 30px rgba(124,58,237,0.4); transition:all 0.3s; }
+.welcome-btn:hover { transform:scale(1.05); box-shadow:0 6px 40px rgba(124,58,237,0.6); }
+
+/* ===== Screens ===== */
 .grade-screen, .level-screen {
   position:fixed; top:0; left:0; right:0; bottom:0;
   background:linear-gradient(135deg,#1a0a3e,#2d1b69,#4c1d95);
@@ -44,7 +63,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.2);
   border-radius:var(--radius-xl); padding:16px; text-align:center; cursor:pointer; transition:all 0.3s;
 }
-.grade-btn:hover, .level-btn:hover { background:rgba(255,255,255,0.2); transform:translateY(-4px); }
+.grade-btn:hover, .level-btn:hover { background:rgba(255,255,255,0.2); transform:translateY(-4px); box-shadow:0 8px 25px rgba(0,0,0,0.2); }
 .grade-btn .grade-icon, .level-btn .level-icon { font-size:32px; display:block; margin-bottom:4px; }
 .grade-btn .grade-name, .level-btn .level-name { color:#fff; font-size:15px; font-weight:800; }
 .grade-btn .grade-desc, .level-btn .level-desc { color:rgba(255,255,255,0.6); font-size:11px; }
@@ -66,8 +85,9 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   margin-top:20px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3);
   color:#fff; padding:10px 24px; border-radius:var(--radius-full); font-weight:700; font-size:13px; cursor:pointer;
 }
+.reset-grade-btn:hover { background:rgba(255,255,255,0.25); }
 
-/* Header */
+/* ===== Header ===== */
 .app-header { display:flex; justify-content:space-between; align-items:center; padding:12px 20px;
   background:var(--card-bg); border-bottom:1px solid var(--border-color); position:sticky; top:0; z-index:100; }
 .header-icon { width:42px; height:42px; border-radius:var(--radius-full); background:var(--primary-lighter);
@@ -78,9 +98,10 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .streak-badge { background:linear-gradient(135deg,#fef3c7,#fde68a); color:#d97706; padding:6px 14px;
   border-radius:var(--radius-full); font-weight:800; font-size:13px; display:flex; align-items:center; gap:6px; }
 
+/* ===== Container ===== */
 .container { max-width:500px; margin:0 auto; padding:15px; }
 
-/* Hero */
+/* ===== Hero ===== */
 .hero-banner { background:linear-gradient(135deg,#1a0a3e,#2d1b69,#4c1d95); border-radius:var(--radius-2xl);
   padding:24px; margin-bottom:20px; position:relative; overflow:hidden; min-height:200px; display:flex; align-items:center; }
 .hero-content { position:relative; z-index:2; flex:1; }
@@ -89,14 +110,15 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .hero-subtitle { font-size:13px; color:rgba(255,255,255,0.7); margin-bottom:16px; }
 .hero-btn { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:12px 24px;
   border-radius:16px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:all 0.3s; }
-.hero-btn:hover { transform:translateY(-2px); box-shadow:0 4px 15px rgba(124,58,237,0.4); }
+.hero-btn:hover { transform:translateY(-2px); box-shadow:0 4px 20px rgba(124,58,237,0.4); }
 .hero-image { position:absolute; left:10px; top:50%; transform:translateY(-50%); }
 .hero-image .brain-emoji { font-size:100px; animation:float 3s ease-in-out infinite; }
 
+/* ===== Features ===== */
 .features-grid { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; margin-bottom:20px; }
 .feature-card { background:var(--card-bg); border-radius:var(--radius-xl); padding:12px 8px; text-align:center;
   border:1px solid var(--border-color); cursor:pointer; transition:all 0.3s; }
-.feature-card:hover { transform:translateY(-4px); border-color:var(--primary-purple); box-shadow:0 4px 12px rgba(124,58,237,0.1); }
+.feature-card:hover { transform:translateY(-4px); border-color:var(--primary-purple); box-shadow:0 8px 25px rgba(124,58,237,0.1); }
 .feature-icon { width:40px; height:40px; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; font-size:18px; margin:0 auto 8px; }
 .feature-icon.blue { background:linear-gradient(135deg,#dbeafe,#bfdbfe); }
 .feature-icon.purple { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); }
@@ -104,10 +126,31 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .feature-icon.orange { background:linear-gradient(135deg,#ffedd5,#fed7aa); }
 .feature-title { font-size:11px; font-weight:700; color:var(--text-main); }
 
+/* ===== Cards ===== */
 .card { background:var(--card-bg); border-radius:var(--radius-2xl); padding:20px; margin-bottom:16px;
-  border:1px solid var(--border-color); box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+  border:1px solid var(--border-color); box-shadow:0 2px 10px rgba(0,0,0,0.04); transition:all 0.3s; }
+.card:hover { box-shadow:0 8px 30px rgba(0,0,0,0.06); }
 .card-title { font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px; color:var(--text-main); }
 
+/* ===== Pomodoro ===== */
+.pomodoro-display { text-align:center; font-size:56px; font-weight:900; color:var(--primary-purple); font-variant-numeric:tabular-nums; letter-spacing:2px; }
+.pomodoro-status { text-align:center; font-size:14px; color:var(--text-sub); margin-top:4px; }
+.pomodoro-controls { display:flex; gap:8px; margin-top:12px; justify-content:center; }
+.pomodoro-controls .btn-action { flex:1; padding:12px; font-size:13px; }
+
+/* ===== Level & XP ===== */
+.level-card { background:linear-gradient(135deg,var(--primary-lighter),var(--primary-light)); border-radius:var(--radius-xl); padding:16px; border:1px solid var(--primary-light); }
+.level-progress { height:8px; background:var(--border-color); border-radius:var(--radius-full); overflow:hidden; margin-top:6px; }
+.level-progress-fill { height:100%; background:var(--primary-gradient); border-radius:var(--radius-full); transition:width 0.5s ease; }
+
+/* ===== Daily Challenge ===== */
+.challenge-card { background:linear-gradient(135deg,#fef3c7,#fde68a); border-radius:var(--radius-xl); padding:16px; border:1px solid #f59e0b; }
+.challenge-card .challenge-title { font-weight:800; color:#92400e; display:flex; align-items:center; gap:8px; }
+.challenge-card .challenge-desc { font-size:13px; color:#b45309; margin-top:4px; }
+.challenge-card .challenge-progress { margin-top:8px; }
+.challenge-card .challenge-progress .cp-label { font-size:12px; font-weight:700; color:#92400e; }
+
+/* ===== Upload ===== */
 .upload-area { border:2px dashed var(--primary-purple); padding:30px; text-align:center;
   border-radius:var(--radius-xl); cursor:pointer; background:var(--primary-lighter); transition:all 0.3s; }
 .upload-area:hover { background:var(--primary-light); transform:scale(1.01); }
@@ -136,6 +179,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .btn-action.pink { background:linear-gradient(135deg,#ec4899,#f472b6); }
 .btn-action.outline { background:transparent; border:2px solid var(--primary-purple); color:var(--primary-purple); }
 
+/* ===== Quiz ===== */
 .quiz-types-group { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
 .quiz-type-btn { background:var(--card-bg); border:2px solid var(--border-color); padding:16px; border-radius:var(--radius-xl);
   display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:all 0.3s; }
@@ -147,16 +191,19 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .quiz-type-btn .quiz-icon.purple { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); }
 .quiz-type-btn .quiz-icon.orange { background:linear-gradient(135deg,#ffedd5,#fed7aa); }
 
+/* ===== Search ===== */
 .search-box { display:flex; gap:10px; margin-bottom:16px; }
 .search-box input { flex:1; padding:14px 16px; border-radius:16px; border:2px solid var(--border-color);
   background:var(--bg-body); font-size:14px; font-weight:600; color:var(--text-main); }
 .search-box input:focus { outline:none; border-color:var(--primary-purple); box-shadow:0 0 0 3px var(--primary-light); }
 .search-box button { padding:14px 20px; border-radius:16px; background:var(--primary-gradient); color:#fff;
   border:none; font-weight:800; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:all 0.3s; }
+.search-box button:hover { transform:translateY(-2px); box-shadow:0 4px 15px rgba(124,58,237,0.3); }
 .subject-select { width:100%; padding:14px 16px; border-radius:16px; border:2px solid var(--border-color);
   background:var(--bg-body); font-size:14px; font-weight:600; color:var(--text-main); margin-bottom:12px; cursor:pointer; }
 .subject-select:focus { outline:none; border-color:var(--primary-purple); box-shadow:0 0 0 3px var(--primary-light); }
 
+/* ===== Progress ===== */
 .progress-card { background:var(--card-bg); border-radius:var(--radius-2xl); padding:20px; margin-bottom:16px; border:1px solid var(--border-color); }
 .progress-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .progress-header h3 { font-size:15px; font-weight:800; display:flex; align-items:center; gap:6px; color:var(--text-main); }
@@ -170,9 +217,11 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .emoji-label { font-size:10px; font-weight:700; color:var(--text-sub); }
 .emoji-step.active .emoji-label { color:var(--primary-purple); }
 
+/* ===== Stats ===== */
 .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
 .stat-box { background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-xl);
-  padding:16px; display:flex; align-items:center; gap:12px; }
+  padding:16px; display:flex; align-items:center; gap:12px; transition:all 0.3s; }
+.stat-box:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.06); }
 .stat-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
 .stat-icon.purple { background:linear-gradient(135deg,#f3e8ff,#e9d5ff); }
 .stat-icon.green { background:linear-gradient(135deg,#d1fae5,#a7f3d0); }
@@ -183,6 +232,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .stat-number { font-size:24px; font-weight:900; line-height:1.2; color:var(--text-main); }
 .stat-label { font-size:12px; color:var(--text-sub); font-weight:600; }
 
+/* ===== Quiz UI ===== */
 .quiz-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .quiz-timer { display:flex; align-items:center; gap:6px; background:linear-gradient(135deg,#fef3c7,#fde68a);
   padding:8px 16px; border-radius:var(--radius-full); font-weight:800; font-size:14px; color:#92400e; }
@@ -215,6 +265,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .question-timer-fill { height:100%; background:linear-gradient(90deg,var(--accent-green),var(--accent-yellow),var(--accent-red));
   width:100%; transition:width 1s linear; border-radius:var(--radius-full); }
 
+/* ===== Result ===== */
 .result-screen { text-align:center; padding:30px 20px; }
 .result-emoji { font-size:80px; margin-bottom:16px; animation:bounce 1s ease-in-out infinite; }
 .result-title { font-size:24px; font-weight:900; color:var(--text-main); }
@@ -226,6 +277,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .result-stat-value { font-size:20px; font-weight:900; color:var(--primary-purple); }
 .result-stat-label { font-size:11px; color:var(--text-sub); font-weight:600; }
 
+/* ===== Chat ===== */
 .chat-container { height:350px; overflow-y:auto; margin:16px 0; padding:12px; background:var(--bg-body);
   border-radius:var(--radius-xl); border:1px solid var(--border-color); }
 .chat-container::-webkit-scrollbar { width:4px; }
@@ -238,6 +290,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .chat-message.bot .chat-bubble { background:var(--card-bg); border:1px solid var(--border-color); border-bottom-right-radius:4px; }
 .chat-avatar { width:32px; height:32px; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; font-size:16px; margin-bottom:4px; }
 
+/* ===== Settings ===== */
 .setting-item { display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-bottom:1px solid var(--border-color); }
 .setting-title { font-size:15px; font-weight:700; color:var(--text-main); }
 .setting-desc { font-size:12px; color:var(--text-sub); }
@@ -260,6 +313,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .reset-grade-settings button { width:100%; padding:14px; border-radius:16px; background:linear-gradient(135deg,#ef4444,#f87171);
   color:#fff; border:none; font-weight:800; font-size:14px; cursor:pointer; transition:all 0.3s; }
 
+/* ===== Bottom Nav ===== */
 .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:75px; background:var(--card-bg);
   border-top:1px solid var(--border-color); display:flex; justify-content:space-around; align-items:center;
   z-index:1000; box-shadow:0 -4px 20px rgba(0,0,0,0.05); }
@@ -276,6 +330,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .nav-item.center-btn .nav-icon-wrapper:hover { transform:scale(1.05); }
 .nav-item.center-btn .nav-icon { color:#fff; margin-bottom:0; }
 
+/* ===== Common ===== */
 .empty-state { text-align:center; padding:40px 20px; color:var(--text-sub); }
 .empty-state i { font-size:48px; margin-bottom:12px; opacity:0.5; }
 .input-box { width:100%; padding:12px; border-radius:12px; border:2px solid var(--border-color);
@@ -291,10 +346,31 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .loading-spinner { width:50px; height:50px; border:4px solid var(--primary-light);
   border-top-color:var(--primary-purple); border-radius:50%; animation:spin 0.8s linear infinite; }
 .loading-text { color:#fff; font-weight:700; font-size:16px; }
-.social-btn { width:100%; padding:14px; border-radius:16px; font-weight:700; border:2px solid var(--border-color);
-  background:var(--card-bg); color:var(--text-main); display:flex; align-items:center; justify-content:center;
-  gap:10px; margin-bottom:10px; cursor:pointer; }
-.social-btn:hover { border-color:var(--primary-purple); background:var(--primary-lighter); transform:translateY(-2px); }
+
+.sound-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+.sound-item { display:flex; align-items:center; gap:8px; padding:10px; background:var(--bg-body);
+  border-radius:12px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.sound-item:hover { background:var(--primary-lighter); transform:scale(1.02); }
+.sound-item i { font-size:14px; color:var(--primary-purple); }
+
+.notif-setting { background:var(--primary-lighter); border-radius:var(--radius-xl); padding:16px; margin-bottom:12px; }
+.notif-setting label { font-size:13px; font-weight:700; color:var(--text-main); display:block; margin-bottom:8px; }
+.notif-time-row { display:flex; gap:10px; align-items:center; }
+.notif-time-row input[type="time"] { flex:1; padding:10px 14px; border-radius:12px; border:2px solid var(--border-color);
+  background:var(--bg-body); font-size:14px; font-weight:700; color:var(--text-main); font-family:inherit; }
+.notif-time-row button { padding:10px 18px; border-radius:12px; background:var(--primary-gradient); color:#fff;
+  border:none; font-weight:700; font-size:13px; cursor:pointer; }
+
+.toast-notif { position:fixed; top:80px; left:50%; transform:translateX(-50%); padding:12px 24px;
+  border-radius:12px; font-weight:700; z-index:10000; max-width:90%; text-align:center;
+  box-shadow:0 4px 15px rgba(0,0,0,0.2); animation:fadeInUp 0.3s ease-out; color:#fff; }
+
+.level-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 14px;
+  border-radius:var(--radius-full); font-size:12px; font-weight:800; margin-bottom:12px; }
+.level-badge.beginner { background:rgba(16,185,129,0.1); color:#059669; border:1px solid rgba(16,185,129,0.3); }
+.level-badge.learner { background:rgba(59,130,246,0.1); color:#2563eb; border:1px solid rgba(59,130,246,0.3); }
+.level-badge.smart { background:rgba(245,158,11,0.1); color:#d97706; border:1px solid rgba(245,158,11,0.3); }
+.level-badge.expert { background:rgba(236,72,153,0.1); color:#db2777; border:1px solid rgba(236,72,153,0.3); }
 
 .pdf-upload-area { border:2px dashed var(--accent-orange); padding:20px; text-align:center;
   border-radius:var(--radius-xl); cursor:pointer; background:rgba(245,158,11,0.05); transition:all 0.3s; margin-top:12px; }
@@ -360,31 +436,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .achievement-popup .pop-text { font-weight:800; color:#92400e; font-size:14px; }
 .achievement-popup .pop-sub { font-size:11px; color:#b45309; }
 
-.sound-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
-.sound-item { display:flex; align-items:center; gap:8px; padding:10px; background:var(--bg-body);
-  border-radius:12px; font-size:12px; font-weight:600; cursor:pointer; }
-.sound-item:hover { background:var(--primary-lighter); }
-.sound-item i { font-size:14px; color:var(--primary-purple); }
-
-.notif-setting { background:var(--primary-lighter); border-radius:var(--radius-xl); padding:16px; margin-bottom:12px; }
-.notif-setting label { font-size:13px; font-weight:700; color:var(--text-main); display:block; margin-bottom:8px; }
-.notif-time-row { display:flex; gap:10px; align-items:center; }
-.notif-time-row input[type="time"] { flex:1; padding:10px 14px; border-radius:12px; border:2px solid var(--border-color);
-  background:var(--bg-body); font-size:14px; font-weight:700; color:var(--text-main); font-family:inherit; }
-.notif-time-row button { padding:10px 18px; border-radius:12px; background:var(--primary-gradient); color:#fff;
-  border:none; font-weight:700; font-size:13px; cursor:pointer; }
-
-.toast-notif { position:fixed; top:80px; left:50%; transform:translateX(-50%); padding:12px 24px;
-  border-radius:12px; font-weight:700; z-index:10000; max-width:90%; text-align:center;
-  box-shadow:0 4px 15px rgba(0,0,0,0.2); animation:fadeInUp 0.3s ease-out; color:#fff; }
-
-.level-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 14px;
-  border-radius:var(--radius-full); font-size:12px; font-weight:800; margin-bottom:12px; }
-.level-badge.beginner { background:rgba(16,185,129,0.1); color:#059669; border:1px solid rgba(16,185,129,0.3); }
-.level-badge.learner { background:rgba(59,130,246,0.1); color:#2563eb; border:1px solid rgba(59,130,246,0.3); }
-.level-badge.smart { background:rgba(245,158,11,0.1); color:#d97706; border:1px solid rgba(245,158,11,0.3); }
-.level-badge.expert { background:rgba(236,72,153,0.1); color:#db2777; border:1px solid rgba(236,72,153,0.3); }
-
 .heatmap { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-top:12px; }
 .heatmap-day { aspect-ratio:1; border-radius:8px; display:flex; align-items:center; justify-content:center;
   font-size:10px; font-weight:700; }
@@ -392,18 +443,35 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .heatmap-day.studied { background:var(--accent-green); color:#fff; }
 .heatmap-day.rest { background:var(--accent-yellow); color:#fff; }
 
+.social-btn { width:100%; padding:14px; border-radius:16px; font-weight:700; border:2px solid var(--border-color);
+  background:var(--card-bg); color:var(--text-main); display:flex; align-items:center; justify-content:center;
+  gap:10px; margin-bottom:10px; cursor:pointer; transition:all 0.3s; }
+.social-btn:hover { border-color:var(--primary-purple); background:var(--primary-lighter); transform:translateY(-2px); }
+
 @media(max-width:400px){ .grade-grid,.level-grid{grid-template-columns:1fr;} .features-grid{grid-template-columns:1fr 1fr;} .action-buttons{grid-template-columns:1fr 1fr;} .achievements-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
-  <!-- ========== SOUND TEST - للتأكد من شغل الصوت ========== -->
+  <!-- ===== شاشة الترحيب ===== -->
+<div id="welcomeScreen" class="welcome-screen">
+  <div class="welcome-character">🧑‍🏫</div>
+  <div class="welcome-title">🌟 مرحباً بك في ذكاء Study!</div>
+  <div class="welcome-text">
+    📚 أنا مساعدك الذكي للتعلم!<br>
+    🤖 هساعدك تفهم دروسك، تلخص كتبك، وتجاوب على أسئلتك.<br>
+    💪 خليك متفائل، كل يوم جديد هو فرصة للتعلم!
+  </div>
+  <button class="welcome-btn" onclick="startApp()">🚀 ابدأ رحلتك التعليمية</button>
+</div>
+
+<!-- ===== SOUND TEST ===== -->
 <div style="position:fixed;bottom:100px;right:10px;z-index:9999;">
   <button onclick="playSound('welcome')" style="background:#7c3aed;color:#fff;border:none;border-radius:50%;width:50px;height:50px;font-size:20px;box-shadow:0 4px 15px rgba(124,58,237,0.4);cursor:pointer;">
     🔊
   </button>
 </div>
 
-<!-- ========== GRADE SELECTION SCREEN ========== -->
+<!-- ===== GRADE SELECTION ===== -->
 <div id="gradeScreen" class="grade-screen">
   <div class="brain-emoji">🧠</div>
   <h1 class="screen-title">أهلاً بك في ذكاء Study!</h1>
@@ -420,8 +488,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     <div class="grade-btn" onclick="playSound('click');selectGrade('first-secondary')"><span class="grade-icon">🔭</span><div class="grade-name">الصف الأول الثانوي</div></div>
     <div class="grade-btn" onclick="playSound('click');selectGrade('second-secondary')"><span class="grade-icon">🧬</span><div class="grade-name">الصف الثاني الثانوي</div></div>
     <div class="grade-btn" onclick="playSound('click');selectGrade('third-secondary')"><span class="grade-icon">🚀</span><div class="grade-name">الصف الثالث الثانوي</div></div>
-    
-    <!-- ===== زر الجامعة / التعليم العالي ===== -->
     <div class="grade-btn" onclick="playSound('click');selectGrade('university')" style="grid-column:1/-1;background:rgba(255,255,255,0.15);border-color:rgba(255,215,0,0.4);">
       <span class="grade-icon">🎓</span>
       <div class="grade-name" style="color:#fbbf24;">جامعة / تعليم عالي</div>
@@ -430,7 +496,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   </div>
 </div>
 
-<!-- ========== STUDY LEVEL SELECTION SCREEN ========== -->
+<!-- ===== LEVEL SELECTION ===== -->
 <div id="levelScreen" class="level-screen hidden">
   <div class="brain-emoji">🎯</div>
   <h1 class="screen-title">اختار مستوى مذاكرتك!</h1>
@@ -469,7 +535,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   <button class="reset-grade-btn" onclick="playSound('click');skipLevel()" style="margin-top:20px;">⏭️ تخطي (بدون مؤقت)</button>
 </div>
 
-<!-- ========== BREAK OVERLAY ========== -->
+<!-- ===== BREAK OVERLAY ===== -->
 <div id="breakOverlay" class="break-overlay hidden">
   <div style="font-size:60px;margin-bottom:16px;">☕</div>
   <div class="break-title">وقت الاستراحة!</div>
@@ -481,7 +547,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   </div>
 </div>
 
-<!-- ========== ACHIEVEMENT POPUP ========== -->
+<!-- ===== ACHIEVEMENT POPUP ===== -->
 <div id="achievementPopup" class="achievement-popup hidden">
   <div class="pop-icon" id="achPopIcon">🏆</div>
   <div>
@@ -490,13 +556,13 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   </div>
 </div>
 
-<!-- ========== LOADING OVERLAY ========== -->
+<!-- ===== LOADING ===== -->
 <div id="loadingOverlay" class="loading-overlay hidden">
   <div class="loading-spinner"></div>
   <div class="loading-text" id="loadingText">جاري المعالجة...</div>
 </div>
 
-<!-- SVG Gradient for timer ring -->
+<!-- SVG -->
 <svg width="0" height="0" style="position:absolute;">
   <defs>
     <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -506,7 +572,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   </defs>
 </svg>
 
-<!-- ========== HEADER ========== -->
+<!-- ===== HEADER ===== -->
 <header class="app-header">
   <div class="header-icon" onclick="playSound('click');switchTab('settings')">
     <i class="fas fa-cog" style="color:var(--text-sub);font-size:18px;"></i>
@@ -515,7 +581,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   <div class="streak-badge"><i class="fas fa-fire"></i><span id="streakDays">0</span> أيام</div>
 </header>
 
-<!-- ========== MAIN CONTAINER ========== -->
+<!-- ===== MAIN CONTAINER ===== -->
 <div class="container">
 
   <!-- TAB: HOME -->
@@ -532,14 +598,51 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     <!-- Level Badge -->
     <div id="levelBadgeArea" style="text-align:center;"></div>
 
-    <!-- Study Timer Card -->
+    <!-- ===== LEVEL & XP CARD ===== -->
+    <div class="level-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-weight:800;font-size:16px;">🏅 المستوى <span id="levelDisplay">1</span></span>
+        <span style="font-size:14px;color:var(--text-sub);">⭐ <span id="xpDisplay">0</span> XP</span>
+      </div>
+      <div class="level-progress">
+        <div class="level-progress-fill" id="xpProgress" style="width:0%;"></div>
+      </div>
+    </div>
+
+    <!-- ===== DAILY CHALLENGE ===== -->
+    <div class="challenge-card" id="challengeCard">
+      <div class="challenge-title">🎯 تحدي اليوم</div>
+      <div class="challenge-desc" id="challengeDesc">أجب على 5 أسئلة بشكل صحيح</div>
+      <div class="challenge-progress">
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#92400e;">
+          <span id="challengeProgress">0/5</span>
+          <span id="challengeStatus">⏳ جاري</span>
+        </div>
+        <div class="level-progress">
+          <div class="level-progress-fill" id="challengeBar" style="width:0%;background:#f59e0b;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== POMODORO ===== -->
+    <div class="card">
+      <div class="card-title">🍅 وضع التركيز</div>
+      <div class="pomodoro-display" id="pomodoroTimer">25:00</div>
+      <div class="pomodoro-status" id="pomodoroStatus">⏸️ متوقف</div>
+      <div class="pomodoro-controls">
+        <button class="btn-action primary" onclick="startPomodoro()"><i class="fas fa-play"></i> ابدأ</button>
+        <button class="btn-action secondary" onclick="pausePomodoro()"><i class="fas fa-pause"></i> إيقاف</button>
+        <button class="btn-action red" onclick="resetPomodoro()"><i class="fas fa-stop"></i> إعادة</button>
+      </div>
+    </div>
+
+    <!-- ===== STUDY TIMER ===== -->
     <div class="study-timer-card" id="studyTimerCard">
       <div class="timer-status" id="timerStatus">⏸️ جلسة متوقفة</div>
       <div class="timer-progress-ring" id="timerRing">
         <svg width="160" height="160" viewBox="0 0 160 160">
           <circle class="bg" cx="80" cy="80" r="70"/>
-          <circle class="progress" id="timerRingProgress" cx="80" cy="80" r="70"
-            stroke-dasharray="440" stroke-dashoffset="0"/>
+          <circle class="progress" id="timerRingProgress" cx="80" cy="80" r="70" stroke-dasharray="440" stroke-dashoffset="0"/>
         </svg>
         <div class="timer-ring-text" id="timerRingText">30:00</div>
       </div>
@@ -551,6 +654,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
       </div>
     </div>
 
+    <!-- ===== FEATURES ===== -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-size:18px;font-weight:800;color:var(--text-main);">انطلق بذكاء</h2></div>
     <div class="features-grid">
       <div class="feature-card" onclick="playSound('click');openCamera()"><div class="feature-icon blue">📷</div><div class="feature-title">تصوير كتاب</div></div>
@@ -559,7 +663,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
       <div class="feature-card" onclick="playSound('click');document.getElementById('pdfInput').click()"><div class="feature-icon orange">📄</div><div class="feature-title">رفع PDF</div></div>
     </div>
 
-    <!-- UPLOAD SECTION -->
+    <!-- ===== UPLOAD ===== -->
     <div class="card" id="uploadSection">
       <div class="card-title">📸 رفع المواد والأوراق</div>
       <div class="upload-area" id="uploadArea" onclick="playSound('click');triggerFileInput()">
@@ -601,7 +705,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
       </div>
     </div>
 
-    <!-- SEARCH LESSON SECTION -->
+    <!-- ===== SEARCH ===== -->
     <div class="card" id="searchSection" style="display:none;">
       <div class="card-title">🔍 بحث ذكي عن الدرس</div>
       <select id="subjectSelect" class="subject-select">
@@ -610,7 +714,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
         <option value="العلوم">🔬 العلوم</option>
         <option value="اللغة العربية">📖 اللغة العربية</option>
         <option value="اللغة الإنجليزية">🌍 اللغة الإنجليزية</option>
-        <option value="الدراسات الاجتماعية">🗺️ الدراسات الاجتماعية</option>
         <option value="الفيزياء">⚛️ الفيزياء</option>
         <option value="الكيمياء">🧪 الكيمياء</option>
         <option value="الأحياء">🧬 الأحياء</option>
@@ -620,13 +723,13 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
         <option value="اللغة الفرنسية">🇫🇷 اللغة الفرنسية</option>
       </select>
       <div class="search-box">
-        <input type="text" id="lessonSearchInput" placeholder="اكتب اسم الدرس أو الموضوع..." onkeypress="if(event.key==='Enter'){playSound('click');searchLesson()}">
+        <input type="text" id="lessonSearchInput" placeholder="اكتب اسم الدرس..." onkeypress="if(event.key==='Enter'){playSound('click');searchLesson()}">
         <button onclick="playSound('click');searchLesson()"><i class="fas fa-search"></i> بحث</button>
       </div>
       <div id="searchResults"></div>
     </div>
 
-    <!-- PROGRESS CARD -->
+    <!-- ===== PROGRESS ===== -->
     <div class="progress-card">
       <div class="progress-header">
         <h3><i class="fas fa-chart-line"></i> تقدمك في الإجابة الصحيحة</h3>
@@ -642,13 +745,13 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
       </div>
     </div>
 
-    <!-- Weekly Heatmap -->
+    <!-- ===== HEATMAP ===== -->
     <div class="card">
       <div class="card-title">📅 تقويم المذاكرة الأسبوعي</div>
       <div class="heatmap" id="weeklyHeatmap"></div>
     </div>
 
-    <!-- STATS -->
+    <!-- ===== STATS ===== -->
     <div class="stats-grid">
       <div class="stat-box"><div class="stat-icon purple">📚</div><div><div class="stat-number" id="statLessons">0</div><div class="stat-label">دروس هذا الشهر</div></div></div>
       <div class="stat-box"><div class="stat-icon green">✅</div><div><div class="stat-number" id="statCorrect">0</div><div class="stat-label">إجابات صحيحة</div></div></div>
@@ -657,7 +760,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     </div>
   </div>
 
-  <!-- TAB: QUIZ -->
+  <!-- ===== TAB: QUIZ ===== -->
   <div id="tab-quiz" class="tab-content hidden">
     <div class="card">
       <div class="quiz-header">
@@ -688,7 +791,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     </div>
   </div>
 
-  <!-- TAB: RESULT -->
+  <!-- ===== TAB: RESULT ===== -->
   <div id="tab-result" class="tab-content hidden">
     <div class="card">
       <div class="result-screen">
@@ -709,7 +812,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     </div>
   </div>
 
-  <!-- TAB: HISTORY -->
+  <!-- ===== TAB: HISTORY ===== -->
   <div id="tab-history" class="tab-content hidden">
     <div class="card">
       <div class="card-title">📚 سجل النشاط</div>
@@ -718,7 +821,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     </div>
   </div>
 
-  <!-- TAB: CHAT -->
+  <!-- ===== TAB: CHAT ===== -->
   <div id="tab-chat" class="tab-content hidden">
     <div class="card">
       <div class="card-title">💬 محادثة ذكية</div>
@@ -736,7 +839,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     </div>
   </div>
 
-  <!-- TAB: REPORTS -->
+  <!-- ===== TAB: REPORTS ===== -->
   <div id="tab-reports" class="tab-content hidden">
     <div class="card">
       <div class="card-title">📊 التقارير</div>
@@ -754,7 +857,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     </div>
   </div>
 
-  <!-- TAB: ACHIEVEMENTS -->
+  <!-- ===== TAB: ACHIEVEMENTS ===== -->
   <div id="tab-achievements" class="tab-content hidden">
     <div class="card">
       <div class="card-title">🏆 إنجازاتك</div>
@@ -766,18 +869,16 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     </div>
   </div>
 
-  <!-- TAB: SETTINGS -->
+  <!-- ===== TAB: SETTINGS ===== -->
   <div id="tab-settings" class="tab-content hidden">
     <div class="card">
       <div class="card-title">⚙️ الإعدادات</div>
 
-      <!-- Sound Settings -->
       <div class="setting-item">
         <div><div class="setting-title">🔊 الأصوات</div><div class="setting-desc">تشغيل/كتم أصوات التطبيق</div></div>
         <label class="toggle-switch"><input type="checkbox" id="soundToggle" checked onchange="playSound('click');toggleSounds(this.checked)"><span class="toggle-slider"></span></label>
       </div>
 
-      <!-- Sound Preview -->
       <div id="soundPreviewArea" style="margin-bottom:16px;">
         <div style="font-size:12px;font-weight:700;color:var(--text-sub);margin-bottom:8px;">🔊 معاينة الأصوات:</div>
         <div class="sound-grid">
@@ -794,13 +895,11 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
         </div>
       </div>
 
-      <!-- Dark Mode -->
       <div class="setting-item">
         <div><div class="setting-title">🌙 الوضع المظلم</div><div class="setting-desc">تفعيل الوضع المظلم</div></div>
         <label class="toggle-switch"><input type="checkbox" onchange="playSound('click');toggleDarkMode(this.checked)"><span class="toggle-slider"></span></label>
       </div>
 
-      <!-- FOCUS MODE -->
       <div class="focus-mode-settings">
         <div class="focus-title"><i class="fas fa-moon"></i> وضع التركيز (صامت)</div>
         <div class="focus-desc">🔇 يوقف كل الإشعارات والأصوات نهائياً</div>
@@ -813,7 +912,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
         </div>
       </div>
 
-      <!-- Notification Time -->
       <div class="notif-setting">
         <label>🔔 وقت الإشعار اليومي للمذاكرة</label>
         <div class="notif-time-row">
@@ -823,7 +921,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
         <p style="font-size:11px;color:var(--text-sub);margin-top:8px;">سنرسل لك إشعار يومي في هذا الوقت لتذكيرك بالمذاكرة</p>
       </div>
 
-      <!-- Streak Freeze -->
       <div class="notif-setting" style="margin-top:12px;">
         <label>❄️ يوم راحة (Streak Freeze)</label>
         <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">استخدم يوم راحة واحد شهرياً بدون فقدان سلسلة أيامك</p>
@@ -832,7 +929,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
         </button>
       </div>
 
-      <!-- Reset Level -->
       <div class="reset-grade-settings">
         <button onclick="playSound('click');resetLevel()"><i class="fas fa-layer-group"></i> تغيير مستوى المذاكرة</button>
         <p style="font-size:11px;color:var(--text-sub);margin-top:8px;">تغيير وقت الجلسة اليومية</p>
@@ -851,27 +947,38 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   </div>
 </div>
 
-<!-- ========== BOTTOM NAV ========== -->
+<!-- ===== BOTTOM NAV ===== -->
 <nav class="bottom-nav">
   <div class="nav-item active" onclick="playSound('click');switchTab('home', this)"><span class="nav-icon">🏠</span><span>الرئيسية</span></div>
   <div class="nav-item" onclick="playSound('click');switchTab('reports', this)"><span class="nav-icon">📊</span><span>التقارير</span></div>
   <div class="nav-item center-btn" onclick="playSound('click');switchTab('chat', this)"><div class="nav-icon-wrapper"><span class="nav-icon">🧠</span></div><span style="color:var(--primary-purple);">المحادثة</span></div>
   <div class="nav-item" onclick="playSound('click');switchTab('achievements', this)"><span class="nav-icon">🏆</span><span>الإنجازات</span></div>
   <div class="nav-item" onclick="playSound('click');switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>الإعدادات</span></div>
-                                                                                                                     </nav>
-                                                                                                 <script>
+        </nav>
+        <script>
 // ============================================
-// ===== الأصوات - PUT THIS FIRST =====
+// ===== الأصوات - VERSION 2 (شغالة كل مرة) =====
 // ============================================
 let soundsEnabled = true;
 let focusSilentMode = false;
+let audioCtx = null;
+
+function getAudioContext() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    return audioCtx;
+}
 
 function playSound(type) {
     if (!soundsEnabled) return;
     if (focusSilentMode) return;
     
     try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = getAudioContext();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
@@ -883,10 +990,9 @@ function playSound(type) {
                 osc.frequency.setValueAtTime(800, ctx.currentTime);
                 gain.gain.setValueAtTime(0.15, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-                osc.start();
+                osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.08);
                 break;
-                
             case 'correct':
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(523, ctx.currentTime);
@@ -894,20 +1000,18 @@ function playSound(type) {
                 osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
                 gain.gain.setValueAtTime(0.3, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
-                osc.start();
+                osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.4);
                 break;
-                
             case 'wrong':
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(200, ctx.currentTime);
                 osc.frequency.setValueAtTime(150, ctx.currentTime + 0.2);
                 gain.gain.setValueAtTime(0.2, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
-                osc.start();
+                osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.4);
                 break;
-                
             case 'start':
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(440, ctx.currentTime);
@@ -915,48 +1019,51 @@ function playSound(type) {
                 osc.frequency.setValueAtTime(659, ctx.currentTime + 0.3);
                 gain.gain.setValueAtTime(0.15, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-                osc.start();
+                osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.5);
                 break;
-                
             case 'break':
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(400, ctx.currentTime);
                 gain.gain.setValueAtTime(0.2, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-                osc.start();
+                osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.3);
                 setTimeout(() => {
-                    const o2 = ctx.createOscillator();
-                    const g2 = ctx.createGain();
-                    o2.connect(g2);
-                    g2.connect(ctx.destination);
-                    o2.type = 'sine';
-                    o2.frequency.setValueAtTime(500, ctx.currentTime);
-                    g2.gain.setValueAtTime(0.2, ctx.currentTime);
-                    g2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-                    o2.start();
-                    o2.stop(ctx.currentTime + 0.3);
+                    try {
+                        const ctx2 = getAudioContext();
+                        const o2 = ctx2.createOscillator();
+                        const g2 = ctx2.createGain();
+                        o2.connect(g2);
+                        g2.connect(ctx2.destination);
+                        o2.type = 'sine';
+                        o2.frequency.setValueAtTime(500, ctx.currentTime);
+                        g2.gain.setValueAtTime(0.2, ctx.currentTime);
+                        g2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                        o2.start(ctx.currentTime);
+                        o2.stop(ctx.currentTime + 0.3);
+                    } catch(e) {}
                 }, 200);
                 break;
-                
             case 'achievement':
                 [523, 659, 784, 1047].forEach((f, i) => {
                     setTimeout(() => {
-                        const o = ctx.createOscillator();
-                        const g = ctx.createGain();
-                        o.connect(g);
-                        g.connect(ctx.destination);
-                        o.type = 'sine';
-                        o.frequency.setValueAtTime(f, ctx.currentTime);
-                        g.gain.setValueAtTime(0.2, ctx.currentTime);
-                        g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
-                        o.start();
-                        o.stop(ctx.currentTime + 0.25);
+                        try {
+                            const ctx2 = getAudioContext();
+                            const o = ctx2.createOscillator();
+                            const g = ctx2.createGain();
+                            o.connect(g);
+                            g.connect(ctx2.destination);
+                            o.type = 'sine';
+                            o.frequency.setValueAtTime(f, ctx.currentTime);
+                            g.gain.setValueAtTime(0.2, ctx.currentTime);
+                            g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                            o.start(ctx.currentTime);
+                            o.stop(ctx.currentTime + 0.25);
+                        } catch(e) {}
                     }, i * 100);
                 });
                 break;
-                
             case 'study_start':
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(440, ctx.currentTime);
@@ -964,10 +1071,9 @@ function playSound(type) {
                 osc.frequency.setValueAtTime(659, ctx.currentTime + 0.3);
                 gain.gain.setValueAtTime(0.2, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.45);
-                osc.start();
+                osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.45);
                 break;
-                
             case 'study_end':
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(659, ctx.currentTime);
@@ -975,10 +1081,9 @@ function playSound(type) {
                 osc.frequency.setValueAtTime(1047, ctx.currentTime + 0.3);
                 gain.gain.setValueAtTime(0.15, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-                osc.start();
+                osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.5);
                 break;
-                
             case 'welcome':
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(523, ctx.currentTime);
@@ -987,10 +1092,9 @@ function playSound(type) {
                 osc.frequency.setValueAtTime(1047, ctx.currentTime + 0.45);
                 gain.gain.setValueAtTime(0.2, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
-                osc.start();
+                osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.6);
                 break;
-                
             case 'notification':
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(600, ctx.currentTime);
@@ -998,27 +1102,23 @@ function playSound(type) {
                 osc.frequency.setValueAtTime(1000, ctx.currentTime + 0.2);
                 gain.gain.setValueAtTime(0.2, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
-                osc.start();
+                osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.35);
                 break;
-                
-            default:
-                break;
+            default: break;
         }
-    } catch(e) {
-        console.log('🔇 صوت مش شغال:', e);
-    }
+    } catch(e) { console.log('🔇 صوت مش شغال:', e); }
 }
 
 function toggleSounds(enabled) {
     soundsEnabled = enabled;
     localStorage.setItem('soundsEnabled', JSON.stringify(enabled));
+    if (enabled) getAudioContext();
 }
 
 function toggleFocusMode(enabled) {
     focusSilentMode = enabled;
     localStorage.setItem('focusSilentMode', JSON.stringify(enabled));
-    
     if (enabled) {
         soundsEnabled = false;
         document.getElementById('soundToggle').checked = false;
@@ -1038,6 +1138,7 @@ function toggleFocusMode(enabled) {
             document.getElementById('soundToggle').checked = true;
         }
         localStorage.setItem('soundsEnabled', JSON.stringify(soundsEnabled));
+        getAudioContext();
         scheduleDailyNotification();
         showToast('🔊 تم إلغاء وضع التركيز', 'info');
     }
@@ -1052,7 +1153,7 @@ const QUESTION_TIMER_SECONDS = 30;
 const BREAK_DURATION = 5 * 60;
 const BREAK_INTERVAL = 60 * 60;
 
-let stats = { docs:0, lessons:0, correct:0, totalAnswered:0, streak:0 };
+let stats = { docs:0, lessons:0, correct:0, totalAnswered:0, streak:0, xp:0, level:1 };
 let uploadedImages = [];
 let pdfText = '';
 let currentQuiz = null;
@@ -1078,11 +1179,22 @@ let studyIsPaused = false;
 let breakTimerInterval = null;
 let breakSecondsLeft = 0;
 
+// Pomodoro
+let pomodoroInterval = null;
+let pomodoroSeconds = 25 * 60;
+let pomodoroRunning = false;
+let pomodoroType = 'focus'; // 'focus' or 'break'
+
+// Daily Challenge
+let dailyChallenge = { target: 5, progress: 0, completed: false };
+let lastChallengeDate = '';
+
 let notificationTime = '18:00';
 let streakFreezeUsed = false;
 let achievements = [];
 let studyDays = {};
 let achievementCounts = {};
+let welcomeShown = localStorage.getItem('welcomeShown');
 
 const gradeNames = {
     'first-primary':'الصف الأول الابتدائي','second-primary':'الصف الثاني الابتدائي',
@@ -1118,6 +1230,7 @@ const achievementDefs = [
     {id:'break_skipper', name:'تخطي البريك', desc:'تخطي استراحة', icon:'⏭️', condition:()=>localStorage.getItem('breakSkipped')==='true'},
     {id:'quiz_master', name:'خبير اختبارات', desc:'أكمل 5 اختبارات', icon:'📝', condition:()=>quizHistory.length>=5, maxCount:5},
     {id:'study_expert', name:'خبير مذاكرة', desc:'أكمل 10 جلسات مذاكرة', icon:'🧠', condition:()=>stats.lessons>=10, maxCount:10},
+    {id:'pomodoro_master', name:'خبير تركيز', desc:'أكمل 5 جلسات بومودورو', icon:'🍅', condition:()=>localStorage.getItem('pomodoroCount')>=5, maxCount:5},
 ];
 
 // ============================================
@@ -1138,6 +1251,21 @@ function showToast(msg,type){
     t.innerText=msg;
     document.body.appendChild(t);
     setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
+}
+
+// ============================================
+// ===== WELCOME SCREEN =====
+// ============================================
+if (!welcomeShown) {
+    document.getElementById('welcomeScreen').classList.remove('hidden');
+} else {
+    document.getElementById('welcomeScreen').classList.add('hidden');
+}
+
+function startApp() {
+    document.getElementById('welcomeScreen').classList.add('hidden');
+    localStorage.setItem('welcomeShown', 'true');
+    playSound('welcome');
 }
 
 // ============================================
@@ -1181,8 +1309,6 @@ function scheduleDailyNotification(){
     }, delay);
 }
 
-function showNotificationSettings(){switchTab('settings');setTimeout(()=>document.getElementById('notifTimeInput').scrollIntoView({behavior:'smooth'}),300);}
-
 // ============================================
 // ===== STREAK FREEZE =====
 // ============================================
@@ -1221,7 +1347,77 @@ function markAttendance() {
         document.getElementById('streakDays').innerText = streak;
         updateStatsUI();
         checkAchievements();
+        checkDailyChallenge();
     }
+}
+
+// ============================================
+// ===== DAILY CHALLENGE =====
+// ============================================
+function checkDailyChallenge() {
+    const today = new Date().toISOString().split('T')[0];
+    if (lastChallengeDate !== today) {
+        dailyChallenge = { target: 5 + Math.floor(Math.random() * 5), progress: 0, completed: false };
+        lastChallengeDate = today;
+        localStorage.setItem('dailyChallenge', JSON.stringify(dailyChallenge));
+        localStorage.setItem('lastChallengeDate', today);
+    } else {
+        const saved = localStorage.getItem('dailyChallenge');
+        if (saved) dailyChallenge = JSON.parse(saved);
+    }
+    updateChallengeUI();
+}
+
+function updateChallengeUI() {
+    const pct = dailyChallenge.target > 0 ? Math.min((dailyChallenge.progress / dailyChallenge.target) * 100, 100) : 0;
+    document.getElementById('challengeProgress').innerText = dailyChallenge.progress + '/' + dailyChallenge.target;
+    document.getElementById('challengeBar').style.width = pct + '%';
+    document.getElementById('challengeStatus').innerText = dailyChallenge.completed ? '✅ مكتمل' : '⏳ جاري';
+    if (dailyChallenge.completed) {
+        document.getElementById('challengeCard').style.borderColor = '#10b981';
+        document.getElementById('challengeCard').style.background = 'linear-gradient(135deg,#d1fae5,#a7f3d0)';
+    } else {
+        document.getElementById('challengeCard').style.borderColor = '#f59e0b';
+        document.getElementById('challengeCard').style.background = 'linear-gradient(135deg,#fef3c7,#fde68a)';
+    }
+}
+
+function updateDailyChallenge(progress) {
+    if (dailyChallenge.completed) return;
+    dailyChallenge.progress += progress;
+    if (dailyChallenge.progress >= dailyChallenge.target) {
+        dailyChallenge.completed = true;
+        dailyChallenge.progress = dailyChallenge.target;
+        showToast('🎯 أكملت تحدي اليوم! +50 XP', 'success');
+        addXP(50);
+        playSound('achievement');
+    }
+    localStorage.setItem('dailyChallenge', JSON.stringify(dailyChallenge));
+    updateChallengeUI();
+}
+
+// ============================================
+// ===== XP & LEVEL SYSTEM =====
+// ============================================
+function addXP(amount) {
+    stats.xp += amount;
+    const xpNeeded = stats.level * 100;
+    if (stats.xp >= xpNeeded) {
+        stats.level++;
+        stats.xp = stats.xp - xpNeeded;
+        showToast(`🎉 وصلت للمستوى ${stats.level}!`, 'success');
+        playSound('achievement');
+    }
+    localStorage.setItem('studyStats', JSON.stringify(stats));
+    updateLevelUI();
+}
+
+function updateLevelUI() {
+    const xpNeeded = stats.level * 100;
+    const progress = Math.min((stats.xp / xpNeeded) * 100, 100);
+    document.getElementById('levelDisplay').innerText = stats.level;
+    document.getElementById('xpDisplay').innerText = stats.xp;
+    document.getElementById('xpProgress').style.width = progress + '%';
 }
 
 // ============================================
@@ -1239,11 +1435,13 @@ function checkAchievements(){
                 newUnlock=true;
                 showAchievementPopup(def, count);
                 playSound('achievement');
+                addXP(20);
             } else if(existing && existing.count !== count && count > existing.count){
                 existing.count = count;
                 newUnlock=true;
                 showAchievementPopup(def, count);
                 playSound('achievement');
+                addXP(20);
             }
         } else {
             if(!existing && def.condition()){
@@ -1251,6 +1449,7 @@ function checkAchievements(){
                 newUnlock=true;
                 showAchievementPopup(def);
                 playSound('achievement');
+                addXP(20);
             }
         }
     });
@@ -1289,28 +1488,71 @@ function updateAchievementsUI(){
 }
 
 // ============================================
-// ===== WEEKLY HEATMAP =====
+// ===== POMODORO =====
 // ============================================
-function updateHeatmap(){
-    const container=document.getElementById('weeklyHeatmap');
-    if(!container) return;
-    const days=['أ','إ','ث','أ','خ','ج','س'];
-    const today=new Date();
-    let html='';
-    for(let i=6;i>=0;i--){
-        const d=new Date(today); d.setDate(d.getDate()-i);
-        const key=d.toISOString().split('T')[0];
-        const status=studyDays[key]||'empty';
-        html+='<div class="heatmap-day '+status+'">'+days[d.getDay()]+'</div>';
-    }
-    container.innerHTML=html;
+function startPomodoro() {
+    if (pomodoroRunning) return;
+    pomodoroRunning = true;
+    document.getElementById('pomodoroStatus').innerText = '▶️ جاري التركيز...';
+    playSound('start');
+    pomodoroInterval = setInterval(() => {
+        pomodoroSeconds--;
+        updatePomodoroDisplay();
+        if (pomodoroSeconds <= 0) {
+            clearInterval(pomodoroInterval);
+            pomodoroRunning = false;
+            if (pomodoroType === 'focus') {
+                playSound('achievement');
+                showToast('🎉 انتهت جلسة التركيز! خد بريك 5 دقايق', 'success');
+                let count = parseInt(localStorage.getItem('pomodoroCount') || '0') + 1;
+                localStorage.setItem('pomodoroCount', count);
+                pomodoroType = 'break';
+                pomodoroSeconds = 5 * 60;
+                document.getElementById('pomodoroStatus').innerText = '☕ وقت الاستراحة';
+                pomodoroRunning = true;
+                pomodoroInterval = setInterval(() => {
+                    pomodoroSeconds--;
+                    updatePomodoroDisplay();
+                    if (pomodoroSeconds <= 0) {
+                        clearInterval(pomodoroInterval);
+                        pomodoroRunning = false;
+                        pomodoroType = 'focus';
+                        pomodoroSeconds = 25 * 60;
+                        document.getElementById('pomodoroStatus').innerText = '⏸️ متوقف';
+                        showToast('🍅 انتهت الاستراحة! مستعد للجلسة القادمة؟', 'info');
+                        updatePomodoroDisplay();
+                        checkAchievements();
+                    }
+                }, 1000);
+            }
+            updatePomodoroDisplay();
+            checkAchievements();
+        }
+    }, 1000);
 }
 
-function markStudyDay(status='studied'){
-    const key=new Date().toISOString().split('T')[0];
-    studyDays[key]=status;
-    localStorage.setItem('studyDays',JSON.stringify(studyDays));
-    updateHeatmap();
+function pausePomodoro() {
+    clearInterval(pomodoroInterval);
+    pomodoroRunning = false;
+    document.getElementById('pomodoroStatus').innerText = '⏸️ متوقف';
+    playSound('click');
+}
+
+function resetPomodoro() {
+    clearInterval(pomodoroInterval);
+    pomodoroRunning = false;
+    pomodoroType = 'focus';
+    pomodoroSeconds = 25 * 60;
+    document.getElementById('pomodoroStatus').innerText = '⏸️ متوقف';
+    updatePomodoroDisplay();
+    playSound('click');
+}
+
+function updatePomodoroDisplay() {
+    const m = Math.floor(pomodoroSeconds / 60);
+    const s = pomodoroSeconds % 60;
+    document.getElementById('pomodoroTimer').innerText = 
+        (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 }
 
 // ============================================
@@ -1370,7 +1612,7 @@ function startStudyTimer(){
     playSound('study_start');
     markStudyDay('studied');
     studyTimerInterval=setInterval(()=>{
-        if(studySecondsLeft<=0){stopStudyTimer();showToast('🎉 انتهت جلسة المذاكرة!','success');playSound('study_end');checkAchievements();return;}
+        if(studySecondsLeft<=0){stopStudyTimer();showToast('🎉 انتهت جلسة المذاكرة!','success');playSound('study_end');addXP(30);checkAchievements();return;}
         studySecondsLeft--;
         const elapsed=studyTotalSeconds-studySecondsLeft;
         if(elapsed>0 && elapsed%BREAK_INTERVAL===0){pauseStudyTimer();showBreakOverlay();}
@@ -1411,6 +1653,8 @@ function initApp(){
     const savedFreeze=localStorage.getItem('streakFreezeUsed');
     const savedSounds=localStorage.getItem('soundsEnabled');
     const savedFocus=localStorage.getItem('focusSilentMode');
+    const savedChallenge=localStorage.getItem('dailyChallenge');
+    const savedChallengeDate=localStorage.getItem('lastChallengeDate');
     
     if(savedStats) stats=JSON.parse(savedStats);
     if(savedMonthly) monthlyStats=JSON.parse(savedMonthly);
@@ -1421,6 +1665,8 @@ function initApp(){
     if(savedFreeze){streakFreezeUsed=savedFreeze==='true';document.getElementById('freezeCount').innerText=streakFreezeUsed?'0':'1';}
     if(savedSounds!==null){soundsEnabled=savedSounds==='true';document.getElementById('soundToggle').checked=soundsEnabled;}
     if(savedFocus!==null){focusSilentMode=JSON.parse(savedFocus);document.getElementById('focusSilentToggle').checked=focusSilentMode;if(focusSilentMode){soundsEnabled=false;document.getElementById('soundToggle').checked=false;}}
+    if(savedChallenge) dailyChallenge=JSON.parse(savedChallenge);
+    if(savedChallengeDate) lastChallengeDate=savedChallengeDate;
     
     const mk=getMonthKey();
     if(!monthlyStats[mk]) monthlyStats[mk]={correct:0,totalAnswered:0,lessons:0};
@@ -1437,7 +1683,7 @@ function initApp(){
             updateLevelBadge();
             updateStudyTimerDisplay();
         }else{document.getElementById('levelScreen').classList.remove('hidden');}
-        updateStatsUI();updateMonthLabel();updateHeatmap();updateAchievementsUI();
+        updateStatsUI();updateMonthLabel();updateHeatmap();updateAchievementsUI();updateLevelUI();updateChallengeUI();
     }
     if(localStorage.getItem('darkMode')==='true'){document.body.classList.add('dark-mode');const t=document.querySelector('.toggle-switch input');if(t)t.checked=true;}
     
@@ -1446,6 +1692,7 @@ function initApp(){
     requestNotificationPermission();
     scheduleDailyNotification();
     checkAchievements();
+    updatePomodoroDisplay();
 }
 
 function resetGrade(){
@@ -1526,6 +1773,7 @@ async function summarizePDF(){
         document.getElementById('summaryResult').classList.remove('hidden');
         showToast('✅ تم تلخيص الـ PDF!', 'success');
         playSound('achievement');
+        addXP(15);
         checkAchievements();
     }catch(error){showToast('❌ حدث خطأ في التلخيص', 'error');}
     hideLoading();
@@ -1555,6 +1803,7 @@ async function searchLesson(){
         document.getElementById('searchResults').innerHTML=html;
         showToast('✅ تم العثور على نتائج!','success');
         playSound('achievement');
+        addXP(10);
         checkAchievements();
     }catch(err){showToast('❌ حدث خطأ: '+err.message,'error');}
     finally{hideLoading();}
@@ -1603,6 +1852,7 @@ async function generateSummary(){
         document.getElementById('summaryResult').classList.remove('hidden');
         showToast('✅ تم التلخيص!','success');
         playSound('achievement');
+        addXP(15);
         checkAchievements();
     }catch(err){showToast('❌ حدث خطأ: '+err.message,'error');}
     finally{hideLoading();}
@@ -1687,173 +1937,4 @@ function renderQuestion(){
     const mcqBox=document.getElementById('mcqBox'),textBox=document.getElementById('textBox'),tfBox=document.getElementById('tfBox');
     mcqBox.innerHTML='';mcqBox.classList.add('hidden');textBox.classList.add('hidden');tfBox.classList.add('hidden');
     document.getElementById('textAns').value='';
-    if(q.type==='mcq'){
-        mcqBox.classList.remove('hidden');
-        const letters=['أ','ب','ج','د'];
-        q.options.forEach((opt,idx)=>{const b=document.createElement('div');b.className='opt-btn';b.innerHTML='<div class="opt-letter">'+letters[idx]+'</div><span>'+opt+'</span>';b.onclick=()=>checkAnswer(opt,q.correctAnswer);mcqBox.appendChild(b);});
-    }else if(q.type==='tf'){tfBox.classList.remove('hidden');}
-    else{textBox.classList.remove('hidden');}
-    if(quizType==='challenge')startQuestionTimer();
-}
-
-function checkAnswer(userAns,correctAns){
-    clearInterval(questionTimerInterval);
-    stats.totalAnswered++;
-    const isRight=userAns.trim()===correctAns.trim();
-    if(isRight){score++;stats.correct++;playSound('correct');}
-    else{playSound('wrong');}
-    updateMonthlyStats(isRight);
-    updateStatsUI();
-    document.querySelectorAll('.opt-btn').forEach(btn=>{
-        btn.classList.add('disabled');
-        const txt=btn.querySelector('span')?btn.querySelector('span').innerText:btn.innerText;
-        if(txt.trim()===correctAns.trim())btn.classList.add('correct');
-        else if(txt.trim()===userAns.trim()&&!isRight)btn.classList.add('wrong');
-    });
-    showFeedback(isRight,isRight?"✅ صحيحة! أحسنت!":"❌ خاطئة! الإجابة الصحيحة: "+correctAns);
-}
-
-async function submitTextAnswer(){
-    clearInterval(questionTimerInterval);
-    const userAns=document.getElementById('textAns').value.trim();
-    if(!userAns){showToast('✏️ اكتب إجابة','warning');return;}
-    const q=currentQuiz[qIndex];
-    stats.totalAnswered++;
-    showLoading('🧠 جاري تقييم الإجابة...');
-    try{
-        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'evaluate',question:q.question,correctAnswer:q.correctAnswer,userAnswer:userAns,grade:currentGrade||'عام',subject:'عام'})});
-        const data=await response.json();
-        if(data.isCorrect){score++;stats.correct++;playSound('correct');}
-        else{playSound('wrong');}
-        updateMonthlyStats(data.isCorrect);
-        updateStatsUI();
-        showFeedback(data.isCorrect,data.isCorrect?"✅ صحيحة! ممتاز!":"❌ خاطئة! الإجابة الصحيحة: "+q.correctAnswer);
-    }catch(err){
-        const isCorrect=userAns.toLowerCase().includes(q.correctAnswer.toLowerCase());
-        if(isCorrect){score++;stats.correct++;playSound('correct');}
-        else{playSound('wrong');}
-        updateMonthlyStats(isCorrect);
-        updateStatsUI();
-        showFeedback(isCorrect,isCorrect?"✅ صحيحة!":"❌ خاطئة! الإجابة: "+q.correctAnswer);
-    }
-    finally{hideLoading();}
-}
-
-function updateMonthlyStats(isCorrect){
-    const mk=getMonthKey();
-    if(!monthlyStats[mk])monthlyStats[mk]={correct:0,totalAnswered:0,lessons:0};
-    monthlyStats[mk].totalAnswered++;
-    if(isCorrect)monthlyStats[mk].correct++;
-    localStorage.setItem('monthlyStats',JSON.stringify(monthlyStats));
-}
-
-function showFeedback(isRight,text){
-    const fb=document.getElementById('feedback');
-    fb.innerHTML='<i class="fas fa-'+(isRight?'check-circle':'times-circle')+'"></i> '+text;
-    fb.className='feedback '+(isRight?'success':'error');
-    fb.classList.remove('hidden');
-    document.getElementById('nextBtn').classList.remove('hidden');
-}
-
-function nextQuestion(){qIndex++;if(qIndex<currentQuiz.length)renderQuestion();else finishQuiz();}
-
-function finishQuiz(){
-    clearInterval(timerInterval);clearInterval(questionTimerInterval);
-    const percent=currentQuiz.length>0?Math.round((score/currentQuiz.length)*100):0;
-    quizHistory.push({date:new Date().toLocaleDateString('ar-EG'),score,total:currentQuiz.length,percent,type:quizType});
-    document.getElementById('resultScore').innerText=score;
-    document.getElementById('resultTotal').innerText=currentQuiz.length;
-    document.getElementById('resultCorrect').innerText=score;
-    document.getElementById('resultWrong').innerText=currentQuiz.length-score;
-    document.getElementById('resultPercent').innerText=percent+'%';
-    let emoji,title,msg;
-    if(percent>=90){emoji='🏆';title='ممتاز!';msg='أداء رائع!';}
-    else if(percent>=70){emoji='🌟';title='أحسنت!';msg='أداء ممتاز!';}
-    else if(percent>=50){emoji='👍';title='جيد!';msg='يمكنك التحسن!';}
-    else{emoji='💪';title='حاول مرة أخرى!';msg='الممارسة تجعلك أفضل!';}
-    document.getElementById('resultEmoji').innerText=emoji;
-    document.getElementById('resultTitle').innerText=title;
-    document.getElementById('resultMessage').innerText=msg;
-    document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
-    document.getElementById('tab-result').classList.remove('hidden');
-    updateHistory();updateReports();checkAchievements();
-    if(percent>=70) playSound('achievement');
-}
-
-function retryQuiz(){startQuiz(quizType);}
-function quitQuiz(){if(confirm('⚠️ هل أنت متأكد؟')){clearInterval(timerInterval);clearInterval(questionTimerInterval);switchTab('home');}}
-
-// ============================================
-// ===== STATS UI =====
-// ============================================
-function updateStatsUI(){
-    const mk=getMonthKey();
-    const mStats=monthlyStats[mk]||{correct:0,totalAnswered:0,lessons:0};
-    document.getElementById('statLessons').innerText=mStats.lessons;
-    document.getElementById('statCorrect').innerText=mStats.correct;
-    document.getElementById('statStreak').innerText=stats.streak;
-    const acc=mStats.totalAnswered>0?Math.round((mStats.correct/mStats.totalAnswered)*100):0;
-    document.getElementById('statAcc').innerText=acc+'%';
-    document.getElementById('monthProgressText').innerText=acc+'%';
-    document.querySelectorAll('.emoji-step').forEach(s=>s.classList.remove('active'));
-    if(acc>=81)document.getElementById('lvl-4').classList.add('active');
-    else if(acc>=61)document.getElementById('lvl-3').classList.add('active');
-    else if(acc>=41)document.getElementById('lvl-2').classList.add('active');
-    else if(acc>=21)document.getElementById('lvl-1').classList.add('active');
-    else document.getElementById('lvl-0').classList.add('active');
-}
-
-function updateHistory(){
-    const list=document.getElementById('historyList');
-    if(quizHistory.length===0)return;
-    document.getElementById('historyEmpty').classList.add('hidden');
-    list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;color:var(--text-main);">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total+'</div></div></div></div>').join('');
-}
-function getQuizTypeName(type){const n={'quick':'⚡ سريع','mcq_only':'📝 اختياري','full':'📄 كامل','challenge':'🔥 تحدي'};return n[type]||type;}
-
-function updateReports(){
-    if(quizHistory.length===0)return;
-    document.getElementById('reportEmpty').classList.add('hidden');
-    document.getElementById('reportContent').classList.remove('hidden');
-    const total=quizHistory.reduce((s,q)=>s+q.total,0);
-    const correct=quizHistory.reduce((s,q)=>s+q.score,0);
-    const acc=total>0?Math.round((correct/total)*100):0;
-    document.getElementById('reportTotal').innerText=total;
-    document.getElementById('reportAccuracy').innerText=acc+'%';
-    const chart=document.getElementById('performanceChart');
-    chart.innerHTML=quizHistory.slice(-7).map(q=>{const h=Math.max(20,q.percent);const c=q.percent>=70?'var(--accent-green)':q.percent>=50?'var(--accent-yellow)':'var(--accent-red)';return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div style="width:100%;height:'+h+'%;background:'+c+';border-radius:4px 4px 0 0;min-height:20px;transition:height 0.5s ease;"></div><div style="font-size:10px;color:var(--text-sub);margin-top:4px;">'+q.percent+'%</div></div>';}).join('');
-}
-
-// ============================================
-// ===== CHAT =====
-// ============================================
-async function sendChatMessage(){
-    const input=document.getElementById('chatInput');
-    const msg=input.value.trim();
-    if(!msg){showToast('✏️ اكتب سؤالك أولاً','warning');return;}
-    const box=document.getElementById('chatMessages');
-    box.innerHTML+='<div class="chat-message user"><div class="chat-avatar">🙋</div><div class="chat-bubble">'+escapeHtml(msg)+'</div></div>';
-    input.value='';
-    box.scrollTop=box.scrollHeight;
-    const typingId='typing-'+Date.now();
-    box.innerHTML+='<div class="chat-message bot" id="'+typingId+'"><div class="chat-avatar">🤖</div><div class="chat-bubble"><i class="fas fa-spinner fa-spin"></i> جاري التفكير...</div></div>';
-    box.scrollTop=box.scrollHeight;
-    try{
-        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chat',message:msg,grade:currentGrade||'عام',subject:'عام'})});
-        const data=await response.json();
-        document.getElementById(typingId).remove();
-        let reply=data.answer||data.rawResponse||'عذراً، لم أستطع فهم سؤالك.';
-        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">'+escapeHtml(reply).replace(/\n/g,'<br>')+'</div></div>';
-        playSound('notification');
-    }catch(err){
-        document.getElementById(typingId).remove();
-        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble" style="color:var(--accent-red);">❌ عذراً، حدث خطأ. حاول مرة أخرى.</div></div>';
-        showToast('❌ حدث خطأ في الشات', 'error');
-    }
-    box.scrollTop=box.scrollHeight;
-}
-
-document.addEventListener('DOMContentLoaded', initApp);
-</script>
-</body>
-</html>                    
+    if(q.type==='mcq'
