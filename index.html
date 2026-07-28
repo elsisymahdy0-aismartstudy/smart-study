@@ -898,8 +898,8 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   <div class="nav-item center-btn" onclick="playSound('click');switchTab('chat', this)"><div class="nav-icon-wrapper"><span class="nav-icon">🧠</span></div><span style="color:var(--primary-purple);">المحادثة</span></div>
   <div class="nav-item" onclick="playSound('click');switchTab('achievements', this)"><span class="nav-icon">🏆</span><span>الإنجازات</span></div>
   <div class="nav-item" onclick="playSound('click');switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>الإعدادات</span></div>
-                                                                                </nav>
-                                                                           <script>
+      </nav>
+      <script>
 // ========== CONFIG ==========
 const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
 const MAX_IMAGES = 5;
@@ -1155,7 +1155,7 @@ function showToast(msg,type){
     document.body.appendChild(t);
     setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
 }
-                                                       // ========== NOTIFICATIONS ==========
+        // ========== NOTIFICATIONS ==========
 function saveNotificationTime(){
     const t=document.getElementById('notifTimeInput').value;
     notificationTime=t;
@@ -1388,7 +1388,7 @@ function toggleFocusTimer(){
 }
 function stopFocusMode(){stopStudyTimer();exitFocusMode();}
 function exitFocusMode(){focusModeActive=false;focusSilentMode=false;clearInterval(focusTimerInterval);document.getElementById('focusOverlay').classList.add('hidden');}
-                                                                             // ========== APP INIT ==========
+        // ========== APP INIT ==========
 function initApp(){
     const savedGrade=localStorage.getItem('userGrade');
     const savedLevel=localStorage.getItem('studyLevel');
