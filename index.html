@@ -27,10 +27,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 @keyframes bounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
 @keyframes slideIn { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
 
-/* ===== الأصوات ===== */
-.sound-test-btn { display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:12px; background:var(--primary-lighter); border:1px solid var(--border-color); cursor:pointer; font-weight:700; font-size:12px; transition:all 0.3s; }
-.sound-test-btn:hover { background:var(--primary-light); transform:scale(1.02); }
-
 /* Screens */
 .grade-screen, .level-screen {
   position:fixed; top:0; left:0; right:0; bottom:0;
@@ -253,7 +249,6 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 .toggle-switch input:checked + .toggle-slider { background:var(--primary-purple); }
 .toggle-switch input:checked + .toggle-slider::before { transform:translateX(24px); }
 
-/* Focus Mode Settings */
 .focus-mode-settings { background:var(--primary-lighter); border-radius:var(--radius-xl); padding:16px; margin-top:12px; border:2px solid var(--primary-purple); }
 .focus-mode-settings .focus-title { font-size:14px; font-weight:800; color:var(--primary-purple); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
 .focus-mode-settings .focus-desc { font-size:12px; color:var(--text-sub); margin-bottom:12px; }
@@ -401,7 +396,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
 </style>
 </head>
 <body>
-  <!-- ===== SOUND TEST - للتأكد من شغل الصوت ===== -->
+  <!-- ========== SOUND TEST - للتأكد من شغل الصوت ========== -->
 <div style="position:fixed;bottom:100px;right:10px;z-index:9999;">
   <button onclick="playSound('welcome')" style="background:#7c3aed;color:#fff;border:none;border-radius:50%;width:50px;height:50px;font-size:20px;box-shadow:0 4px 15px rgba(124,58,237,0.4);cursor:pointer;">
     🔊
@@ -425,6 +420,13 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
     <div class="grade-btn" onclick="playSound('click');selectGrade('first-secondary')"><span class="grade-icon">🔭</span><div class="grade-name">الصف الأول الثانوي</div></div>
     <div class="grade-btn" onclick="playSound('click');selectGrade('second-secondary')"><span class="grade-icon">🧬</span><div class="grade-name">الصف الثاني الثانوي</div></div>
     <div class="grade-btn" onclick="playSound('click');selectGrade('third-secondary')"><span class="grade-icon">🚀</span><div class="grade-name">الصف الثالث الثانوي</div></div>
+    
+    <!-- ===== زر الجامعة / التعليم العالي ===== -->
+    <div class="grade-btn" onclick="playSound('click');selectGrade('university')" style="grid-column:1/-1;background:rgba(255,255,255,0.15);border-color:rgba(255,215,0,0.4);">
+      <span class="grade-icon">🎓</span>
+      <div class="grade-name" style="color:#fbbf24;">جامعة / تعليم عالي</div>
+      <div class="grade-desc" style="color:rgba(255,215,0,0.6);">طلاب الجامعات والكليات</div>
+    </div>
   </div>
 </div>
 
@@ -504,7 +506,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   </defs>
 </svg>
 
-<!-- ========== HEADER (الجرس بقى ترس) ========== -->
+<!-- ========== HEADER ========== -->
 <header class="app-header">
   <div class="header-icon" onclick="playSound('click');switchTab('settings')">
     <i class="fas fa-cog" style="color:var(--text-sub);font-size:18px;"></i>
@@ -798,7 +800,7 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
         <label class="toggle-switch"><input type="checkbox" onchange="playSound('click');toggleDarkMode(this.checked)"><span class="toggle-slider"></span></label>
       </div>
 
-      <!-- FOCUS MODE - شغال بجد -->
+      <!-- FOCUS MODE -->
       <div class="focus-mode-settings">
         <div class="focus-title"><i class="fas fa-moon"></i> وضع التركيز (صامت)</div>
         <div class="focus-desc">🔇 يوقف كل الإشعارات والأصوات نهائياً</div>
@@ -856,16 +858,15 @@ body { background:var(--bg-body); color:var(--text-main); min-height:100vh; padd
   <div class="nav-item center-btn" onclick="playSound('click');switchTab('chat', this)"><div class="nav-icon-wrapper"><span class="nav-icon">🧠</span></div><span style="color:var(--primary-purple);">المحادثة</span></div>
   <div class="nav-item" onclick="playSound('click');switchTab('achievements', this)"><span class="nav-icon">🏆</span><span>الإنجازات</span></div>
   <div class="nav-item" onclick="playSound('click');switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>الإعدادات</span></div>
-</nav>
-<script>
-// ========== ========== ========== ==========
-//  الأصوات - PUT THIS FIRST
-// ========== ========== ========== ==========
+                                                                                                                     </nav>
+                                                                                                 <script>
+// ============================================
+// ===== الأصوات - PUT THIS FIRST =====
+// ============================================
 let soundsEnabled = true;
 let focusSilentMode = false;
 
 function playSound(type) {
-    // لو الصوت متوقف أو في وضع التركيز، ما تشغلش حاجة
     if (!soundsEnabled) return;
     if (focusSilentMode) return;
     
@@ -1019,20 +1020,15 @@ function toggleFocusMode(enabled) {
     localStorage.setItem('focusSilentMode', JSON.stringify(enabled));
     
     if (enabled) {
-        // إيقاف الأصوات فوراً
         soundsEnabled = false;
         document.getElementById('soundToggle').checked = false;
         localStorage.setItem('soundsEnabled', 'false');
-        
-        // إلغاء الإشعارات المجدولة
         if (window.notificationTimeout) {
             clearTimeout(window.notificationTimeout);
             window.notificationTimeout = null;
         }
-        
         showToast('🔇 تم تفعيل وضع التركيز - كل الأصوات والإشعارات متوقفة', 'info');
     } else {
-        // إعادة الأصوات
         const savedSounds = localStorage.getItem('soundsEnabled');
         if (savedSounds !== null) {
             soundsEnabled = savedSounds === 'true';
@@ -1042,17 +1038,14 @@ function toggleFocusMode(enabled) {
             document.getElementById('soundToggle').checked = true;
         }
         localStorage.setItem('soundsEnabled', JSON.stringify(soundsEnabled));
-        
-        // إعادة جدولة الإشعارات
         scheduleDailyNotification();
-        
         showToast('🔊 تم إلغاء وضع التركيز', 'info');
     }
 }
 
-// ========== ========== ========== ==========
-//  CONFIG & STATE
-// ========== ========== ========== ==========
+// ============================================
+// ===== CONFIG & STATE =====
+// ============================================
 const WORKER_URL = "https://smart-study-api.elsisymahdy0.workers.dev";
 const MAX_IMAGES = 5;
 const QUESTION_TIMER_SECONDS = 30;
@@ -1097,16 +1090,17 @@ const gradeNames = {
     'sixth-primary':'الصف السادس الابتدائي','first-prep':'الصف الأول الإعدادي',
     'second-prep':'الصف الثاني الإعدادي','third-prep':'الصف الثالث الإعدادي',
     'first-secondary':'الصف الأول الثانوي','second-secondary':'الصف الثاني الثانوي',
-    'third-secondary':'الصف الثالث الثانوي'
+    'third-secondary':'الصف الثالث الثانوي',
+    'university':'🎓 جامعة / تعليم عالي'
 };
 const levelNames = {
     'beginner':'🌱 مبتدئ','learner':'📖 متعلم','smart':'🧠 ذكي','expert':'🏆 خبير','custom':'⚙️ مخصص'
 };
 const monthNames = ['يناير','فبراير','مارس','إبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 
-// ========== ========== ========== ==========
-//  ACHIEVEMENTS
-// ========== ========== ========== ==========
+// ============================================
+// ===== ACHIEVEMENTS =====
+// ============================================
 const achievementDefs = [
     {id:'first_quiz', name:'أول اختبار', desc:'أكمل أول اختبار', icon:'📝', condition:()=>quizHistory.length>=1},
     {id:'perfect_score', name:'الكمال', desc:'100% في اختبار', icon:'💯', condition:()=>quizHistory.some(q=>q.percent===100)},
@@ -1126,9 +1120,9 @@ const achievementDefs = [
     {id:'study_expert', name:'خبير مذاكرة', desc:'أكمل 10 جلسات مذاكرة', icon:'🧠', condition:()=>stats.lessons>=10, maxCount:10},
 ];
 
-// ========== ========== ========== ==========
-//  HELPERS
-// ========== ========== ========== ==========
+// ============================================
+// ===== HELPERS =====
+// ============================================
 function getMonthKey(){const n=new Date();return n.getFullYear()+'-'+(n.getMonth()+1);}
 function updateMonthLabel(){const n=new Date();document.getElementById('currentMonthLabel').innerText=monthNames[n.getMonth()]+' '+n.getFullYear();}
 function escapeHtml(text){const d=document.createElement('div');d.textContent=text;return d.innerHTML;}
@@ -1146,9 +1140,9 @@ function showToast(msg,type){
     setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
 }
 
-// ========== ========== ========== ==========
-//  NOTIFICATIONS
-// ========== ========== ========== ==========
+// ============================================
+// ===== NOTIFICATIONS =====
+// ============================================
 function requestNotificationPermission() {
     if (!('Notification' in window)) return;
     if (Notification.permission === 'granted') return;
@@ -1189,9 +1183,9 @@ function scheduleDailyNotification(){
 
 function showNotificationSettings(){switchTab('settings');setTimeout(()=>document.getElementById('notifTimeInput').scrollIntoView({behavior:'smooth'}),300);}
 
-// ========== ========== ========== ==========
-//  STREAK FREEZE
-// ========== ========== ========== ==========
+// ============================================
+// ===== STREAK FREEZE =====
+// ============================================
 function useStreakFreeze(){
     if(streakFreezeUsed){showToast('❄️ استخدمت يوم الراحة هذا الشهر بالفعل','warning');return;}
     streakFreezeUsed=true;
@@ -1201,9 +1195,9 @@ function useStreakFreeze(){
     playSound('achievement');
 }
 
-// ========== ========== ========== ==========
-//  ATTENDANCE
-// ========== ========== ========== ==========
+// ============================================
+// ===== ATTENDANCE =====
+// ============================================
 function markAttendance() {
     const today = new Date().toISOString().split('T')[0];
     let attendance = JSON.parse(localStorage.getItem('attendance') || '[]');
@@ -1230,9 +1224,9 @@ function markAttendance() {
     }
 }
 
-// ========== ========== ========== ==========
-//  ACHIEVEMENTS FUNCTIONS
-// ========== ========== ========== ==========
+// ============================================
+// ===== ACHIEVEMENTS FUNCTIONS =====
+// ============================================
 function checkAchievements(){
     let newUnlock=false;
     achievementDefs.forEach(def=>{
@@ -1294,9 +1288,9 @@ function updateAchievementsUI(){
     }).join('');
 }
 
-// ========== ========== ========== ==========
-//  WEEKLY HEATMAP
-// ========== ========== ========== ==========
+// ============================================
+// ===== WEEKLY HEATMAP =====
+// ============================================
 function updateHeatmap(){
     const container=document.getElementById('weeklyHeatmap');
     if(!container) return;
@@ -1319,9 +1313,9 @@ function markStudyDay(status='studied'){
     updateHeatmap();
 }
 
-// ========== ========== ========== ==========
-//  STUDY LEVEL SELECTION
-// ========== ========== ========== ==========
+// ============================================
+// ===== STUDY LEVEL SELECTION =====
+// ============================================
 function selectGrade(g){
     currentGrade=g;localStorage.setItem('userGrade',g);
     const mk=getMonthKey();
@@ -1349,13 +1343,13 @@ function selectLevel(level, minutes){
 
 function showCustomLevel(){document.getElementById('customTimeArea').style.display='block';}
 function selectCustomLevel(){const m=parseInt(document.getElementById('customMinutes').value);if(!m||m<5||m>300){showToast('⚠️ اختر من 5 لـ 300 دقيقة','warning');return;}selectLevel('custom',m);}
-function skipLevel(){studyLevel=null;document.getElementById('levelScreen').classList.add('hidden');showToast('⏭️ تم التخطي','info');}
+function skipLevel(){studyLevel=null;studyMinutes=0;document.getElementById('levelScreen').classList.add('hidden');switchTab('home');showToast('⏭️ تم التخطي - بدون مؤقت','info');}
 function resetLevel(){document.getElementById('levelScreen').classList.remove('hidden');stopStudyTimer();}
-function updateLevelBadge(){const area=document.getElementById('levelBadgeArea');if(!area||!studyLevel) return;area.innerHTML='<div class="level-badge '+studyLevel+'">'+levelNames[studyLevel]+' - '+studyMinutes+' دقيقة</div>';}
+function updateLevelBadge(){const area=document.getElementById('levelBadgeArea');if(!area) return;if(studyLevel){area.innerHTML='<div class="level-badge '+studyLevel+'">'+levelNames[studyLevel]+' - '+studyMinutes+' دقيقة</div>';}else{area.innerHTML='<div class="level-badge" style="background:#e5e7eb;color:#6b7280;">⏭️ بدون مؤقت</div>';}}
 
-// ========== ========== ========== ==========
-//  STUDY TIMER
-// ========== ========== ========== ==========
+// ============================================
+// ===== STUDY TIMER =====
+// ============================================
 function updateStudyTimerDisplay(){
     const m=Math.floor(studySecondsLeft/60),s=studySecondsLeft%60;
     const text=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
@@ -1387,9 +1381,9 @@ function startStudyTimer(){
 function pauseStudyTimer(){studyIsRunning=false;studyIsPaused=true;clearInterval(studyTimerInterval);document.getElementById('timerStartBtn').classList.remove('hidden');document.getElementById('timerPauseBtn').classList.add('hidden');playSound('click');}
 function stopStudyTimer(){studyIsRunning=false;studyIsPaused=false;clearInterval(studyTimerInterval);studySecondsLeft=studyTotalSeconds;document.getElementById('timerStartBtn').classList.remove('hidden');document.getElementById('timerPauseBtn').classList.add('hidden');updateStudyTimerDisplay();}
 
-// ========== ========== ========== ==========
-//  BREAK OVERLAY
-// ========== ========== ========== ==========
+// ============================================
+// ===== BREAK OVERLAY =====
+// ============================================
 function showBreakOverlay(){
     breakSecondsLeft=BREAK_DURATION;
     document.getElementById('breakOverlay').classList.remove('hidden');
@@ -1401,11 +1395,10 @@ function updateBreakTimer(){const m=Math.floor(breakSecondsLeft/60),s=breakSecon
 function skipBreak(){localStorage.setItem('breakSkipped','true');clearInterval(breakTimerInterval);document.getElementById('breakOverlay').classList.add('hidden');startStudyTimer();showToast('⏭️ تم تخطي الاستراحة','info');checkAchievements();}
 function endBreak(){clearInterval(breakTimerInterval);document.getElementById('breakOverlay').classList.add('hidden');startStudyTimer();showToast('▶️ استمرار المذاكرة!','success');}
 
-// ========== ========== ========== ==========
-//  APP INIT
-// ========== ========== ========== ==========
+// ============================================
+// ===== APP INIT =====
+// ============================================
 function initApp(){
-    // Load saved data
     const savedGrade=localStorage.getItem('userGrade');
     const savedLevel=localStorage.getItem('studyLevel');
     const savedMinutes=localStorage.getItem('studyMinutes');
@@ -1448,7 +1441,6 @@ function initApp(){
     }
     if(localStorage.getItem('darkMode')==='true'){document.body.classList.add('dark-mode');const t=document.querySelector('.toggle-switch input');if(t)t.checked=true;}
     
-    // Mark attendance and play welcome sound
     markAttendance();
     setTimeout(()=>{playSound('welcome');},500);
     requestNotificationPermission();
@@ -1498,9 +1490,9 @@ function openGallery(){document.getElementById('galleryInput').click();}
 function triggerFileInput(){const c=confirm('📷 اضغط "موافق" للكاميرا أو "إلغاء" للمعرض');if(c)openCamera();else openGallery();}
 function openSearchLesson(){const s=document.getElementById('searchSection');if(s.style.display==='none'){s.style.display='block';s.scrollIntoView({behavior:'smooth'});}else s.style.display='none';}
 
-// ========== ========== ========== ==========
-//  PDF HANDLING
-// ========== ========== ========== ==========
+// ============================================
+// ===== PDF HANDLING =====
+// ============================================
 async function handlePDF(event){
     const file=event.target.files[0];
     if(!file) return;
@@ -1539,9 +1531,9 @@ async function summarizePDF(){
     hideLoading();
 }
 
-// ========== ========== ========== ==========
-//  SEARCH LESSON
-// ========== ========== ========== ==========
+// ============================================
+// ===== SEARCH LESSON =====
+// ============================================
 async function searchLesson(){
     const q=document.getElementById('lessonSearchInput').value.trim();
     const subject=document.getElementById('subjectSelect').value;
@@ -1568,9 +1560,9 @@ async function searchLesson(){
     finally{hideLoading();}
 }
 
-// ========== ========== ========== ==========
-//  IMAGE UPLOAD
-// ========== ========== ========== ==========
+// ============================================
+// ===== IMAGE UPLOAD =====
+// ============================================
 async function handleFiles(e){
     const files=Array.from(e.target.files);
     if(files.length===0)return;
@@ -1596,9 +1588,9 @@ function updateImagePreview(){
 }
 function removeImage(index){uploadedImages.splice(index,1);updateImagePreview();if(uploadedImages.length===0){document.getElementById('actionButtons').classList.add('hidden');document.getElementById('uploadArea').classList.remove('has-images');document.getElementById('quizOptions').classList.add('hidden');document.getElementById('summaryResult').classList.add('hidden');}}
 
-// ========== ========== ========== ==========
-//  SUMMARY
-// ========== ========== ========== ==========
+// ============================================
+// ===== SUMMARY =====
+// ============================================
 async function generateSummary(){
     if(uploadedImages.length===0){showToast('⚠️ ارفع صور أولاً','error');return;}
     showLoading('📝 جاري التلخيص...');
@@ -1621,9 +1613,9 @@ function showQuizOptions(){
     document.getElementById('quizOptions').classList.toggle('hidden');
 }
 
-// ========== ========== ========== ==========
-//  QUIZ
-// ========== ========== ========== ==========
+// ============================================
+// ===== QUIZ =====
+// ============================================
 async function startQuiz(type){
     quizType=type;
     document.getElementById('quizOptions').classList.add('hidden');
@@ -1791,9 +1783,9 @@ function finishQuiz(){
 function retryQuiz(){startQuiz(quizType);}
 function quitQuiz(){if(confirm('⚠️ هل أنت متأكد؟')){clearInterval(timerInterval);clearInterval(questionTimerInterval);switchTab('home');}}
 
-// ========== ========== ========== ==========
-//  STATS UI
-// ========== ========== ========== ==========
+// ============================================
+// ===== STATS UI =====
+// ============================================
 function updateStatsUI(){
     const mk=getMonthKey();
     const mStats=monthlyStats[mk]||{correct:0,totalAnswered:0,lessons:0};
@@ -1815,4 +1807,53 @@ function updateHistory(){
     const list=document.getElementById('historyList');
     if(quizHistory.length===0)return;
     document.getElementById('historyEmpty').classList.add('hidden');
-    list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;color:var(--text-main);">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total
+    list.innerHTML=quizHistory.map(q=>'<div class="stat-box" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;color:var(--text-main);">'+getQuizTypeName(q.type)+'</div><div style="font-size:12px;color:var(--text-sub);">'+q.date+'</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--primary-purple);">'+q.percent+'%</div><div style="font-size:11px;color:var(--text-sub);">'+q.score+'/'+q.total+'</div></div></div></div>').join('');
+}
+function getQuizTypeName(type){const n={'quick':'⚡ سريع','mcq_only':'📝 اختياري','full':'📄 كامل','challenge':'🔥 تحدي'};return n[type]||type;}
+
+function updateReports(){
+    if(quizHistory.length===0)return;
+    document.getElementById('reportEmpty').classList.add('hidden');
+    document.getElementById('reportContent').classList.remove('hidden');
+    const total=quizHistory.reduce((s,q)=>s+q.total,0);
+    const correct=quizHistory.reduce((s,q)=>s+q.score,0);
+    const acc=total>0?Math.round((correct/total)*100):0;
+    document.getElementById('reportTotal').innerText=total;
+    document.getElementById('reportAccuracy').innerText=acc+'%';
+    const chart=document.getElementById('performanceChart');
+    chart.innerHTML=quizHistory.slice(-7).map(q=>{const h=Math.max(20,q.percent);const c=q.percent>=70?'var(--accent-green)':q.percent>=50?'var(--accent-yellow)':'var(--accent-red)';return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div style="width:100%;height:'+h+'%;background:'+c+';border-radius:4px 4px 0 0;min-height:20px;transition:height 0.5s ease;"></div><div style="font-size:10px;color:var(--text-sub);margin-top:4px;">'+q.percent+'%</div></div>';}).join('');
+}
+
+// ============================================
+// ===== CHAT =====
+// ============================================
+async function sendChatMessage(){
+    const input=document.getElementById('chatInput');
+    const msg=input.value.trim();
+    if(!msg){showToast('✏️ اكتب سؤالك أولاً','warning');return;}
+    const box=document.getElementById('chatMessages');
+    box.innerHTML+='<div class="chat-message user"><div class="chat-avatar">🙋</div><div class="chat-bubble">'+escapeHtml(msg)+'</div></div>';
+    input.value='';
+    box.scrollTop=box.scrollHeight;
+    const typingId='typing-'+Date.now();
+    box.innerHTML+='<div class="chat-message bot" id="'+typingId+'"><div class="chat-avatar">🤖</div><div class="chat-bubble"><i class="fas fa-spinner fa-spin"></i> جاري التفكير...</div></div>';
+    box.scrollTop=box.scrollHeight;
+    try{
+        const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chat',message:msg,grade:currentGrade||'عام',subject:'عام'})});
+        const data=await response.json();
+        document.getElementById(typingId).remove();
+        let reply=data.answer||data.rawResponse||'عذراً، لم أستطع فهم سؤالك.';
+        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">'+escapeHtml(reply).replace(/\n/g,'<br>')+'</div></div>';
+        playSound('notification');
+    }catch(err){
+        document.getElementById(typingId).remove();
+        box.innerHTML+='<div class="chat-message bot"><div class="chat-avatar">🤖</div><div class="chat-bubble" style="color:var(--accent-red);">❌ عذراً، حدث خطأ. حاول مرة أخرى.</div></div>';
+        showToast('❌ حدث خطأ في الشات', 'error');
+    }
+    box.scrollTop=box.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>                    
